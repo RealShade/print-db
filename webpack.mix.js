@@ -1,7 +1,7 @@
 const mix = require('laravel-mix');
 
-mix.less('resources/less/styles.less', 'public/assets/css')
-    .js('resources/js/app.js', 'public/js')
+mix.less('resources/less/app.less', 'public/assets/css')
+    .js('resources/js/app.js', 'public/assets/js')
     .babelConfig({
         presets: ['@babel/preset-env']
     })

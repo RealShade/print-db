@@ -1,0 +1,199 @@
+// Основные цвета
+@primary-bg: #001f3f; // Глубокий синий фон
+@primary-color: #007bff; // Основной синий
+@secondary-bg: #343a40; // Темно-серый для второстепенных элементов
+@secondary-color: #6c757d; // Серый цвет текста
+@text-color: #f8f9fa; // Основной цвет текста
+
+// Элементы ввода и карточек
+@input-bg: mix(@primary-color, @primary-bg, 30%);
+@input-border: mix(@primary-color, @primary-bg, 50%);
+@card-border: @input-border;
+@card-footer-bg: mix(@primary-color, @primary-bg, 5%); // Цвет футера (чуть ярче фона)
+
+:root {
+    --bs-body-bg: @primary-bg;
+    --bs-body-color: @text-color;
+    --bs-link-color: @primary-color;
+    --bs-link-hover-color: darken(@primary-color, 15%);
+    --bs-btn-bg: @primary-color;
+    --bs-btn-hover-bg: darken(@primary-color, 15%);
+    --bs-btn-border-color: @primary-color;
+    --bs-secondary-color: @secondary-color;
+    --bs-secondary-bg: @secondary-bg;
+    --bs-secondary-border-color: @secondary-color;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    min-width: 23rem;
+}
+
+main {
+    margin-left: 280px;
+
+    @media (max-width: 767.98px) {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+.d-flex.h-100 {
+    height: 100%;
+}
+
+.sidebar {
+    width: 280px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    transition: transform 0.3s ease-in-out;
+
+    @media (max-width: 767.98px) {
+        transform: translateX(-100%);
+
+        &.show {
+            transform: translateX(0);
+        }
+    }
+}
+
+.sidebar-toggle {
+    padding: 0.25rem 0.5rem;
+
+    .bi {
+        font-size: 1.5rem;
+    }
+}
+
+.table {
+    color: @text-color;
+
+    thead {
+        th {
+            color: lighten(@text-color, 20%);
+        }
+    }
+
+    tbody {
+        tr {
+            td {
+                color: @text-color;
+            }
+        }
+    }
+}
+
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.form-card {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 22rem;
+    max-width: 22rem;
+}
+
+.form-control {
+    background-color: @input-bg;
+    color: @text-color;
+    border-color: @input-border;
+
+    &:focus {
+        background-color: @input-bg;
+        color: @text-color;
+        border-color: lighten(@primary-color, 15%);
+        box-shadow: 0 0 0 0.25rem rgba(red(@primary-color), green(@primary-color), blue(@primary-color), 0.25);
+    }
+}
+
+.form-group {
+    &:not(:last-child) {
+        margin-bottom: 1.25em;
+    }
+}
+
+.card {
+    --bs-card-cap-bg: @card-border;
+    --bs-card-border-color: @card-border;
+    border-color: @card-border;
+}
+
+.card-footer {
+    background-color: @card-footer-bg;
+    border-top: 1px solid @card-border;
+}
+
+.card-header {
+    font-weight: bold;
+}
+
+.btn {
+    &:hover {
+        background-color: darken(@primary-color, 15%);
+        border-color: darken(@primary-color, 15%);
+    }
+}
+
+a {
+    color: @primary-color;
+
+    &:hover {
+        color: darken(@primary-color, 15%);
+    }
+}
+
+.input-group {
+    position: relative;
+
+    .toggle-password {
+        background: transparent;
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        z-index: 5;
+        border: none;
+        padding: 0.375em 0.75em;
+
+        &:hover, &:focus {
+            background: transparent;
+        }
+    }
+
+    input {
+        padding-right: 2.5em;
+    }
+}
+
+.input-group-append {
+    display: none;
+}
+
+.badge {
+    // Статусы пользователей
+    &-new {
+        background-color: #007BFF; // Синий для нового пользователя
+    }
+
+    &-active {
+        background-color: #28A745; // Зеленый для активного пользователя
+    }
+
+    &-blocked {
+        background-color: #DC3545; // Красный для заблокированного пользователя
+    }
+
+    &-deleted {
+        background-color: #6C757D; // Серый для удаленного пользователя
+    }
+}
