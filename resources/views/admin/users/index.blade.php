@@ -10,7 +10,7 @@
                 <th>{{ __('admin.user.status') }}</th>
                 <th>{{ __('admin.user.email') }}</th>
                 <th>{{ __('admin.user.registration_date') }}</th>
-                <th>{{ __('admin.user.actions') }}</th>
+                <th>{{ __('common.actions') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -28,13 +28,25 @@
                     <a href="{{ route('admin.users.show', $user) }}" class="btn btn-sm btn-primary">
                         <i class="bi bi-eye"></i>
                     </a>
-                    <form action="{{ route('admin.users.block', $user) }}" method="POST" class="d-inline-block confirm-block" data-confirm-title="{{ __('admin.buttons.block') }}?" data-confirm-text="{{ __('admin.user.confirm_block') }}" data-confirm-button="{{ __('admin.buttons.confirm') }}" data-cancel-button="{{ __('admin.buttons.cancel') }}">
+                    <form action="{{ route('admin.users.block', $user) }}"
+                          method="POST"
+                          class="d-inline-block confirm-block"
+                          data-confirm-title="{{ __('admin.buttons.block') }}?"
+                          data-confirm-text="{{ __('admin.user.confirm_block') }}"
+                          data-confirm-button="{{ __('common.buttons.confirm') }}"
+                          data-cancel-button="{{ __('common.buttons.cancel') }}">
                         @csrf
                         <button type="submit" class="btn btn-sm btn-warning">
                             <i class="bi bi-lock"></i>
                         </button>
                     </form>
-                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline-block confirm-delete" data-confirm-title="{{ __('admin.buttons.delete') }}?" data-confirm-text="{{ __('admin.user.confirm_delete') }}" data-confirm-button="{{ __('admin.buttons.confirm') }}" data-cancel-button="{{ __('admin.buttons.cancel') }}">
+                    <form action="{{ route('admin.users.destroy', $user) }}"
+                          method="POST"
+                          class="d-inline-block confirm-delete"
+                          data-confirm-title="{{ __('common.buttons.delete') }}?"
+                          data-confirm-text="{{ __('admin.user.confirm_delete') }}"
+                          data-confirm-button="{{ __('common.buttons.confirm') }}"
+                          data-cancel-button="{{ __('common.buttons.cancel') }}">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger">

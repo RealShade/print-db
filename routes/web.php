@@ -12,6 +12,9 @@ Route::middleware('guest')->group(function() {
     Route::post('login', [AuthController::class, 'login']);
     Route::get('register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('register', [AuthController::class, 'register']);
+    //    Route::get('register/success', function() {
+    //        return view('auth.register-success');
+    //    })->name('register.success');
 });
 
 Route::middleware(['auth', 'check.user.status'])->group(function() {
@@ -19,8 +22,8 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::prefix('print')->name('print.')->group(function() {
-        Route::get('tasks', [TaskController::class, 'index'])->name('tasks');
         Route::get('parts', [PartController::class, 'index'])->name('parts');
+        Route::resource('tasks', TaskController::class)->except(['show', 'destroy']);
     });
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function() {

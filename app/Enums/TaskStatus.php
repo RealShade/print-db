@@ -22,10 +22,10 @@ enum TaskStatus: string
     public function label(): string
     {
         return match($this) {
-            self::NEW => __('task.status.new'),
-            self::IN_PROGRESS => __('task.status.in_progress'),
-            self::CANCELLED => __('task.status.cancelled'),
-            self::COMPLETED => __('task.status.completed'),
+            self::NEW => __('task.enum.status.new'),
+            self::IN_PROGRESS => __('task.enum.status.in_progress'),
+            self::CANCELLED => __('task.enum.status.cancelled'),
+            self::COMPLETED => __('task.enum.status.completed'),
         };
     }
 }

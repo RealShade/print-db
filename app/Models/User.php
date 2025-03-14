@@ -57,18 +57,18 @@ class User extends Authenticatable
     /* **************************************** Getters **************************************** */
     public function getGravatarURLAttribute() : string
     {
-        $hash     = hash('sha256', 'realshade.mk@gmail.com');
+        $hash     = hash('sha256', $this->email);
         $cacheKey = 'gravatar_url_' . $hash;
 
-        return Cache::remember($cacheKey, now()->addDay(), function() use ($hash) {
+        return Cache::remember($cacheKey, now()->addHour(), function() use ($hash) {
             $response = Http::get("https://api.gravatar.com/v3/profiles/{$hash}");
             if ($response->successful()) {
                 $data = $response->json();
 
-                return $data['avatar_url'] ?? '';
+                return $data['avatar_url'] ?? 'https://www.gravatar.com/avatar';
             }
 
-            return '';
+            return 'https://www.gravatar.com/avatar';
         });
     }
 

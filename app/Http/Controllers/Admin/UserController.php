@@ -29,7 +29,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('admin.users.show', $user)
-            ->with('success', __('admin.buttons.confirm'));
+            ->with('success', __('common.buttons.confirm'));
     }
 
     public function block(User $user) : RedirectResponse
@@ -58,7 +58,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', __('admin.buttons.delete'));
+            ->with('success', __('common.buttons.delete'));
     }
 
     public function index() : View

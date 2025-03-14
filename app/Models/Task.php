@@ -12,37 +12,55 @@ class Task extends Model
 {
     use SoftDeletes;
 
+    public const TASK_PARTS_TABLE = 'task_parts';
+
     protected $fillable = [
         'external_id',
         'name',
         'sets_count',
         'status',
         'completed_at',
-        'user_id'
+        'user_id',
     ];
 
     protected $casts = [
-        'status' => TaskStatus::class,
+        'status'       => TaskStatus::class,
         'completed_at' => 'datetime',
     ];
 
-    public function user(): BelongsTo
+    /* **************************************** Public **************************************** */
+    public function parts() : BelongsToMany
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function parts(): BelongsToMany
-    {
-        return $this->belongsToMany(Part::class, 'task_parts')
+        return $this->belongsToMany(Part::class, static::TASK_PARTS_TABLE)
             ->withPivot(['quantity_per_set', 'printed_quantity'])
             ->withTimestamps();
     }
 
-    public function getCompletedSetsCount(): int
+    public function user() : BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /* **************************************** Getters **************************************** */
+    public function getCompletedSetsCount() : int
     {
         return $this->parts()
             ->get()
             ->map(fn($part) => (int)($part->pivot->printed_quantity / $part->pivot->quantity_per_set))
             ->min() ?? 0;
+    }
+
+    /* **************************************** Protected **************************************** */
+    protected static function booted() : void
+    {
+        static::updating(function(Task $task) {
+            if ($task->isDirty('status')) {
+                if ($task->status === TaskStatus::COMPLETED) {
+                    $task->completed_at = now();
+                } elseif ($task->getOriginal('status') === TaskStatus::COMPLETED) {
+                    $task->completed_at = null;
+                }
+            }
+        });
     }
 }

@@ -19,15 +19,21 @@
         </div>
         <div class="card-footer d-flex justify-content-between">
             <div>
-                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">{{ __('admin.buttons.back_to_list') }}</a>
+                <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">{{ __('common.buttons.back') }}</a>
                 @if($user->status === \App\Enums\UserStatus::NEW)
                     <form action="{{ route('admin.users.activate', $user) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-success">{{ __('admin.buttons.confirm') }}</button>
+                        <button type="submit" class="btn btn-success">{{ __('common.buttons.confirm') }}</button>
                     </form>
                 @endif
                 @if($user->status === \App\Enums\UserStatus::ACTIVE)
-                    <form action="{{ route('admin.users.block', $user) }}" method="POST" class="d-inline confirm-block" data-confirm-title="{{ __('admin.buttons.block') }}?" data-confirm-text="{{ __('admin.user.confirm_block') }}" data-confirm-button="{{ __('admin.buttons.confirm') }}" data-cancel-button="{{ __('admin.buttons.cancel') }}">
+                    <form action="{{ route('admin.users.block', $user) }}"
+                          method="POST"
+                          class="d-inline confirm-block"
+                          data-confirm-title="{{ __('admin.buttons.block') }}?"
+                          data-confirm-text="{{ __('admin.user.confirm_block') }}"
+                          data-confirm-button="{{ __('common.buttons.confirm') }}"
+                          data-cancel-button="{{ __('common.buttons.cancel') }}">
                         @csrf
                         <button type="submit" class="btn btn-warning">{{ __('admin.buttons.block') }}</button>
                     </form>
@@ -38,10 +44,16 @@
                     </form>
                 @endif
             </div>
-            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline confirm-delete" data-confirm-title="{{ __('admin.buttons.delete') }}?" data-confirm-text="{{ __('admin.user.confirm_delete') }}" data-confirm-button="{{ __('admin.buttons.confirm') }}" data-cancel-button="{{ __('admin.buttons.cancel') }}">
+            <form action="{{ route('admin.users.destroy', $user) }}"
+                  method="POST"
+                  class="d-inline confirm-delete"
+                  data-confirm-title="{{ __('common.buttons.delete') }}?"
+                  data-confirm-text="{{ __('admin.user.confirm_delete') }}"
+                  data-confirm-button="{{ __('common.buttons.confirm') }}"
+                  data-cancel-button="{{ __('common.buttons.cancel') }}">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger">{{ __('admin.buttons.delete') }}</button>
+                <button type="submit" class="btn btn-danger">{{ __('common.buttons.delete') }}</button>
             </form>
         </div>
     </div>

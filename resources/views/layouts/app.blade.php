@@ -23,7 +23,7 @@
         <ul class="nav nav-pills flex-column mb-auto">
             @if(auth()->check())
                 <li class="nav-item">
-                    <a href="{{ route('print.tasks') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
+                    <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
                         <i class="bi bi-speedometer2 me-2"></i>
                         {{ __('menu.tasks') }}
                     </a>
@@ -79,5 +79,6 @@
 </div>
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
+@stack('scripts')
 </body>
 </html>

@@ -144,4 +144,15 @@ a:hover {
 .badge-deleted {
   background-color: #6C757D;
 }
+.registration-success {
+  width: 100%;
+  max-width: 600px;
+}
+.registration-success .alert {
+  border: 1px solid #004d9f;
+  background-color: #002852;
+}
+.registration-success .alert-heading {
+  margin-bottom: 1rem;
+}
 

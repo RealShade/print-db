@@ -30,8 +30,9 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer d-flex justify-content-between align-items-center">
                         <button type="submit" class="btn btn-primary">{{ __('auth.login') }}</button>
+                        <a href="{{ route('register') }}" class="text-decoration-none">{{ __('auth.register') }}</a>
                     </div>
                 </form>
             </div>

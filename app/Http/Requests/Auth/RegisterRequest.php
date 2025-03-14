@@ -16,15 +16,17 @@ class RegisterRequest extends FormRequest
     public function messages() : array
     {
         return [
+            'g-recaptcha-response.recaptchav3' => __('auth.recaptcha_failed'),
         ];
     }
 
     public function rules() : array
     {
         return [
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'name'                 => 'required|string|max:255',
+            'email'                => 'required|email|unique:users',
+            'password'             => 'required|string|min:8|confirmed',
+            'g-recaptcha-response' => 'required|recaptchav3:register,0.5',
         ];
     }
 

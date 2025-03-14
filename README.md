@@ -1,66 +1,55 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Print DB
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Органайзер для роботи з 3Д друком.
+Включає в себе:
+- Список принтерів
+- Список завдань
+- Список частин
 
-## About Laravel
+Назва файлу містить:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[t#**9999**(x**1**)@**external_id**] або [t_**назва завдання**(x**1**)@**external_id**]
+* t#**ади завдання**
+* t_**назва завдання**
+* (x**кількість**) - скільки комплектів наразі друкується. За замовчуванням 1
+* @**external_id** - зовнішній айді завдання для звуження пошуку або для подробиць при створенні нової задачі. За замовчуванням - null
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* назва задачі не є унікальною, тому в розрізі користувача може бути кілька задач з однаковими назвами. При пошуку за назвою враховуються тільки незавершені задачі. Якщо такий пошук дає декілька результатів, то береться найновіше завдання
+* в назві може бути тільки 1 завдання, але декілька частин
+* при автоматичному створенні завдання, цільова кількість вказується 0
+* при автоматичному створенні частин, комплектна кількість вказується 1
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+[p#**9999**(x**1**)@**version**] або [p_**назва частини**(x**1**)@**version**]
+* p#**айді частини**
+* p_**назва частини**
+* (x**кількість**) - скільки частин наразі друкується. За замовчуванням 1
+* @**version** - версія частини для звуження пошуку або для подробиць при створенні нової частини. За замовчуванням - v0. Це строка, може містити букви, цифри, символи. Окрім пробілів. Якщо в назві частини є пробіли, то вони замінюються на "_".
+* назва частини + version - є унікальною зв'язкою в розрізі користувача
 
-## Learning Laravel
+[t#**айді завдання**]
+* шукається завдання з таким айді серед незавершених, якщо не знайдено - ігнорувати (сповіщення)
+* якщо знайдено та не вказано кількість чи частини, вважати як 1 повний комплект
+* якщо знайдено та вказані айді частин, яких немає в завданні - прикріпляти знайдені у системі (сповіщення) з 1 шт в комплекті, решту ігнорувати (сповіщення)
+* якщо знайдено та вказані назви частин, яких немає в завданні - шукати за назвою та прикріпляти (сповіщення). Якщо назви не знайдено - створювати нові та прикріпляти (сповіщення)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+[t_**назва завдання**]
+* шукається завдання з такою назвою серед незавершених, якщо не знайдено - створюється нове (сповіщення)
+* <sup>(1)</sup> якщо не вказано частини - створюється частина "айді завдання_main part" та прикріплюється (сповіщення)
+* якщо вказано айді частин та знайдено - прикріпляти (сповіщення), інакше ігнорувати (сповіщення)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Якщо в завданні вказано кількість комплектів:
+* якщо завдання знайдено та в назві друку вказано частини, то вони ігноруються (сповіщення)
+* якщо завдання автоматично створено та не вказано частини, див (1)
+* якщо завдяння автоматично створено та вказано частини, то їх кількість ділиться на кількість комплектів для обчислення комплектації і якщо результат не є ціле число - помилка (сповіщення). Якщо кількість частин не вказана, вважати по 1 шт в комплекті
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Якщо не вказано завдання, але вказано частини:
+* шукаються частини з такими айді або назвою серед незавершених завдань, якщо не знайдено - ігнорувати (сповіщення)
+* автоматичного створення немає, тому що немає дло чого прив'язувати частини
 
-## Laravel Sponsors
+Події апі:
+* **початок друку** - для створення задач та частин, перевірка переданих даних. Сповіщення, якщо друк завершить завдання (чи частину завдання)
+* **закінчення друку** - інкрементація надрукованих частин завдання. Сповіщення про завершення завдання (чи частини завдання)
+* **отримання списку завдань та прив'язаних частин**
+* **отримання вказаного завдання з прив'язаними частинами**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+На апі передається назва файлу, з якого зчитуються дані, та айди принтеру (не обов'язково).
