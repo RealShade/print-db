@@ -4633,36 +4633,20 @@ __webpack_require__.r(__webpack_exports__);
 
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default());
 document.addEventListener('DOMContentLoaded', function () {
+  // Password toggle
   var togglePassword = document.querySelector('.toggle-password');
   var password = document.querySelector('#password');
   if (togglePassword && password) {
     togglePassword.addEventListener('click', function () {
       var type = password.getAttribute('type') === 'password' ? 'text' : 'password';
       password.setAttribute('type', type);
-
-      // Toggle icon
       this.querySelector('i').classList.toggle('bi-eye');
       this.querySelector('i').classList.toggle('bi-eye-slash');
     });
   }
-  document.querySelectorAll('.confirm-block').forEach(function (form) {
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-        title: form.dataset.confirmTitle,
-        text: form.dataset.confirmText,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: form.dataset.confirmButton,
-        cancelButtonText: form.dataset.cancelButton
-      }).then(function (result) {
-        if (result.isConfirmed) {
-          form.submit();
-        }
-      });
-    });
-  });
-  document.querySelectorAll('.confirm-delete').forEach(function (form) {
+
+  // Confirmation dialogs
+  document.querySelectorAll('.confirm-block, .confirm-delete').forEach(function (form) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
@@ -4680,23 +4664,129 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // Обработка мобильного меню
+  // Mobile menu
   var toggleButtons = document.querySelectorAll('.sidebar-toggle');
   var sidebar = document.getElementById('sidebar');
   toggleButtons.forEach(function (button) {
     button.addEventListener('click', function (e) {
-      e.stopPropagation(); // Останавливаем всплытие события
+      e.stopPropagation();
       sidebar.classList.toggle('show');
     });
   });
-
-  // Закрытие меню при клике вне его
   document.addEventListener('click', function (e) {
     if (window.innerWidth < 768 && !sidebar.contains(e.target) && !e.target.closest('.sidebar-toggle')) {
-      // Используем closest вместо classList.contains
       sidebar.classList.remove('show');
     }
   });
+
+  // Modal forms handling
+  var initModalForm = function initModalForm(modal) {
+    var partsModal = null;
+    var currentTaskButton = null;
+    modal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      if (button) {
+        currentTaskButton = button;
+      }
+      var action = currentTaskButton.dataset.action;
+      var method = currentTaskButton.dataset.method || 'POST';
+      var id = currentTaskButton.dataset.id;
+      var formUrl = id ? "".concat(currentTaskButton.dataset.editRoute, "/").concat(id) : currentTaskButton.dataset.createRoute;
+      fetch(formUrl).then(function (response) {
+        return response.text();
+      }).then(function (html) {
+        var modalBody = modal.querySelector('.modal-body');
+        modalBody.innerHTML = html;
+        var form = modalBody.querySelector('form');
+        form.action = action;
+        if (method === 'PUT') {
+          form.insertAdjacentHTML('afterbegin', '@method(\'PUT\')');
+        }
+
+        // Инициализация механизма выбора деталей для задачи
+        if (modal.id === 'taskModal') {
+          var partsModalContent = modalBody.querySelector('#partsModal');
+          if (partsModalContent) {
+            // Уничтожаем старый инстанс, если он существует
+            if (partsModal) {
+              partsModal.dispose();
+              var oldPartsModal = document.querySelector('#partsModal');
+              if (oldPartsModal) {
+                oldPartsModal.remove();
+              }
+            }
+
+            // Перемещаем модальное окно деталей в конец body
+            document.body.appendChild(partsModalContent);
+
+            // Создаем новый инстанс модального окна
+            partsModal = new bootstrap.Modal(partsModalContent);
+            var addPartBtn = modalBody.querySelector('#addPartBtn');
+            if (addPartBtn) {
+              addPartBtn.addEventListener('click', function () {
+                partsModal.show();
+              });
+            }
+
+            // Инициализируем обработчики после перемещения окна
+            initTaskPartsHandlers(modalBody, document.querySelector('#partsModal'), partsModal);
+          }
+        }
+      });
+    });
+    modal.addEventListener('hidden.bs.modal', function () {
+      if (partsModal) {
+        partsModal.dispose();
+        var partsModalElement = document.querySelector('#partsModal');
+        if (partsModalElement) {
+          partsModalElement.remove();
+        }
+      }
+    });
+  };
+
+  // Выносим обработчики в отдельную функцию
+  var initTaskPartsHandlers = function initTaskPartsHandlers(modalBody, partsModalElement, partsModal) {
+    var selectedParts = modalBody.querySelector('#selectedParts');
+    var partIndex = selectedParts.children.length;
+
+    // Обработчики выбора части теперь ищутся в перемещенном окне
+    partsModalElement.querySelectorAll('.select-part').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var partId = this.dataset.partId;
+        if (!selectedParts.querySelector("[data-part-id=\"".concat(partId, "\"]"))) {
+          addPartToForm({
+            partId: this.dataset.partId,
+            partName: this.dataset.partName,
+            partVersion: this.dataset.partVersion
+          });
+        }
+        partsModal.hide();
+      });
+    });
+
+    // Обработчик удаления части
+    selectedParts.addEventListener('click', function (e) {
+      var removeBtn = e.target.closest('.remove-part');
+      if (removeBtn) {
+        removeBtn.closest('.list-group-item').remove();
+      }
+    });
+    function addPartToForm(partData) {
+      var html = "\n            <div class=\"list-group-item\" data-part-id=\"".concat(partData.partId, "\">\n                <div class=\"d-flex justify-content-between align-items-center\">\n                    <div>\n                        <strong>").concat(partData.partName, "</strong>\n                        <span class=\"text-muted\">(v").concat(partData.partVersion, ")</span>\n                    </div>\n                    <div class=\"d-flex gap-2 align-items-center\">\n                        <input type=\"hidden\" name=\"parts[").concat(partIndex, "][id]\" value=\"").concat(partData.partId, "\">\n                        <input type=\"number\" class=\"form-control form-control-sm w-auto\"\n                               name=\"parts[").concat(partIndex, "][quantity_per_set]\"\n                               placeholder=\"\u041A\u0456\u043B\u044C\u043A\u0456\u0441\u0442\u044C \u043D\u0430 \u043D\u0430\u0431\u0456\u0440\"\n                               required\n                               min=\"1\"\n                               style=\"width: 100px !important;\">\n                        <button type=\"button\" class=\"btn btn-sm btn-outline-danger remove-part\">\n                            <i class=\"bi bi-x-lg\"></i>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        ");
+      selectedParts.insertAdjacentHTML('beforeend', html);
+      partIndex++;
+    }
+  };
+  // Initialize modals if they exist
+  var partModal = document.getElementById('partModal');
+  var taskModal = document.getElementById('taskModal');
+  if (partModal) {
+    initModalForm(partModal);
+  }
+  if (taskModal) {
+    initModalForm(taskModal);
+  }
 });
 
 /***/ }),

@@ -10,6 +10,7 @@ return [
     'parts'            => 'Деталі',
     'quantity_per_set' => 'Кількість на набір',
     'add'              => 'Додати завдання',
+    'select_part'      => 'Вибір деталі',
     'enum'             => [
         'status' => [
             'new'         => 'Нове',

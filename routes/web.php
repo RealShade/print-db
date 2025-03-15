@@ -22,7 +22,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::prefix('print')->name('print.')->group(function() {
-        Route::get('parts', [PartController::class, 'index'])->name('parts');
+        Route::resource('parts', PartController::class)->except(['show', 'destroy']);
         Route::resource('tasks', TaskController::class)->except(['show', 'destroy']);
     });
 

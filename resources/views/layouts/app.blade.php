@@ -29,7 +29,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('print.parts') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
+                    <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
                         <i class="bi bi-table me-2"></i>
                         {{ __('menu.parts') }}
                     </a>

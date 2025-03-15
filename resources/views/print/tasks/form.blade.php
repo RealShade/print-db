@@ -1,4 +1,4 @@
-<form id="taskForm" method="POST" action="{{ $task ? route('print.tasks.update', $task) : route('print.tasks.store') }}">
+<form id="taskForm" method="POST">
     @csrf
     @if($task) @method('PUT') @endif
 
@@ -32,29 +32,68 @@
         </select>
     </div>
 
-    <div class="mb-3" id="partsContainer">
+    <div class="mb-3">
         <label class="form-label">{{ __('task.parts') }}</label>
-        @foreach($parts as $part)
-            <div class="d-flex gap-2 mb-2">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input"
-                           name="parts[{{ $loop->index }}][id]"
-                           value="{{ $part->id }}"
-                           {{ $task?->parts->contains($part) ? 'checked' : '' }}>
-                    <label class="form-check-label">{{ $part->name }}</label>
-                </div>
-                <input type="number" class="form-control form-control-sm w-25"
-                       name="parts[{{ $loop->index }}][quantity_per_set]"
-                       placeholder="{{ __('task.quantity_per_set') }}"
-                       value="{{ $task?->parts->find($part->id)?->pivot?->quantity_per_set }}">
-            </div>
-        @endforeach
+        <div class="d-flex gap-2 mb-2">
+            <button type="button" class="btn btn-outline-primary" id="addPartBtn">
+                <i class="bi bi-plus-lg"></i> {{ __('common.buttons.add') }}
+            </button>
+        </div>
+        <div id="selectedParts" class="list-group mt-2">
+            @if($task)
+                @foreach($task->parts as $part)
+                    <div class="list-group-item" data-part-id="{{ $part->id }}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ $part->name }}</strong>
+                                <span class="text-muted">(v{{ $part->version }})</span>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="hidden" name="parts[{{ $loop->index }}][id]" value="{{ $part->id }}">
+                                <input type="number" class="form-control form-control-sm w-auto"
+                                       name="parts[{{ $loop->index }}][quantity_per_set]"
+                                       value="{{ $part->pivot->quantity_per_set }}"
+                                       placeholder="{{ __('task.quantity_per_set') }}"
+                                       style="width: 100px !important;">
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-part">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
     </div>
 
     <div class="alert alert-danger d-none" id="formErrors"></div>
 
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
         <button type="submit" class="btn btn-primary">{{ __('common.buttons.save') }}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
     </div>
 </form>
+
+<div class="modal fade" id="partsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('task.select_part') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group">
+                    @foreach($parts as $part)
+                        <button type="button" class="list-group-item list-group-item-action select-part"
+                                data-part-id="{{ $part->id }}"
+                                data-part-name="{{ $part->name }}"
+                                data-part-version="{{ $part->version }}">
+                            <strong>{{ $part->name }}</strong>
+                            <span class="text-muted">(v{{ $part->version }})</span>
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

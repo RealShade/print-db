@@ -155,4 +155,7 @@ a:hover {
 .registration-success .alert-heading {
   margin-bottom: 1rem;
 }
+.modal-footer {
+  justify-content: left;
+}
 
