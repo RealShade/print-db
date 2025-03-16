@@ -1,9 +1,4 @@
 <form id="taskForm" method="POST">
-    @csrf
-    @if($task)
-        @method('PUT')
-    @endif
-
     <div class="mb-3">
         <label for="name" class="form-label">{{ __('task.name') }}</label>
         <input type="text" class="form-control" id="name" name="name"
@@ -35,16 +30,7 @@
     </div>
 
     @if ($task)
-        <div class="alert alert-info">
-            <small class="d-block mb-1">{{ __('task.api_format') }}:</small>
-            <div class="input-group">
-                <input type="text" class="form-control copy-input" readonly
-                       value="[t#{{ $task?->id }}(x1)]">
-                <button class="btn btn-outline-secondary copy-btn" type="button">
-                    <i class="bi bi-clipboard"></i>
-                </button>
-            </div>
-        </div>
+        {!! FilenamePlaceholder::generateWithWrapper($task) !!}
     @endif
 
     <div class="mb-3">

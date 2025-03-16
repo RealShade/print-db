@@ -1,6 +1,4 @@
 <form id="partForm" method="POST">
-    @csrf
-
     <div class="mb-3">
         <label for="name" class="form-label">{{ __('part.name') }}</label>
         <input type="text" class="form-control" id="name" name="name"

@@ -6,6 +6,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Print\PartController;
 use App\Http\Controllers\Print\TaskController;
 use App\Http\Controllers\Print\PartTaskController;
+use App\Http\Controllers\Settings\ApiTokenController;
+use App\Http\Controllers\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function() {
@@ -21,6 +23,15 @@ Route::middleware('guest')->group(function() {
 Route::middleware(['auth', 'check.user.status'])->group(function() {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::prefix('settings')->name('settings.')->group(function() {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::prefix('api-tokens')->name('api-tokens.')->group(function() {
+            Route::get('/', [ApiTokenController::class, 'index'])->name('index');
+            Route::post('/', [ApiTokenController::class, 'store'])->name('store');
+            Route::delete('/{token}', [ApiTokenController::class, 'destroy'])->name('destroy');
+        });
+    });
 
     Route::prefix('print')->name('print.')->group(function() {
         // Маршруты для частей (parts)
@@ -42,6 +53,8 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
             ->name('task-parts.edit');
         Route::put('tasks/{task}/parts/{part}', [PartTaskController::class, 'update'])
             ->name('task-parts.update');
+
+        // routes/web.php
     });
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function() {

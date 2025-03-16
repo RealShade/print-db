@@ -4891,7 +4891,6 @@ document.addEventListener('DOMContentLoaded', function () {
       var method = currentTaskButton.dataset.method || 'POST';
       var id = currentTaskButton.dataset.id;
       var formUrl = id ? currentTaskButton.dataset.editRoute : currentTaskButton.dataset.createRoute;
-      console.log(method);
       fetch(formUrl).then(function (response) {
         return response.text();
       }).then(function (html) {

@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const formUrl = id
                 ? currentTaskButton.dataset.editRoute
                 : currentTaskButton.dataset.createRoute;
-            console.log(method);
 
             fetch(formUrl)
                 .then(response => response.text())

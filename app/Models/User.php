@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\UserStatus;
 use App\Models\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -53,6 +54,12 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /* **************************************** Public **************************************** */
+    public function apiTokens() : HasMany
+    {
+        return $this->hasMany(ApiToken::class);
+    }
 
     /* **************************************** Getters **************************************** */
     public function getGravatarURLAttribute() : string

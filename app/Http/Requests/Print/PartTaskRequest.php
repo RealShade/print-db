@@ -13,10 +13,7 @@ class PartTaskRequest extends FormRequest
 
     public function rules(): array
     {
-        $task = $this->route('task');
-
         return [
-            'count_per_set' => 'required|integer|min:1',
             'count_printed' => 'required|integer|min:0',
         ];
     }
@@ -24,7 +21,6 @@ class PartTaskRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'count_per_set' => __('task.count_per_set'),
             'count_printed' => __('task.count_printed'),
         ];
     }
