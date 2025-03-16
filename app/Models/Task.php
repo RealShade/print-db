@@ -12,7 +12,7 @@ class Task extends Model
 {
     use SoftDeletes;
 
-    public const TASK_PARTS_TABLE = 'task_parts';
+    public const TASK_PARTS_TABLE = 'task_part';
 
     protected $fillable = [
         'external_id',
@@ -31,7 +31,8 @@ class Task extends Model
     /* **************************************** Public **************************************** */
     public function parts() : BelongsToMany
     {
-        return $this->belongsToMany(Part::class, static::TASK_PARTS_TABLE)
+        return $this->belongsToMany(Part::class)
+            ->using(PartTask::class)
             ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
     }

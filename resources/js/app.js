@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import Cookies from 'js-cookie';
 
 window.Swal = Swal;
 
@@ -54,6 +55,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Task parts toggle
+    document.querySelectorAll('.toggle-parts').forEach(button => {
+        const taskId = button.dataset.taskId;
+        const cookieName = `task_expanded_${ taskId }`;
+        const isExpanded = Cookies.get(cookieName);
+
+        if (isExpanded) {
+            const partsRow = document.querySelector(`tr.parts-row[data-parent-id="${ taskId }"]`);
+            const icon = button.querySelector('i');
+
+            partsRow.classList.remove('d-none');
+            icon.classList.remove('bi-chevron-right');
+            icon.classList.add('bi-chevron-down');
+        }
+
+        button.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+            const partsRow = document.querySelector(`tr.parts-row[data-parent-id="${ taskId }"]`);
+            const icon = this.querySelector('i');
+            const cookieName = `task_expanded_${ taskId }`;
+
+            partsRow.classList.toggle('d-none');
+            icon.classList.toggle('bi-chevron-right');
+            icon.classList.toggle('bi-chevron-down');
+
+            if (!partsRow.classList.contains('d-none')) {
+                Cookies.set(cookieName, '1', {expires: 1 / 24}); // 1 час
+            } else {
+                Cookies.remove(cookieName);
+            }
+        });
+    });
+
     // Modal forms handling
     const initModalForm = (modal) => {
         let partsModal = null;
@@ -72,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formUrl = id
                 ? currentTaskButton.dataset.editRoute
                 : currentTaskButton.dataset.createRoute;
+            console.log(method);
 
             fetch(formUrl)
                 .then(response => response.text())
@@ -110,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 });
                             }
 
-                            initTaskPartsHandlers(modalBody, partsModalElement, partsModal);
+                            initPartTaskHandlers(modalBody, partsModalElement, partsModal);
                         }
                     }
 
@@ -165,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Выносим обработчики в отдельную функцию
-    const initTaskPartsHandlers = (modalBody, partsModalElement, partsModal) => {
+    const initPartTaskHandlers = (modalBody, partsModalElement, partsModal) => {
         const selectedParts = modalBody.querySelector('#selectedParts');
         let partIndex = selectedParts.children.length;
 
@@ -197,10 +232,10 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="list-group-item" data-part-id="${ partData.partId }">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>#${partData.partId}</strong>
+                        <strong>#${ partData.partId }</strong>
                         ${ partData.partName }
                         <span class="text-muted">(v${ partData.partVersion })
-                        ${partData.partVersionDate ? ` от ${partData.partVersionDate}` : ''})</span>
+                        ${ partData.partVersionDate ? ` от ${ partData.partVersionDate }` : '' })</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
                         <input type="hidden" name="parts[${ partIndex }][id]" value="${ partData.partId }">
@@ -225,12 +260,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize modals if they exist
     const partModal = document.getElementById('partModal');
     const taskModal = document.getElementById('taskModal');
+    const partTaskModal = document.getElementById('partTaskModal');
 
     if (partModal) {
         initModalForm(partModal);
     }
     if (taskModal) {
         initModalForm(taskModal);
+    }
+    if (partTaskModal) {
+        initModalForm(partTaskModal);
     }
 
 });

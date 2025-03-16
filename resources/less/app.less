@@ -1,9 +1,10 @@
 // Основные цвета
-@primary-bg: #001f3f; // Глубокий синий фон
-@primary-color: #007bff; // Основной синий
-@secondary-bg: #343a40; // Темно-серый для второстепенных элементов
-@secondary-color: #6c757d; // Серый цвет текста
-@text-color: #f8f9fa; // Основной цвет текста
+@primary-bg: #001F3F; // Глубокий синий фон
+@primary-color: #007BFF; // Основной синий
+@secondary-bg: #343A40; // Темно-серый для второстепенных элементов
+@secondary-color: #6C757D; // Серый цвет текста
+@text-color: #F8F9FA; // Основной цвет текста
+@lighter-bg: mix(@primary-bg, @text-color, 95%);
 
 // Элементы ввода и карточек
 @input-bg: mix(@primary-color, @primary-bg, 30%);
@@ -22,6 +23,7 @@
     --bs-secondary-color: @secondary-color;
     --bs-secondary-bg: @secondary-bg;
     --bs-secondary-border-color: @secondary-color;
+    --bs-tertiary-bg: @primary-bg;
 }
 
 html, body {
@@ -196,9 +198,11 @@ a {
     &-deleted, &-cancelled {
         background-color: #6C757D; // Серый для удаленного пользователя
     }
+
     &-in_progress {
         background-color: #FFC107; // Желтый для пользователя в процессе
     }
+
     &-printed {
         background-color: #17A2B8; // Голубой для напечатанного пользователя
     }
@@ -220,4 +224,44 @@ a {
 
 .modal-footer {
     justify-content: left;
+}
+
+.parts-row {
+
+    td {
+        padding: 0;
+    }
+
+    .table {
+        margin: 0;
+        background-color: transparent;
+
+        td, th {
+            background-color: @lighter-bg;
+        }
+
+        td {
+            border: none;
+            padding: 0.5rem 0.75rem;
+
+            &:last-child {
+                // Добавляем отступ между кнопками действий
+                .btn {
+                    margin-left: 0.5rem;
+                }
+            }
+        }
+
+        tr {
+            // Добавляем отступ между строками
+            &:not(:last-child) {
+                border-bottom: 1px solid @primary-bg;
+            }
+        }
+
+        // Выравнивание для числовых значений
+        .text-end {
+            padding-right: 1rem;
+        }
+    }
 }

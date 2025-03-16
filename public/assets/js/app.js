@@ -1,6 +1,155 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/js-cookie/dist/js.cookie.mjs":
+/*!***************************************************!*\
+  !*** ./node_modules/js-cookie/dist/js.cookie.mjs ***!
+  \***************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ api)
+/* harmony export */ });
+/*! js-cookie v3.0.5 | MIT */
+/* eslint-disable no-var */
+function assign (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+    for (var key in source) {
+      target[key] = source[key];
+    }
+  }
+  return target
+}
+/* eslint-enable no-var */
+
+/* eslint-disable no-var */
+var defaultConverter = {
+  read: function (value) {
+    if (value[0] === '"') {
+      value = value.slice(1, -1);
+    }
+    return value.replace(/(%[\dA-F]{2})+/gi, decodeURIComponent)
+  },
+  write: function (value) {
+    return encodeURIComponent(value).replace(
+      /%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,
+      decodeURIComponent
+    )
+  }
+};
+/* eslint-enable no-var */
+
+/* eslint-disable no-var */
+
+function init (converter, defaultAttributes) {
+  function set (name, value, attributes) {
+    if (typeof document === 'undefined') {
+      return
+    }
+
+    attributes = assign({}, defaultAttributes, attributes);
+
+    if (typeof attributes.expires === 'number') {
+      attributes.expires = new Date(Date.now() + attributes.expires * 864e5);
+    }
+    if (attributes.expires) {
+      attributes.expires = attributes.expires.toUTCString();
+    }
+
+    name = encodeURIComponent(name)
+      .replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent)
+      .replace(/[()]/g, escape);
+
+    var stringifiedAttributes = '';
+    for (var attributeName in attributes) {
+      if (!attributes[attributeName]) {
+        continue
+      }
+
+      stringifiedAttributes += '; ' + attributeName;
+
+      if (attributes[attributeName] === true) {
+        continue
+      }
+
+      // Considers RFC 6265 section 5.2:
+      // ...
+      // 3.  If the remaining unparsed-attributes contains a %x3B (";")
+      //     character:
+      // Consume the characters of the unparsed-attributes up to,
+      // not including, the first %x3B (";") character.
+      // ...
+      stringifiedAttributes += '=' + attributes[attributeName].split(';')[0];
+    }
+
+    return (document.cookie =
+      name + '=' + converter.write(value, name) + stringifiedAttributes)
+  }
+
+  function get (name) {
+    if (typeof document === 'undefined' || (arguments.length && !name)) {
+      return
+    }
+
+    // To prevent the for loop in the first place assign an empty array
+    // in case there are no cookies at all.
+    var cookies = document.cookie ? document.cookie.split('; ') : [];
+    var jar = {};
+    for (var i = 0; i < cookies.length; i++) {
+      var parts = cookies[i].split('=');
+      var value = parts.slice(1).join('=');
+
+      try {
+        var found = decodeURIComponent(parts[0]);
+        jar[found] = converter.read(value, found);
+
+        if (name === found) {
+          break
+        }
+      } catch (e) {}
+    }
+
+    return name ? jar[name] : jar
+  }
+
+  return Object.create(
+    {
+      set,
+      get,
+      remove: function (name, attributes) {
+        set(
+          name,
+          '',
+          assign({}, attributes, {
+            expires: -1
+          })
+        );
+      },
+      withAttributes: function (attributes) {
+        return init(this.converter, assign({}, this.attributes, attributes))
+      },
+      withConverter: function (converter) {
+        return init(assign({}, this.converter, converter), this.attributes)
+      }
+    },
+    {
+      attributes: { value: Object.freeze(defaultAttributes) },
+      converter: { value: Object.freeze(converter) }
+    }
+  )
+}
+
+var api = init(defaultConverter, { path: '/' });
+/* eslint-enable no-var */
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/sweetalert2/dist/sweetalert2.all.js":
 /*!**********************************************************!*\
   !*** ./node_modules/sweetalert2/dist/sweetalert2.all.js ***!
@@ -4630,6 +4779,8 @@ if (typeof this !== 'undefined' && this.Sweetalert2){this.swal = this.sweetAlert
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/dist/js.cookie.mjs");
+
 
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default());
 document.addEventListener('DOMContentLoaded', function () {
@@ -4679,6 +4830,36 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Task parts toggle
+  document.querySelectorAll('.toggle-parts').forEach(function (button) {
+    var taskId = button.dataset.taskId;
+    var cookieName = "task_expanded_".concat(taskId);
+    var isExpanded = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(cookieName);
+    if (isExpanded) {
+      var partsRow = document.querySelector("tr.parts-row[data-parent-id=\"".concat(taskId, "\"]"));
+      var icon = button.querySelector('i');
+      partsRow.classList.remove('d-none');
+      icon.classList.remove('bi-chevron-right');
+      icon.classList.add('bi-chevron-down');
+    }
+    button.addEventListener('click', function () {
+      var taskId = this.dataset.taskId;
+      var partsRow = document.querySelector("tr.parts-row[data-parent-id=\"".concat(taskId, "\"]"));
+      var icon = this.querySelector('i');
+      var cookieName = "task_expanded_".concat(taskId);
+      partsRow.classList.toggle('d-none');
+      icon.classList.toggle('bi-chevron-right');
+      icon.classList.toggle('bi-chevron-down');
+      if (!partsRow.classList.contains('d-none')) {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(cookieName, '1', {
+          expires: 1 / 24
+        }); // 1 час
+      } else {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(cookieName);
+      }
+    });
+  });
+
   // Modal forms handling
   var initModalForm = function initModalForm(modal) {
     var partsModal = null;
@@ -4693,6 +4874,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var method = currentTaskButton.dataset.method || 'POST';
       var id = currentTaskButton.dataset.id;
       var formUrl = id ? currentTaskButton.dataset.editRoute : currentTaskButton.dataset.createRoute;
+      console.log(method);
       fetch(formUrl).then(function (response) {
         return response.text();
       }).then(function (html) {
@@ -4727,7 +4909,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 partsModal.show();
               });
             }
-            initTaskPartsHandlers(modalBody, partsModalElement, partsModal);
+            initPartTaskHandlers(modalBody, partsModalElement, partsModal);
           }
         }
 
@@ -4776,7 +4958,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   // Выносим обработчики в отдельную функцию
-  var initTaskPartsHandlers = function initTaskPartsHandlers(modalBody, partsModalElement, partsModal) {
+  var initPartTaskHandlers = function initPartTaskHandlers(modalBody, partsModalElement, partsModal) {
     var selectedParts = modalBody.querySelector('#selectedParts');
     var partIndex = selectedParts.children.length;
 
@@ -4811,11 +4993,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // Initialize modals if they exist
   var partModal = document.getElementById('partModal');
   var taskModal = document.getElementById('taskModal');
+  var partTaskModal = document.getElementById('partTaskModal');
   if (partModal) {
     initModalForm(partModal);
   }
   if (taskModal) {
     initModalForm(taskModal);
+  }
+  if (partTaskModal) {
+    initModalForm(partTaskModal);
   }
 });
 

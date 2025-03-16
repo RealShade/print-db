@@ -3,15 +3,16 @@
 return [
     'title'             => 'Завдання',
     'form_title'        => 'Форма завдання',
-    'external_id'       => 'Зовнішній ID',
+    'external_id'       => 'Зовн. ID',
     'name'              => 'Назва завдання',
-    'count_set_planned' => 'Кількість наборів',
+    'count_set_planned' => 'Комплекти',
     'status'            => 'Статус',
     'parts'             => 'Деталі',
-    'count_per_set'     => 'Кількість на набір',
+    'count_per_set'     => 'У наборі',
     'add'               => 'Додати завдання',
     'select_part'       => 'Вибір деталі',
     'parts_count'       => 'Кількість моделей',
+    'created_at'        => 'Створено',
     'enum'              => [
         'status' => [
             'new'         => 'Нове',

@@ -20,7 +20,8 @@ class Part extends Model
 
     public function tasks(): BelongsToMany
     {
-        return $this->belongsToMany(Task::class, Task::TASK_PARTS_TABLE)
+        return $this->belongsToMany(Task::class)
+            ->using(PartTask::class)
             ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
     }
