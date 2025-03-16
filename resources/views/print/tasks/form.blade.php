@@ -34,6 +34,19 @@
         </select>
     </div>
 
+    @if ($task)
+        <div class="alert alert-info">
+            <small class="d-block mb-1">{{ __('task.api_format') }}:</small>
+            <div class="input-group">
+                <input type="text" class="form-control copy-input" readonly
+                       value="[t#{{ $task?->id }}(x1)]">
+                <button class="btn btn-outline-secondary copy-btn" type="button">
+                    <i class="bi bi-clipboard"></i>
+                </button>
+            </div>
+        </div>
+    @endif
+
     <div class="mb-3">
         <label class="form-label">{{ __('task.parts') }}</label>
         <div class="d-flex gap-2 mb-2">
@@ -94,10 +107,10 @@
                             <strong>#{{ $part->id }}</strong>
                             {{ $part->name }}
                             <span class="text-muted">(v{{ $part->version }}
-                            @if($part->version_date)
-                                от {{ $part->version_date->format('d.m.Y') }}
-                            @endif
-                            )</span>
+                                @if($part->version_date)
+                                    от {{ $part->version_date->format('d.m.Y') }}
+                                @endif
+                                )</span>
                         </button>
                     @endforeach
                 </div>

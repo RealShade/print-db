@@ -13,6 +13,7 @@ return [
     'select_part'       => 'Вибір деталі',
     'parts_count'       => 'Кількість моделей',
     'created_at'        => 'Створено',
+    'api_format'        => 'Плашка для назви файлу',
     'enum'              => [
         'status' => [
             'new'         => 'Нове',

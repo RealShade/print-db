@@ -88,6 +88,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Clipboard handling
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.copy-btn')) {
+            const btn = e.target.closest('.copy-btn');
+            const input = btn.closest('.input-group').querySelector('.copy-input');
+            input.select();
+            document.execCommand('copy');
+
+            const icon = btn.querySelector('i');
+            icon.classList.remove('bi-clipboard');
+            icon.classList.add('bi-clipboard-check');
+
+            setTimeout(() => {
+                icon.classList.remove('bi-clipboard-check');
+                icon.classList.add('bi-clipboard');
+            }, 2000);
+        }
+    });
+
     // Modal forms handling
     const initModalForm = (modal) => {
         let partsModal = null;

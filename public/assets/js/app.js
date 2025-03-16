@@ -4860,6 +4860,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Clipboard handling
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.copy-btn')) {
+      var btn = e.target.closest('.copy-btn');
+      var input = btn.closest('.input-group').querySelector('.copy-input');
+      input.select();
+      document.execCommand('copy');
+      var icon = btn.querySelector('i');
+      icon.classList.remove('bi-clipboard');
+      icon.classList.add('bi-clipboard-check');
+      setTimeout(function () {
+        icon.classList.remove('bi-clipboard-check');
+        icon.classList.add('bi-clipboard');
+      }, 2000);
+    }
+  });
+
   // Modal forms handling
   var initModalForm = function initModalForm(modal) {
     var partsModal = null;
