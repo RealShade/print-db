@@ -185,7 +185,7 @@ a {
         background-color: #007BFF; // Синий для нового пользователя
     }
 
-    &-active {
+    &-active, &-completed {
         background-color: #28A745; // Зеленый для активного пользователя
     }
 
@@ -193,8 +193,14 @@ a {
         background-color: #DC3545; // Красный для заблокированного пользователя
     }
 
-    &-deleted {
+    &-deleted, &-cancelled {
         background-color: #6C757D; // Серый для удаленного пользователя
+    }
+    &-in_progress {
+        background-color: #FFC107; // Желтый для пользователя в процессе
+    }
+    &-printed {
+        background-color: #17A2B8; // Голубой для напечатанного пользователя
     }
 }
 

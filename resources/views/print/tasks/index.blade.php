@@ -4,9 +4,12 @@
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>{{ __('task.title') }}</h1>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal"
-                    data-action="{{ route('print.tasks.store') }}">
-                {{ __('task.add') }}
+            <button type="button" class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#taskModal"
+                    data-action="{{ route('print.tasks.store') }}"
+                    data-create-route="{{ route('print.tasks.create') }}">
+                <i class="bi bi-plus-lg"></i> {{ __('task.add') }}
             </button>
         </div>
 
@@ -15,38 +18,43 @@
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>{{ __('task.external_id') }}</th>
-                            <th>{{ __('common.name') }}</th>
-                            <th>{{ __('task.count_set_planned') }}</th>
-                            <th>{{ __('common.status') }}</th>
-                            <th>{{ __('common.actions') }}</th>
-                        </tr>
+                            <tr>
+                                <th class="text-end">ID</th>
+                                <th>{{ __('task.external_id') }}</th>
+                                <th>{{ __('common.name') }}</th>
+                                <th class="text-end">{{ __('task.count_set_planned') }}</th>
+                                <th class="text-end">{{ __('task.parts_count') }}</th>
+                                <th>{{ __('common.status') }}</th>
+                                <th>{{ __('common.actions') }}</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach($tasks as $task)
-                            <tr>
-                                <td>{{ $task->id }}</td>
-                                <td>{{ $task->external_id }}</td>
-                                <td>{{ $task->name }}</td>
-                                <td>{{ $task->count_set_planned }}</td>
-                                <td>{{ $task->status->label() }}</td>
-                                <td>
-                                    <button type="button"
-                                            class="btn btn-sm btn-primary"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#taskModal"
-                                            data-action="{{ route('print.tasks.update', $task) }}"
-                                            data-edit-route="{{ route('print.tasks.edit', $task) }}"
-                                            data-delete-route="{{ route('print.tasks.destroy', $task) }}"
-                                            data-method="PUT"
-                                            data-id="{{ $task->id }}">
-                                        {{ __('common.buttons.edit') }}
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach($tasks as $task)
+                                <tr>
+                                    <td class="text-end">{{ $task->id }}</td>
+                                    <td>{{ $task->external_id }}</td>
+                                    <td>{{ $task->name }}</td>
+                                    <td class="text-end">{{ $task->count_set_planned }}</td>
+                                    <td class="text-end">{{ $task->parts->count() }}</td>
+                                    <td>
+                                        <span class="badge badge-{{ strtolower($task->status->name) }}">
+                                            {{ $task->status->label() }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#taskModal"
+                                                data-action="{{ route('print.tasks.update', $task) }}"
+                                                data-edit-route="{{ route('print.tasks.edit', $task) }}"
+                                                data-delete-route="{{ route('print.tasks.destroy', $task) }}"
+                                                data-method="PUT"
+                                                data-id="{{ $task->id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -68,16 +76,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('[data-bs-target="#taskModal"]');
-    const createRoute = '{{ route('print.tasks.create') }}';
-
-    buttons.forEach(button => {
-        button.dataset.createRoute = createRoute;
-    });
-});
-</script>
-@endpush

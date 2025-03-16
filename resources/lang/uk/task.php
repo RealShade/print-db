@@ -11,12 +11,14 @@ return [
     'count_per_set'     => 'Кількість на набір',
     'add'               => 'Додати завдання',
     'select_part'       => 'Вибір деталі',
+    'parts_count'       => 'Кількість моделей',
     'enum'              => [
         'status' => [
             'new'         => 'Нове',
             'in_progress' => 'В процесі',
             'cancelled'   => 'Скасовано',
-            'completed'   => 'Завершено',
+            'printed'     => 'Надруковано',
+            'completed'   => 'Виконано',
         ],
     ],
 ];

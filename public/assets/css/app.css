@@ -135,14 +135,22 @@ a:hover {
 .badge-new {
   background-color: #007BFF;
 }
-.badge-active {
+.badge-active,
+.badge-completed {
   background-color: #28A745;
 }
 .badge-blocked {
   background-color: #DC3545;
 }
-.badge-deleted {
+.badge-deleted,
+.badge-cancelled {
   background-color: #6C757D;
+}
+.badge-in_progress {
+  background-color: #FFC107;
+}
+.badge-printed {
+  background-color: #17A2B8;
 }
 .registration-success {
   width: 100%;
