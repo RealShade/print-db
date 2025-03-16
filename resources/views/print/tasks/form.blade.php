@@ -1,12 +1,8 @@
 <form id="taskForm" method="POST">
     @csrf
-    @if($task) @method('PUT') @endif
-
-    <div class="mb-3">
-        <label for="external_id" class="form-label">{{ __('task.external_id') }}</label>
-        <input type="text" class="form-control" id="external_id" name="external_id"
-               value="{{ old('external_id', $task?->external_id) }}">
-    </div>
+    @if($task)
+        @method('PUT')
+    @endif
 
     <div class="mb-3">
         <label for="name" class="form-label">{{ __('task.name') }}</label>
@@ -15,9 +11,15 @@
     </div>
 
     <div class="mb-3">
-        <label for="sets_count" class="form-label">{{ __('task.sets_count') }}</label>
-        <input type="number" class="form-control" id="sets_count" name="sets_count" min="1"
-               value="{{ old('sets_count', $task?->sets_count) }}">
+        <label for="count_set_planned" class="form-label">{{ __('task.count_set_planned') }}</label>
+        <input type="number" class="form-control" id="count_set_planned" name="count_set_planned" min="1"
+               value="{{ old('count_set_planned', $task?->count_set_planned) }}">
+    </div>
+
+    <div class="mb-3">
+        <label for="external_id" class="form-label">{{ __('task.external_id') }}</label>
+        <input type="text" class="form-control" id="external_id" name="external_id"
+               value="{{ old('external_id', $task?->external_id) }}">
     </div>
 
     <div class="mb-3">
@@ -51,9 +53,9 @@
                             <div class="d-flex gap-2 align-items-center">
                                 <input type="hidden" name="parts[{{ $loop->index }}][id]" value="{{ $part->id }}">
                                 <input type="number" class="form-control form-control-sm w-auto"
-                                       name="parts[{{ $loop->index }}][quantity_per_set]"
-                                       value="{{ $part->pivot->quantity_per_set }}"
-                                       placeholder="{{ __('task.quantity_per_set') }}"
+                                       name="parts[{{ $loop->index }}][count_per_set]"
+                                       value="{{ $part->pivot->count_per_set }}"
+                                       placeholder="{{ __('task.count_per_set') }}"
                                        style="width: 100px !important;">
                                 <button type="button" class="btn btn-sm btn-outline-danger remove-part">
                                     <i class="bi bi-x-lg"></i>
@@ -87,9 +89,15 @@
                         <button type="button" class="list-group-item list-group-item-action select-part"
                                 data-part-id="{{ $part->id }}"
                                 data-part-name="{{ $part->name }}"
-                                data-part-version="{{ $part->version }}">
-                            <strong>{{ $part->name }}</strong>
-                            <span class="text-muted">(v{{ $part->version }})</span>
+                                data-part-version="{{ $part->version }}"
+                                data-part-version-date="{{ $part->version_date?->format('d.m.Y') }}">
+                            <strong>#{{ $part->id }}</strong>
+                            {{ $part->name }}
+                            <span class="text-muted">(v{{ $part->version }}
+                            @if($part->version_date)
+                                от {{ $part->version_date->format('d.m.Y') }}
+                            @endif
+                            )</span>
                         </button>
                     @endforeach
                 </div>

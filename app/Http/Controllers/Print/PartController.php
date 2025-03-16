@@ -10,7 +10,22 @@ use Illuminate\View\View;
 
 class PartController extends Controller
 {
-    public function index(): View
+    /* **************************************** Public **************************************** */
+    public function create() : View
+    {
+        $part = null;
+
+        return view('print.parts.form', compact('part'));
+    }
+
+    public function edit(Part $part) : View
+    {
+        abort_if($part->user_id !== auth()->id(), 403);
+
+        return view('print.parts.form', compact('part'));
+    }
+
+    public function index() : View
     {
         $parts = Part::where('user_id', auth()->id())
             ->latest()
@@ -19,29 +34,20 @@ class PartController extends Controller
         return view('print.parts.index', compact('parts'));
     }
 
-    public function create(): View
+    public function store(PartRequest $request) : JsonResponse
     {
-        $part = null;
-        return view('print.parts.form', compact('part'));
-    }
-
-    public function edit(Part $part): View
-    {
-        return view('print.parts.form', compact('part'));
-    }
-
-    public function store(PartRequest $request): JsonResponse
-    {
-        $part = new Part($request->validated());
+        $part          = new Part($request->validated());
         $part->user_id = auth()->id();
         $part->save();
 
         return response()->json(['success' => true]);
     }
 
-    public function update(PartRequest $request, Part $part): JsonResponse
+    public function update(PartRequest $request, Part $part) : JsonResponse
     {
+        abort_if($part->user_id !== auth()->id(), 403);
         $part->update($request->validated());
+
         return response()->json(['success' => true]);
     }
 }

@@ -16,9 +16,10 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>ID</th>
                             <th>{{ __('task.external_id') }}</th>
                             <th>{{ __('common.name') }}</th>
-                            <th>{{ __('task.sets_count') }}</th>
+                            <th>{{ __('task.count_set_planned') }}</th>
                             <th>{{ __('common.status') }}</th>
                             <th>{{ __('common.actions') }}</th>
                         </tr>
@@ -26,15 +27,19 @@
                         <tbody>
                         @foreach($tasks as $task)
                             <tr>
+                                <td>{{ $task->id }}</td>
                                 <td>{{ $task->external_id }}</td>
                                 <td>{{ $task->name }}</td>
-                                <td>{{ $task->sets_count }}</td>
+                                <td>{{ $task->count_set_planned }}</td>
                                 <td>{{ $task->status->label() }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary"
                                             data-bs-toggle="modal"
                                             data-bs-target="#taskModal"
                                             data-action="{{ route('print.tasks.update', $task) }}"
+                                            data-edit-route="{{ route('print.tasks.edit', $task) }}"
+                                            data-delete-route="{{ route('print.tasks.destroy', $task) }}"
                                             data-method="PUT"
                                             data-id="{{ $task->id }}">
                                         {{ __('common.buttons.edit') }}
@@ -69,11 +74,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('[data-bs-target="#taskModal"]');
     const createRoute = '{{ route('print.tasks.create') }}';
-    const editRoute = '{{ route('print.tasks.edit', '') }}';
 
     buttons.forEach(button => {
         button.dataset.createRoute = createRoute;
-        button.dataset.editRoute = editRoute;
     });
 });
 </script>

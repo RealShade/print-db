@@ -23,7 +23,8 @@ class TaskController extends Controller
 
     public function edit(Task $task) : View
     {
-        $parts = Part::all();
+        abort_if($task->user_id !== auth()->id(), 403);
+        $parts = Part::where('user_id', auth()->id())->get();
 
         return view('print.tasks.form', compact('task', 'parts'));
     }

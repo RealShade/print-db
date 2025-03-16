@@ -5,7 +5,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ __('part.title') }}</h1>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#partModal"
-                data-action="{{ route('print.parts.store') }}">
+                data-action="{{ route('print.parts.store') }}"
+                data-create-route="{{ route('print.parts.create') }}">
             {{ __('part.add') }}
         </button>
     </div>
@@ -16,6 +17,7 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>{{ __('common.name') }}</th>
                             <th>{{ __('part.version') }}</th>
                             <th>{{ __('part.version_date') }}</th>
@@ -25,13 +27,16 @@
                     <tbody>
                         @foreach($parts as $part)
                             <tr>
+                                <td>{{ $part->id }}</td>
                                 <td>{{ $part->name }}</td>
                                 <td>{{ $part->version }}</td>
-                                <td>{{ $part->version_date->format('d-m-Y') }}</td>
+                                <td>{{ $part->version_date?->format('d.m.Y') }}</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary"
-                                            data-bs-toggle="modal" data-bs-target="#partModal"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#partModal"
                                             data-action="{{ route('print.parts.update', $part) }}"
+                                            data-edit-route="{{ route('print.parts.edit', $part) }}"
                                             data-method="PUT"
                                             data-id="{{ $part->id }}">
                                         {{ __('common.buttons.edit') }}
@@ -60,3 +65,16 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('[data-bs-target="#partModal"]');
+    const createRoute = '{{ route('print.parts.create') }}';
+
+    buttons.forEach(button => {
+        button.dataset.createRoute = createRoute;
+    });
+});
+</script>
+@endpush

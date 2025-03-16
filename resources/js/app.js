@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const initModalForm = (modal) => {
         let partsModal = null;
         let currentTaskButton = null;
+        let partsModalElement = null;
 
         modal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
@@ -69,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const method = currentTaskButton.dataset.method || 'POST';
             const id = currentTaskButton.dataset.id;
             const formUrl = id
-                ? `${currentTaskButton.dataset.editRoute}/${id}`
+                ? currentTaskButton.dataset.editRoute
                 : currentTaskButton.dataset.createRoute;
 
             fetch(formUrl)
@@ -81,27 +82,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     const form = modalBody.querySelector('form');
                     form.action = action;
                     if (method === 'PUT') {
-                        form.insertAdjacentHTML('afterbegin', '@method(\'PUT\')');
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'PUT';
+                        form.appendChild(methodField);
                     }
 
                     // Инициализация механизма выбора деталей для задачи
                     if (modal.id === 'taskModal') {
-                        const partsModalContent = modalBody.querySelector('#partsModal');
-                        if (partsModalContent) {
-                            // Уничтожаем старый инстанс, если он существует
-                            if (partsModal) {
-                                partsModal.dispose();
-                                const oldPartsModal = document.querySelector('#partsModal');
-                                if (oldPartsModal) {
-                                    oldPartsModal.remove();
-                                }
+                        const newPartsModalContent = modalBody.querySelector('#partsModal');
+                        if (newPartsModalContent) {
+                            // Очищаем предыдущее модальное окно
+                            if (partsModalElement) {
+                                partsModalElement.remove();
                             }
 
-                            // Перемещаем модальное окно деталей в конец body
-                            document.body.appendChild(partsModalContent);
-
-                            // Создаем новый инстанс модального окна
-                            partsModal = new bootstrap.Modal(partsModalContent);
+                            // Перемещаем новое модальное окно
+                            partsModalElement = newPartsModalContent;
+                            document.body.appendChild(partsModalElement);
+                            partsModal = new bootstrap.Modal(partsModalElement);
 
                             const addPartBtn = modalBody.querySelector('#addPartBtn');
                             if (addPartBtn) {
@@ -110,10 +110,46 @@ document.addEventListener('DOMContentLoaded', function() {
                                 });
                             }
 
-                            // Инициализируем обработчики после перемещения окна
-                            initTaskPartsHandlers(modalBody, document.querySelector('#partsModal'), partsModal);
+                            initTaskPartsHandlers(modalBody, partsModalElement, partsModal);
                         }
                     }
+
+                    // Добавляем обработчик отправки формы
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(this);
+
+                        fetch(this.action, {
+                            method : 'POST',
+                            body   : formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN'    : document.querySelector('meta[name="csrf-token"]').content
+                            }
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw response;
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    modal.querySelector('.btn-close').click();
+                                    window.location.reload();
+                                }
+                            })
+                            .catch(error => {
+                                error.json().then(data => {
+                                    const errors = modal.querySelector('#formErrors');
+                                    errors.classList.remove('d-none');
+                                    errors.innerHTML = Object.values(data.errors || {})
+                                                             .flat()
+                                                             .map(error => `<div>${ error }</div>`)
+                                                             .join('') || 'Виникла помилка при збереженні';
+                                });
+                            });
+                    });
                 });
         });
 
@@ -137,10 +173,10 @@ document.addEventListener('DOMContentLoaded', function() {
         partsModalElement.querySelectorAll('.select-part').forEach(button => {
             button.addEventListener('click', function() {
                 const partId = this.dataset.partId;
-                if (!selectedParts.querySelector(`[data-part-id="${partId}"]`)) {
+                if (!selectedParts.querySelector(`[data-part-id="${ partId }"]`)) {
                     addPartToForm({
-                        partId: this.dataset.partId,
-                        partName: this.dataset.partName,
+                        partId     : this.dataset.partId,
+                        partName   : this.dataset.partName,
                         partVersion: this.dataset.partVersion
                     });
                 }
@@ -161,17 +197,20 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="list-group-item" data-part-id="${ partData.partId }">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>${ partData.partName }</strong>
-                        <span class="text-muted">(v${ partData.partVersion })</span>
+                        <strong>#${partData.partId}</strong>
+                        ${ partData.partName }
+                        <span class="text-muted">(v${ partData.partVersion })
+                        ${partData.partVersionDate ? ` от ${partData.partVersionDate}` : ''})</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
                         <input type="hidden" name="parts[${ partIndex }][id]" value="${ partData.partId }">
                         <input type="number" class="form-control form-control-sm w-auto"
-                               name="parts[${ partIndex }][quantity_per_set]"
+                               name="parts[${ partIndex }][count_per_set]"
                                placeholder="Кількість на набір"
                                required
                                min="1"
-                               style="width: 100px !important;">
+                               style="width: 100px !important;"
+                               value="1">
                         <button type="button" class="btn btn-sm btn-outline-danger remove-part">
                             <i class="bi bi-x-lg"></i>
                         </button>

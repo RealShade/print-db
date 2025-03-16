@@ -17,7 +17,7 @@ class Task extends Model
     protected $fillable = [
         'external_id',
         'name',
-        'sets_count',
+        'count_set_planned',
         'status',
         'completed_at',
         'user_id',
@@ -32,7 +32,7 @@ class Task extends Model
     public function parts() : BelongsToMany
     {
         return $this->belongsToMany(Part::class, static::TASK_PARTS_TABLE)
-            ->withPivot(['quantity_per_set', 'printed_quantity'])
+            ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
     }
 
@@ -46,7 +46,7 @@ class Task extends Model
     {
         return $this->parts()
             ->get()
-            ->map(fn($part) => (int)($part->pivot->printed_quantity / $part->pivot->quantity_per_set))
+            ->map(fn($part) => (int)($part->pivot->count_printed / $part->pivot->count_per_set))
             ->min() ?? 0;
     }
 

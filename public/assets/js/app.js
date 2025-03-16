@@ -4683,6 +4683,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var initModalForm = function initModalForm(modal) {
     var partsModal = null;
     var currentTaskButton = null;
+    var partsModalElement = null;
     modal.addEventListener('show.bs.modal', function (event) {
       var button = event.relatedTarget;
       if (button) {
@@ -4691,7 +4692,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var action = currentTaskButton.dataset.action;
       var method = currentTaskButton.dataset.method || 'POST';
       var id = currentTaskButton.dataset.id;
-      var formUrl = id ? "".concat(currentTaskButton.dataset.editRoute, "/").concat(id) : currentTaskButton.dataset.createRoute;
+      var formUrl = id ? currentTaskButton.dataset.editRoute : currentTaskButton.dataset.createRoute;
       fetch(formUrl).then(function (response) {
         return response.text();
       }).then(function (html) {
@@ -4700,46 +4701,75 @@ document.addEventListener('DOMContentLoaded', function () {
         var form = modalBody.querySelector('form');
         form.action = action;
         if (method === 'PUT') {
-          form.insertAdjacentHTML('afterbegin', '@method(\'PUT\')');
+          var methodField = document.createElement('input');
+          methodField.type = 'hidden';
+          methodField.name = '_method';
+          methodField.value = 'PUT';
+          form.appendChild(methodField);
         }
 
         // Инициализация механизма выбора деталей для задачи
         if (modal.id === 'taskModal') {
-          var partsModalContent = modalBody.querySelector('#partsModal');
-          if (partsModalContent) {
-            // Уничтожаем старый инстанс, если он существует
-            if (partsModal) {
-              partsModal.dispose();
-              var oldPartsModal = document.querySelector('#partsModal');
-              if (oldPartsModal) {
-                oldPartsModal.remove();
-              }
+          var newPartsModalContent = modalBody.querySelector('#partsModal');
+          if (newPartsModalContent) {
+            // Очищаем предыдущее модальное окно
+            if (partsModalElement) {
+              partsModalElement.remove();
             }
 
-            // Перемещаем модальное окно деталей в конец body
-            document.body.appendChild(partsModalContent);
-
-            // Создаем новый инстанс модального окна
-            partsModal = new bootstrap.Modal(partsModalContent);
+            // Перемещаем новое модальное окно
+            partsModalElement = newPartsModalContent;
+            document.body.appendChild(partsModalElement);
+            partsModal = new bootstrap.Modal(partsModalElement);
             var addPartBtn = modalBody.querySelector('#addPartBtn');
             if (addPartBtn) {
               addPartBtn.addEventListener('click', function () {
                 partsModal.show();
               });
             }
-
-            // Инициализируем обработчики после перемещения окна
-            initTaskPartsHandlers(modalBody, document.querySelector('#partsModal'), partsModal);
+            initTaskPartsHandlers(modalBody, partsModalElement, partsModal);
           }
         }
+
+        // Добавляем обработчик отправки формы
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var formData = new FormData(this);
+          fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            }
+          }).then(function (response) {
+            if (!response.ok) {
+              throw response;
+            }
+            return response.json();
+          }).then(function (data) {
+            if (data.success) {
+              modal.querySelector('.btn-close').click();
+              window.location.reload();
+            }
+          })["catch"](function (error) {
+            error.json().then(function (data) {
+              var errors = modal.querySelector('#formErrors');
+              errors.classList.remove('d-none');
+              errors.innerHTML = Object.values(data.errors || {}).flat().map(function (error) {
+                return "<div>".concat(error, "</div>");
+              }).join('') || 'Виникла помилка при збереженні';
+            });
+          });
+        });
       });
     });
     modal.addEventListener('hidden.bs.modal', function () {
       if (partsModal) {
         partsModal.dispose();
-        var partsModalElement = document.querySelector('#partsModal');
-        if (partsModalElement) {
-          partsModalElement.remove();
+        var _partsModalElement = document.querySelector('#partsModal');
+        if (_partsModalElement) {
+          _partsModalElement.remove();
         }
       }
     });
@@ -4773,7 +4803,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
     function addPartToForm(partData) {
-      var html = "\n            <div class=\"list-group-item\" data-part-id=\"".concat(partData.partId, "\">\n                <div class=\"d-flex justify-content-between align-items-center\">\n                    <div>\n                        <strong>").concat(partData.partName, "</strong>\n                        <span class=\"text-muted\">(v").concat(partData.partVersion, ")</span>\n                    </div>\n                    <div class=\"d-flex gap-2 align-items-center\">\n                        <input type=\"hidden\" name=\"parts[").concat(partIndex, "][id]\" value=\"").concat(partData.partId, "\">\n                        <input type=\"number\" class=\"form-control form-control-sm w-auto\"\n                               name=\"parts[").concat(partIndex, "][quantity_per_set]\"\n                               placeholder=\"\u041A\u0456\u043B\u044C\u043A\u0456\u0441\u0442\u044C \u043D\u0430 \u043D\u0430\u0431\u0456\u0440\"\n                               required\n                               min=\"1\"\n                               style=\"width: 100px !important;\">\n                        <button type=\"button\" class=\"btn btn-sm btn-outline-danger remove-part\">\n                            <i class=\"bi bi-x-lg\"></i>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        ");
+      var html = "\n            <div class=\"list-group-item\" data-part-id=\"".concat(partData.partId, "\">\n                <div class=\"d-flex justify-content-between align-items-center\">\n                    <div>\n                        <strong>#").concat(partData.partId, "</strong>\n                        ").concat(partData.partName, "\n                        <span class=\"text-muted\">(v").concat(partData.partVersion, ")\n                        ").concat(partData.partVersionDate ? " \u043E\u0442 ".concat(partData.partVersionDate) : '', ")</span>\n                    </div>\n                    <div class=\"d-flex gap-2 align-items-center\">\n                        <input type=\"hidden\" name=\"parts[").concat(partIndex, "][id]\" value=\"").concat(partData.partId, "\">\n                        <input type=\"number\" class=\"form-control form-control-sm w-auto\"\n                               name=\"parts[").concat(partIndex, "][count_per_set]\"\n                               placeholder=\"\u041A\u0456\u043B\u044C\u043A\u0456\u0441\u0442\u044C \u043D\u0430 \u043D\u0430\u0431\u0456\u0440\"\n                               required\n                               min=\"1\"\n                               style=\"width: 100px !important;\"\n                               value=\"1\">\n                        <button type=\"button\" class=\"btn btn-sm btn-outline-danger remove-part\">\n                            <i class=\"bi bi-x-lg\"></i>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        ");
       selectedParts.insertAdjacentHTML('beforeend', html);
       partIndex++;
     }
