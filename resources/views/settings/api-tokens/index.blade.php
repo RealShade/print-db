@@ -1,4 +1,3 @@
-{{-- resources/views/settings/api-tokens/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')

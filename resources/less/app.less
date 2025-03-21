@@ -206,6 +206,14 @@ a {
     &-printed {
         background-color: #17A2B8; // Голубой для напечатанного пользователя
     }
+    &-printing {
+        background-color: #28A745; // Зеленый для индикации активной печати
+
+        i {
+            font-size: 0.875em;
+            vertical-align: -0.125em;
+        }
+    }
 }
 
 .registration-success {
@@ -226,7 +234,7 @@ a {
     justify-content: left;
 }
 
-.parts-row {
+.detail-row  {
 
     td {
         padding: 0;
@@ -243,20 +251,6 @@ a {
         td {
             border: none;
             padding: 0.5rem 0.75rem;
-
-            &:last-child {
-                // Добавляем отступ между кнопками действий
-                .btn {
-                    margin-left: 0.5rem;
-                }
-            }
-        }
-
-        tr {
-            // Добавляем отступ между строками
-            &:not(:last-child) {
-                border-bottom: 1px solid @primary-bg;
-            }
         }
 
         // Выравнивание для числовых значений
@@ -264,4 +258,28 @@ a {
             padding-right: 1rem;
         }
     }
+}
+
+.toggle-icon {
+    width: 1rem;
+    display: inline-block;
+    color: @primary-color;
+
+    &.rotated {
+        transform: rotate(90deg);
+    }
+}
+
+.json-result {
+    background-color: @lighter-bg;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+
+    pre {
+        margin: 0;
+        white-space: pre-wrap; // Позволяет переносить длинные строки
+        word-wrap: break-word; // Переносит длинные слова
+    }
+
 }

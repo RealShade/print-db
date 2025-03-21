@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="partModal" tabindex="-1">
+    <div class="modal fade" id="partModal" tabindex="-1" data-type="formModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

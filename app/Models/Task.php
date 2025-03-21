@@ -33,7 +33,7 @@ class Task extends Model
     {
         return $this->belongsToMany(Part::class)
             ->using(PartTask::class)
-            ->withPivot(['count_per_set', 'count_printed'])
+            ->withPivot(['id', 'count_per_set', 'count_printed'])
             ->withTimestamps();
     }
 

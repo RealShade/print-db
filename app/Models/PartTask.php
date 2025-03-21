@@ -2,15 +2,32 @@
 
 namespace App\Models;
 
+use App\Enums\PrinterStatus;
 use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class PartTask extends Pivot
 {
     /* **************************************** Public **************************************** */
+    public function part()
+    {
+        return $this->belongsTo(Part::class);
+    }
+
+    public function printingTasks()
+    {
+        return $this->hasMany(PrintingTask::class, 'part_task_id');
+    }
+
     public function task()
     {
         return $this->belongsTo(Task::class);
+    }
+
+    /* **************************************** Getters **************************************** */
+    public function getPrintingCountAttribute() : int
+    {
+        return $this->printingTasks->sum('count');
     }
 
     /* **************************************** Protected **************************************** */

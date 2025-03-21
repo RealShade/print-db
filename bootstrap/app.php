@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\FilenamePlaceholderHelper;
 use App\Http\Middleware\AuthenticateApiToken;
 use App\Http\Middleware\CheckUserStatus;
 use App\Http\Middleware\RoleMiddleware;

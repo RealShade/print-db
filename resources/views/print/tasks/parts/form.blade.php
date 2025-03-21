@@ -1,4 +1,4 @@
-<form id="partTaskForm" method="POST">
+<form id="partTaskForm" method="POST" data-type="modal">
     <div class="mb-3">
         <label class="form-label">{{ __('common.name') }}</label>
         <input type="text" class="form-control" value="{{ $part->name }}" disabled>

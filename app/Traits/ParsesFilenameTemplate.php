@@ -2,111 +2,53 @@
 
 namespace App\Traits;
 
-use App\Models\Part;
 use App\Models\Task;
-use Illuminate\Database\Eloquent\Collection;
 
 trait ParsesFilenameTemplate
 {
     /* **************************************** Protected **************************************** */
     protected function calculatePrintForecast(Task $task, array $requestData) : array
     {
-        $totalSetsToPrint = !empty($requestData['parts'])
-            ? 0  // Если указаны части, общее количество комплектов не важно
-            : $requestData['task_sets'];
-
-        $partsData = $task->parts->map(function($part) use ($task, $requestData, $totalSetsToPrint) {
-            $currentPrinted = $part->pivot->count_printed;
-            $requiredTotal  = $part->pivot->count_per_set * $task->count_set_planned;
-            $countWaiting   = 0;
-
-            // Сколько будет напечатано после текущей операции
-            $willBePrinted = $currentPrinted;
-
-            if (!empty($requestData['parts'])) {
-                if (isset($requestData['parts'][ $part->id ])) {
-                    $countWaiting  = $requestData['parts'][ $part->id ];
-                    $willBePrinted += $countWaiting;
-                }
-            } else {
-                $countWaiting  = $part->pivot->count_per_set * $totalSetsToPrint;
-                $willBePrinted += $countWaiting;
-            }
-
-            return [
-                'id'             => $part->id,
-                'name'           => $part->name,
-                'version'        => $part->version,
-                'count_per_set'  => $part->pivot->count_per_set,
-                'count_printed'  => $currentPrinted,
-                'count_waiting'  => $countWaiting,
-                'count_required' => $requiredTotal,
-                'forecast'       => "{$currentPrinted}/{$requiredTotal} -> {$willBePrinted}/{$requiredTotal}",
-            ];
-        });
-
-        // Расчет текущих и будущих полных комплектов
-        $currentSets = $task->parts->map(function($part) {
-            return (int)($part->pivot->count_printed / $part->pivot->count_per_set);
-        })->min();
-
-        $futureSets = $task->parts->map(function($part) use ($requestData, $totalSetsToPrint) {
-            $futureCount = $part->pivot->count_printed;
-            if (!empty($requestData['parts'])) {
-                $futureCount += $requestData['parts'][ $part->id ] ?? 0;
-            } else {
-                $futureCount += $part->pivot->count_per_set * $totalSetsToPrint;
-            }
-
-            return (int)($futureCount / $part->pivot->count_per_set);
-        })->min();
-
-        $setsWaiting = max(0, $futureSets - $currentSets);
-
-        return [
-            'task'  => [
-                'id'                => $task->id,
-                'name'              => $task->name,
-                'status'            => $task->status,
-                'external_id'       => $task->external_id,
-                'count_set_planned' => $task->count_set_planned,
-                'count_waiting'     => $setsWaiting,
-                'forecast'          => "{$currentSets}/{$task->count_set_planned} -> {$futureSets}/{$task->count_set_planned}",
-            ],
-            'parts' => $partsData,
-        ];
     }
 
-    protected function parseFilename(string $filename) : array
+    protected function parseFilename(string $filename, int $userID) : array
     {
-        $result = [
-            'task_id'   => null,
-            'task_sets' => 1,
-            'parts'     => [],
-        ];
+        $pattern = '/\[(pid_(\d+)(\(x(\d+)\))?@(\d+))]|\[(tid_(\d+)(\(x(\d+)\))?)]/';
+        preg_match_all($pattern, $filename, $matches, PREG_SET_ORDER);
 
-        // Ищем все плашки в имени файла
-        preg_match_all('/\[(tid_(\d+)(?:\(x(\d+)\))?|pid_(\d+)(?:\(x(\d+)\))?)\]/', $filename, $matches);
+        if (empty($matches)) {
+            return [
+                'success' => false,
+                'errors'  => [__('api.validation.pattern_not_found')],
+            ];
+        }
 
-        foreach ($matches[0] as $index => $placeholder) {
-            // Если это плашка задачи
-            if (str_starts_with($placeholder, '[tid_')) {
-                $result['task_id'] = (int)$matches[2][ $index ];
-                if (!empty($matches[3][ $index ])) {
-                    $result['task_sets'] = (int)$matches[3][ $index ];
-                }
-            } // Если это плашка детали
-            elseif (str_starts_with($placeholder, '[pid_')) {
-                $partId                     = (int)$matches[4][ $index ];
-                $count                      = !empty($matches[5][ $index ]) ? (int)$matches[5][ $index ] : 1;
-                $result['parts'][ $partId ] = $count;
+        $parsedData = [];
+        foreach ($matches as $match) {
+            if ($match[2] && $match[5]) {
+                $parsedData[] = [
+                    'part_id' => (int)$match[2],
+                    'task_id' => (int)$match[5],
+                    'count'   => isset($match[4]) ? (int)$match[4] : 1,
+                ];
+            } elseif ($match[7]) {
+                $parsedData[] = [
+                    'task_id' => (int)$match[7],
+                    'count'   => isset($match[9]) ? (int)$match[9] : 1,
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'errors'  => [__('api.validation.invalid_format')],
+                ];
             }
         }
 
-        return $result;
+        return $this->validateParsedData($parsedData, $userID);
     }
 
-    protected function validateParsedData(array $data, int $userId) : array
+    /* **************************************** Private **************************************** */
+    private function validateParsedData(array $parsedData, int $userId) : array
     {
         $result = [
             'success' => false,
@@ -114,39 +56,85 @@ trait ParsesFilenameTemplate
             'errors'  => [],
         ];
 
-        if (!$data['task_id']) {
-            $result['errors'][] = __('api.validation.task_id_missing');
+        // @TODO для списка задач поднять все модели, так как они нужны для вычисления комплектации
+        $dataResult = [];
+        foreach ($parsedData as $item) {
+            if (!isset($item['task_id'])) {
+                $result['errors'][] = __('api.validation.task_id_missing');
+                continue;
+            }
 
-            return $result;
-        }
+            if (!isset($dataResult[ $item['task_id'] ])) {
+                $task = Task::where('id', $item['task_id'])
+                    ->where('user_id', $userId)
+                    ->with('parts')
+                    ->first();
 
-        $task = Task::where('id', $data['task_id'])
-            ->where('user_id', $userId)
-            ->with('parts')
-            ->first();
+                if (!$task) {
+                    $result['errors'][] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
+                    continue;
+                }
 
-        if (!$task) {
-            $result['errors'][] = __('api.validation.task_not_found');
+                $dataResult[ $task->id ] = [
+                    'id'                 => $task->id,
+                    'name'               => $task->name,
+                    'status'             => $task->status,
+                    'external_id'        => $task->external_id,
+                    'count_set_planned'  => $task->count_set_planned,
+                    'count_set_current'  => $task->parts->map(function($part) {
+                        return (int)($part->pivot->count_printed / $part->pivot->count_per_set);
+                    })->min(),
+                    'count_set_printing' => 0,
+                    'count_set_future'   => 0,
+                ];
+            }
 
-            return $result;
-        }
-
-        if (!empty($data['parts'])) {
-            $requestedParts = collect($data['parts']);
-            $foundParts     = $task->parts->whereIn('id', $requestedParts->keys());
-
-            if ($foundParts->isEmpty()) {
-                $result['errors'][] = __('api.validation.parts_not_found');
-
-                return $result;
+            if (!empty($item['part_id'])) {
+                if (!isset($dataResult[ $task->id ]['parts'][ $item['part_id'] ])) {
+                    $part = $task->parts->where('id', $item['part_id'])->first();
+                    if (!$part) {
+                        $result['errors'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
+                    }
+                    $dataResult[ $task->id ]['parts'][ $item['part_id'] ] = [
+                        'id'             => $part->id,
+                        'part_task_id'   => $part->pivot->id,
+                        'name'           => $part->name,
+                        'version'        => $part->version,
+                        'count_per_set'  => $part->pivot->count_per_set,
+                        'count_required' => $part->pivot->count_per_set * $task->count_set_planned,
+                        'count_printed'  => $part->pivot->count_printed,
+                        'count_printing' => 0,
+                        'count_future'   => $part->pivot->count_printed,
+                    ];
+                }
+                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_printing'] += $item['count'];
+                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_future']   += $item['count'];
+            } else {
+                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_printing'] += $part->pivot->count_per_set * $item['count'];
+                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_future']   += $part->pivot->count_per_set * $item['count'];
             }
         }
+        unset($item);
+
+        if (!empty($result['errors'])) {
+            return $result;
+        }
+
+        foreach ($dataResult as &$item) {
+            $item['count_set_printing'] = min(array_map(function($part) {
+                return (int)($part['count_printing'] / $part['count_per_set']);
+            }, $item['parts']));
+
+            $item['count_set_future'] = min(array_map(function($part) {
+                return (int)($part['count_future'] / $part['count_per_set']);
+            }, $item['parts']));
+        }
+        unset($item);
 
         $result['success'] = true;
-        $result['data']    = $this->calculatePrintForecast($task, $data);
+        $result['data']    = $dataResult;
 
         return $result;
     }
-
 
 }

@@ -41,6 +41,12 @@
                         {{ __('menu.parts') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('tools.index') }}" class="nav-link {{ request()->routeIs('tools.*') ? 'active' : 'text-white' }}">
+                        <i class="bi bi-tools me-2"></i>
+                        {{ __('tools.title') }}
+                    </a>
+                </li>
                 @if(auth()->user()->hasRole(\App\Enums\UserRole::ADMIN))
                     <li>
                         <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->is('admin/users*') ? 'active' : 'text-white' }}">

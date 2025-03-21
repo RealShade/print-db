@@ -58,7 +58,7 @@ class UserController extends Controller
 
         return redirect()
             ->route('admin.users.index')
-            ->with('success', __('common.buttons.delete'));
+            ->with('success', __('user.status.deleted'));
     }
 
     public function index() : View

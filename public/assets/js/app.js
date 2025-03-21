@@ -4830,36 +4830,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Task parts toggle
-  document.querySelectorAll('.toggle-parts').forEach(function (button) {
-    var taskId = button.dataset.taskId;
-    var cookieName = "task_expanded_".concat(taskId);
-    var isExpanded = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(cookieName);
-    if (isExpanded) {
-      var partsRow = document.querySelector("tr.parts-row[data-parent-id=\"".concat(taskId, "\"]"));
-      var icon = button.querySelector('i');
-      partsRow.classList.remove('d-none');
-      icon.classList.remove('bi-chevron-right');
-      icon.classList.add('bi-chevron-down');
-    }
-    button.addEventListener('click', function () {
-      var taskId = this.dataset.taskId;
-      var partsRow = document.querySelector("tr.parts-row[data-parent-id=\"".concat(taskId, "\"]"));
-      var icon = this.querySelector('i');
-      var cookieName = "task_expanded_".concat(taskId);
-      partsRow.classList.toggle('d-none');
-      icon.classList.toggle('bi-chevron-right');
-      icon.classList.toggle('bi-chevron-down');
-      if (!partsRow.classList.contains('d-none')) {
-        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(cookieName, '1', {
-          expires: 1 / 24
-        }); // 1 час
-      } else {
-        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(cookieName);
-      }
-    });
-  });
-
   // Clipboard handling
   document.addEventListener('click', function (e) {
     if (e.target.closest('.copy-btn')) {
@@ -4874,6 +4844,60 @@ document.addEventListener('DOMContentLoaded', function () {
         icon.classList.remove('bi-clipboard-check');
         icon.classList.add('bi-clipboard');
       }, 2000);
+    }
+  });
+
+  // Обработчик AJAX-запросов для кнопок
+  document.addEventListener('click', function (e) {
+    var button = e.target.closest('[data-transport="ajax"]');
+    if (!button) {
+      return;
+    }
+    e.preventDefault();
+    var makeRequest = function makeRequest() {
+      var action = button.dataset.action;
+      var method = button.dataset.method || 'POST';
+      fetch(action, {
+        method: method,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Content-Type': 'application/json'
+        }
+      }).then(function (response) {
+        if (!response.ok) {
+          throw response;
+        }
+        return response.json();
+      }).then(function (data) {
+        if (data.success) {
+          window.location.reload();
+        }
+      })["catch"](function (error) {
+        error.json().then(function (data) {
+          sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+            icon: 'error',
+            title: 'Помилка',
+            text: data.message || 'Виникла помилка при виконанні дії'
+          });
+        });
+      });
+    };
+    if (button.dataset.confirm === 'true') {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+        title: button.dataset.confirmTitle,
+        text: button.dataset.confirmText,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: button.dataset.confirmButton,
+        cancelButtonText: button.dataset.cancelButton
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          makeRequest();
+        }
+      });
+    } else {
+      makeRequest();
     }
   });
 
@@ -5006,20 +5030,57 @@ document.addEventListener('DOMContentLoaded', function () {
       partIndex++;
     }
   };
+
   // Initialize modals if they exist
-  var partModal = document.getElementById('partModal');
-  var taskModal = document.getElementById('taskModal');
-  var partTaskModal = document.getElementById('partTaskModal');
-  if (partModal) {
-    initModalForm(partModal);
-  }
-  if (taskModal) {
-    initModalForm(taskModal);
-  }
-  if (partTaskModal) {
-    initModalForm(partTaskModal);
-  }
+  document.querySelectorAll('.modal[data-type="formModal"]').forEach(function (modal) {
+    initModalForm(modal);
+  });
 });
+function initToggleRows() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var toggleSelector = options.toggleSelector,
+    rowSelector = options.rowSelector,
+    cookiePrefix = options.cookiePrefix,
+    _options$idAttribute = options.idAttribute,
+    idAttribute = _options$idAttribute === void 0 ? 'id' : _options$idAttribute,
+    _options$duration = options.duration,
+    duration = _options$duration === void 0 ? 1 / 24 : _options$duration;
+
+  // Добавим слушатель для кнопок внутри строк
+  document.querySelectorAll("".concat(toggleSelector, " button, ").concat(toggleSelector, " a")).forEach(function (button) {
+    button.addEventListener('click', function (e) {
+      e.stopPropagation(); // Останавливаем всплытие события
+    });
+  });
+  document.querySelectorAll(toggleSelector).forEach(function (button) {
+    var id = button.dataset[idAttribute];
+    var row = document.querySelector("".concat(rowSelector, "[data-parent-id=\"").concat(id, "\"]"));
+    var cookieName = "".concat(cookiePrefix, "_expanded_").concat(id);
+    var isExpanded = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(cookieName);
+    if (!row) {
+      return;
+    }
+    if (isExpanded) {
+      row.classList.remove('d-none');
+      button.querySelector('i').classList.remove('bi-chevron-right');
+      button.querySelector('i').classList.add('bi-chevron-down');
+    }
+    button.addEventListener('click', function () {
+      var icon = this.querySelector('i');
+      row.classList.toggle('d-none');
+      icon.classList.toggle('bi-chevron-right');
+      icon.classList.toggle('bi-chevron-down');
+      if (!row.classList.contains('d-none')) {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(cookieName, '1', {
+          expires: duration
+        });
+      } else {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(cookieName);
+      }
+    });
+  });
+}
+window.initToggleRows = initToggleRows;
 
 /***/ }),
 

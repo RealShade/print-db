@@ -12,6 +12,7 @@ return [
     'count_printed'     => 'Надруковано',
     'count_required'    => 'Необхідно всього',
     'count_waiting'     => 'Очікується',
+    'printing_count'    => 'Друкується',
     'add'               => 'Додати завдання',
     'select_part'       => 'Вибір деталі',
     'parts_count'       => 'Кількість моделей',

@@ -79,6 +79,11 @@ class User extends Authenticatable
         });
     }
 
+    public function printers(): HasMany
+    {
+        return $this->hasMany(Printer::class);
+    }
+
     /* **************************************** Protected **************************************** */
     protected static function booted() : void
     {

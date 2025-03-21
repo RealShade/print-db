@@ -55,39 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Task parts toggle
-    document.querySelectorAll('.toggle-parts').forEach(button => {
-        const taskId = button.dataset.taskId;
-        const cookieName = `task_expanded_${ taskId }`;
-        const isExpanded = Cookies.get(cookieName);
-
-        if (isExpanded) {
-            const partsRow = document.querySelector(`tr.parts-row[data-parent-id="${ taskId }"]`);
-            const icon = button.querySelector('i');
-
-            partsRow.classList.remove('d-none');
-            icon.classList.remove('bi-chevron-right');
-            icon.classList.add('bi-chevron-down');
-        }
-
-        button.addEventListener('click', function() {
-            const taskId = this.dataset.taskId;
-            const partsRow = document.querySelector(`tr.parts-row[data-parent-id="${ taskId }"]`);
-            const icon = this.querySelector('i');
-            const cookieName = `task_expanded_${ taskId }`;
-
-            partsRow.classList.toggle('d-none');
-            icon.classList.toggle('bi-chevron-right');
-            icon.classList.toggle('bi-chevron-down');
-
-            if (!partsRow.classList.contains('d-none')) {
-                Cookies.set(cookieName, '1', {expires: 1 / 24}); // 1 час
-            } else {
-                Cookies.remove(cookieName);
-            }
-        });
-    });
-
     // Clipboard handling
     document.addEventListener('click', function(e) {
         if (e.target.closest('.copy-btn')) {
@@ -104,6 +71,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('bi-clipboard-check');
                 icon.classList.add('bi-clipboard');
             }, 2000);
+        }
+    });
+
+    // Обработчик AJAX-запросов для кнопок
+    document.addEventListener('click', function(e) {
+        const button = e.target.closest('[data-transport="ajax"]');
+        if (!button) {
+            return;
+        }
+
+        e.preventDefault();
+
+        const makeRequest = () => {
+            const action = button.dataset.action;
+            const method = button.dataset.method || 'POST';
+
+            fetch(action, {
+                method : method,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN'    : document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type'    : 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    error.json().then(data => {
+                        Swal.fire({
+                            icon : 'error',
+                            title: 'Помилка',
+                            text : data.message || 'Виникла помилка при виконанні дії'
+                        });
+                    });
+                });
+        };
+
+        if (button.dataset.confirm === 'true') {
+            Swal.fire({
+                title            : button.dataset.confirmTitle,
+                text             : button.dataset.confirmText,
+                icon             : 'warning',
+                showCancelButton : true,
+                confirmButtonText: button.dataset.confirmButton,
+                cancelButtonText : button.dataset.cancelButton
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    makeRequest();
+                }
+            });
+        } else {
+            makeRequest();
         }
     });
 
@@ -275,19 +303,62 @@ document.addEventListener('DOMContentLoaded', function() {
             partIndex++;
         }
     };
-    // Initialize modals if they exist
-    const partModal = document.getElementById('partModal');
-    const taskModal = document.getElementById('taskModal');
-    const partTaskModal = document.getElementById('partTaskModal');
 
-    if (partModal) {
-        initModalForm(partModal);
-    }
-    if (taskModal) {
-        initModalForm(taskModal);
-    }
-    if (partTaskModal) {
-        initModalForm(partTaskModal);
-    }
+    // Initialize modals if they exist
+    document.querySelectorAll('.modal[data-type="formModal"]').forEach(modal => {
+        initModalForm(modal);
+    });
 
 });
+
+
+function initToggleRows(options = {}) {
+    const {
+        toggleSelector,      // Селектор кнопки раскрытия
+        rowSelector,         // Селектор строки с содержимым
+        cookiePrefix,        // Префикс для имени куки
+        idAttribute = 'id',  // Атрибут для получения ID
+        duration = 1 / 24    // Срок хранения куки в днях
+    } = options;
+
+    // Добавим слушатель для кнопок внутри строк
+    document.querySelectorAll(`${ toggleSelector } button, ${ toggleSelector } a`).forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation(); // Останавливаем всплытие события
+        });
+    });
+
+
+    document.querySelectorAll(toggleSelector).forEach(button => {
+        const id = button.dataset[idAttribute];
+        const row = document.querySelector(`${ rowSelector }[data-parent-id="${ id }"]`);
+        const cookieName = `${ cookiePrefix }_expanded_${ id }`;
+        const isExpanded = Cookies.get(cookieName);
+
+        if (!row) {
+            return;
+        }
+
+        if (isExpanded) {
+            row.classList.remove('d-none');
+            button.querySelector('i').classList.remove('bi-chevron-right');
+            button.querySelector('i').classList.add('bi-chevron-down');
+        }
+
+        button.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+
+            row.classList.toggle('d-none');
+            icon.classList.toggle('bi-chevron-right');
+            icon.classList.toggle('bi-chevron-down');
+
+            if (!row.classList.contains('d-none')) {
+                Cookies.set(cookieName, '1', {expires: duration});
+            } else {
+                Cookies.remove(cookieName);
+            }
+        });
+    });
+}
+
+window.initToggleRows = initToggleRows;

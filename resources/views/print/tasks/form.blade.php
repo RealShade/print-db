@@ -1,4 +1,13 @@
 <form id="taskForm" method="POST">
+    @if ($task)
+        {!! FilenamePlaceholder::generateWithWrapper($task) !!}
+    @endif
+    <div class="mb-3">
+        <label for="external_id" class="form-label">{{ __('task.external_id') }}</label>
+        <input type="text" class="form-control" id="external_id" name="external_id"
+               value="{{ old('external_id', $task?->external_id) }}">
+    </div>
+
     <div class="mb-3">
         <label for="name" class="form-label">{{ __('task.name') }}</label>
         <input type="text" class="form-control" id="name" name="name"
@@ -12,12 +21,6 @@
     </div>
 
     <div class="mb-3">
-        <label for="external_id" class="form-label">{{ __('task.external_id') }}</label>
-        <input type="text" class="form-control" id="external_id" name="external_id"
-               value="{{ old('external_id', $task?->external_id) }}">
-    </div>
-
-    <div class="mb-3">
         <label for="status" class="form-label">{{ __('common.status') }}</label>
         <select class="form-select" id="status" name="status">
             @foreach(\App\Enums\TaskStatus::cases() as $status)
@@ -28,10 +31,6 @@
             @endforeach
         </select>
     </div>
-
-    @if ($task)
-        {!! FilenamePlaceholder::generateWithWrapper($task) !!}
-    @endif
 
     <div class="mb-3">
         <label class="form-label">{{ __('task.parts') }}</label>
@@ -47,7 +46,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <strong>{{ $part->name }}</strong>
-                                <span class="text-muted">(v{{ $part->version }})</span>
+                                <span class="text-muted">({{ $part->version }})</span>
                             </div>
                             <div class="d-flex gap-2 align-items-center">
                                 <input type="hidden" name="parts[{{ $loop->index }}][id]" value="{{ $part->id }}">
@@ -75,7 +74,7 @@
     </div>
 </form>
 
-<div class="modal fade" id="partsModal" tabindex="-1">
+<div class="modal fade" id="partsModal" tabindex="-1" data-type="formModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -92,7 +91,7 @@
                                 data-part-version-date="{{ $part->version_date?->format('d.m.Y') }}">
                             <strong>#{{ $part->id }}</strong>
                             {{ $part->name }}
-                            <span class="text-muted">(v{{ $part->version }}
+                            <span class="text-muted">({{ $part->version }}
                                 @if($part->version_date)
                                     от {{ $part->version_date->format('d.m.Y') }}
                                 @endif

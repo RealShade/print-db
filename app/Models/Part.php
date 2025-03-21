@@ -25,4 +25,5 @@ class Part extends Model
             ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
     }
+
 }
