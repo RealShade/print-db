@@ -56,7 +56,6 @@ trait ParsesFilenameTemplate
             'errors'  => [],
         ];
 
-        // @TODO для списка задач поднять все модели, так как они нужны для вычисления комплектации
         $dataResult = [];
         foreach ($parsedData as $item) {
             if (!isset($item['task_id'])) {
@@ -65,6 +64,7 @@ trait ParsesFilenameTemplate
             }
 
             if (!isset($dataResult[ $item['task_id'] ])) {
+                // заповнюємо дані завдання, якщо їх ще немає
                 $task = Task::where('id', $item['task_id'])
                     ->where('user_id', $userId)
                     ->with('parts')
@@ -75,51 +75,56 @@ trait ParsesFilenameTemplate
                     continue;
                 }
 
+                $parts                   = $task->parts;
                 $dataResult[ $task->id ] = [
                     'id'                 => $task->id,
                     'name'               => $task->name,
                     'status'             => $task->status,
                     'external_id'        => $task->external_id,
                     'count_set_planned'  => $task->count_set_planned,
-                    'count_set_current'  => $task->parts->map(function($part) {
+                    'count_set_printed'  => $parts->map(function($part) {
                         return (int)($part->pivot->count_printed / $part->pivot->count_per_set);
                     })->min(),
                     'count_set_printing' => 0,
                     'count_set_future'   => 0,
                 ];
+                // ... також заповнюємо дані частин
+                foreach ($parts as $part) {
+                    if (!isset($dataResult[ $task->id ]['parts'][ $part->id ])) {
+                        $dataResult[ $task->id ]['parts'][ $part->id ] = [
+                            'id'             => $part->id,
+                            'part_task_id'   => $part->pivot->id,
+                            'name'           => $part->name,
+                            'version'        => $part->version,
+                            'is_printing'    => false,
+                            'count_per_set'  => $part->pivot->count_per_set,
+                            'count_required' => $part->pivot->count_per_set * $task->count_set_planned,
+                            'count_printed'  => $part->pivot->count_printed,
+                            'count_printing' => empty($item['part_id']) ? $item['count'] * $part->pivot->count_per_set : 0, // якщо частина не вказана, то вважаємо, що це друкується вся партія
+                            'count_future'   => $part->pivot->count_printed + $item['count'] * $part->pivot->count_per_set,
+                        ];
+                    }
+                }
             }
 
             if (!empty($item['part_id'])) {
-                if (!isset($dataResult[ $task->id ]['parts'][ $item['part_id'] ])) {
-                    $part = $task->parts->where('id', $item['part_id'])->first();
-                    if (!$part) {
-                        $result['errors'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
-                    }
-                    $dataResult[ $task->id ]['parts'][ $item['part_id'] ] = [
-                        'id'             => $part->id,
-                        'part_task_id'   => $part->pivot->id,
-                        'name'           => $part->name,
-                        'version'        => $part->version,
-                        'count_per_set'  => $part->pivot->count_per_set,
-                        'count_required' => $part->pivot->count_per_set * $task->count_set_planned,
-                        'count_printed'  => $part->pivot->count_printed,
-                        'count_printing' => 0,
-                        'count_future'   => $part->pivot->count_printed,
-                    ];
+                // якщо частина вказана, то перевіряємо, чи вона є в даних завдання
+                if (!array_key_exists($item['part_id'], $dataResult[ $item['task_id'] ]['parts'])) {
+                    $result['errors'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
                 }
-                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_printing'] += $item['count'];
-                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_future']   += $item['count'];
-            } else {
-                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_printing'] += $part->pivot->count_per_set * $item['count'];
-                $dataResult[ $task->id ]['parts'][ $item['part_id'] ]['count_future']   += $part->pivot->count_per_set * $item['count'];
+                // якщо частина є, то додаємо до неї дані
+                $dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ]['count_printing'] += $item['count'];
+                $dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ]['count_future']   += $item['count'];
             }
         }
         unset($item);
 
+        // якщо є помилки, то повертаємо їх
         if (!empty($result['errors'])) {
             return $result;
         }
 
+        // розраховуємо кількість надрукованих комплектів для кожної частини
         foreach ($dataResult as &$item) {
             $item['count_set_printing'] = min(array_map(function($part) {
                 return (int)($part['count_printing'] / $part['count_per_set']);
