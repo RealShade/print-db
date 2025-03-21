@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Мое приложение</title>
+    <title>3D print organizer</title>
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('bootstrap-icons/font/bootstrap-icons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
@@ -23,6 +23,12 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             @if(auth()->check())
+                <li class="nav-item">
+                    <a href="{{ route('printers.index') }}" class="nav-link {{ request()->is('printers') ? 'active' : 'text-white' }}">
+                        <i class="bi bi-printer me-2"></i>
+                        {{ __('menu.printers') }}
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
                         <i class="bi bi-speedometer2 me-2"></i>
