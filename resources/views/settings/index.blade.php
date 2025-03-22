@@ -8,10 +8,8 @@
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{ __('settings.tabs.api_tokens') }}</h5>
-                        <p class="card-text">{{ __('settings.api_tokens.description') }}</p>
                         <a href="{{ route('settings.api-tokens.index') }}" class="btn btn-primary">
-                            <i class="bi bi-key me-2"></i>{{ __('settings.api_tokens.manage') }}
+                            <i class="bi bi-key me-2"></i>{{ __('settings.api_tokens.title') }}
                         </a>
                     </div>
                 </div>

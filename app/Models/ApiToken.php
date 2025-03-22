@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ApiToken extends Model
 {
     protected $fillable = [
-        'token'
+        'token',
+        'last_used_at',
     ];
 
     protected $casts = [
