@@ -29,6 +29,11 @@ class Task extends Model
     ];
 
     /* **************************************** Public **************************************** */
+    public function isPrinting() : bool
+    {
+        return $this->parts()->get()->map(fn($part) => $part->pivot->printingTasks->count())->sum() > 0;
+    }
+
     public function parts() : BelongsToMany
     {
         return $this->belongsToMany(Part::class)

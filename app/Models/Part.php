@@ -11,11 +11,11 @@ class Part extends Model
         'name',
         'version',
         'version_date',
-        'user_id'
+        'user_id',
     ];
 
     protected $casts = [
-        'version_date' => 'date'
+        'version_date' => 'date',
     ];
 
     public function tasks(): BelongsToMany
@@ -25,5 +25,6 @@ class Part extends Model
             ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
     }
+
 
 }

@@ -40,7 +40,7 @@
                             <span class="badge badge-{{ strtolower($task->status->name) }}">
                                 {{ $task->status->label() }}
                             </span>
-                            @if($task->parts->flatMap->printingTasks->isNotEmpty())
+                            @if($task->isPrinting())
                                 <span class="badge badge-printing ms-1" title="{{ __('printer.status.printing') }}">
                                     <i class="bi bi-printer"></i>
                                 </span>
@@ -87,7 +87,14 @@
                                         <td>{{ $part->name }}</td>
                                         <td>{{ $part->version }}</td>
                                         <td class="text-end">{{ $part->pivot->count_per_set }}</td>
-                                        <td class="text-end">{{ $part->pivot->printing_count }}</td>
+                                        <td class="text-end">
+                                            @if($part->pivot->printing_count > 0)
+                                                <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
+                                    <i class="bi bi-printer"></i>
+                                </span>
+                                            @endif
+                                            {{ $part->pivot->printing_count }}
+                                        </td>
                                         <td class="text-end">{{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}</td>
                                         <td>
                                             <button type="button"

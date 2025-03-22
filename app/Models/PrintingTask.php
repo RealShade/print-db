@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PrintingTask extends Model
 {
+    protected $fillable = [
+        'part_task_id',
+        'printer_id',
+        'count',
+        'status',
+    ];
 
     /* **************************************** Public **************************************** */
     public function partTask() : BelongsTo
