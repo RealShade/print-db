@@ -124,11 +124,11 @@ trait ParsesFilenameTemplate
         foreach ($dataResult as &$item) {
             $item['count_set_printing'] = min(array_map(function($part) {
                 return (int)($part['count_printing'] / $part['count_per_set']);
-            }, $item['parts']));
+            }, $item['parts'] ?? []), 0);
 
             $item['count_set_future'] = min(array_map(function($part) {
                 return (int)($part['count_future'] / $part['count_per_set']);
-            }, $item['parts']));
+            }, $item['parts'] ?? []), 0);
         }
         unset($item);
 

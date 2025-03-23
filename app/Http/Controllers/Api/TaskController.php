@@ -29,7 +29,7 @@ class TaskController extends Controller
 
         // Обновление значений count_printed в PartTask
         foreach ($validationResult['data'] as $taskData) {
-            foreach ($taskData['parts'] as $partData) {
+            foreach ($taskData['parts'] ?? [] as $partData) {
                 if ($partData['count_printing']) {
                     $partTask = PartTask::find($partData['part_task_id']);
                     if ($partTask) {

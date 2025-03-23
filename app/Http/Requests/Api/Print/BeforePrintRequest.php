@@ -6,6 +6,10 @@ use App\Http\Requests\Api\ApiRequest;
 
 class BeforePrintRequest extends ApiRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
     public function rules(): array
     {
         return [
