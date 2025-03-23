@@ -46,6 +46,7 @@ class PartController extends Controller
     public function update(PartRequest $request, Part $part) : JsonResponse
     {
         abort_if($part->user_id !== auth()->id(), 403);
+
         $part->update($request->validated());
 
         return response()->json(['success' => true]);

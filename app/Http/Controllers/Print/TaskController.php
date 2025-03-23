@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Print;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Print\TaskRequest;
-use App\Models\PrintingTask;
 use App\Models\Task;
 use App\Models\Part;
 use Illuminate\Http\JsonResponse;
@@ -25,6 +24,7 @@ class TaskController extends Controller
     public function edit(Task $task) : View
     {
         abort_if($task->user_id !== auth()->id(), 403);
+
         $parts = Part::where('user_id', auth()->id())->get();
 
         return view('print.tasks.form', compact('task', 'parts'));
@@ -53,6 +53,8 @@ class TaskController extends Controller
 
     public function update(TaskRequest $request, Task $task) : JsonResponse
     {
+        abort_if($task->user_id !== auth()->id(), 403);
+
         $task->update($request->validated());
         $task->parts()->sync($request->getParts());
 

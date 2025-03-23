@@ -7,10 +7,6 @@ use App\Models\Task;
 trait ParsesFilenameTemplate
 {
     /* **************************************** Protected **************************************** */
-    protected function calculatePrintForecast(Task $task, array $requestData) : array
-    {
-    }
-
     protected function parseFilename(string $filename, int $userID) : array
     {
         $pattern = '/\[(pid_(\d+)(\(x(\d+)\))?@(\d+))]|\[(tid_(\d+)(\(x(\d+)\))?)]/';

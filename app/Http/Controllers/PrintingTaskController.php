@@ -65,6 +65,8 @@ class PrintingTaskController extends Controller
     /* **************************************** Getters **************************************** */
     public function getParts(Task $task) : JsonResponse
     {
+        abort_if($task->user_id !== auth()->id(), 403);
+
         return response()->json([
             'parts' => $task->parts->map(fn($part) => [
                 'id'      => $part->id,
