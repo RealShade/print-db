@@ -126,5 +126,6 @@ return [
     'users_per_page' => env('USERS_PER_PAGE', 100),
     'admin_email' => env('ADMIN_EMAIL', 'admin@admin'),
     'admin_password' => env('ADMIN_PASSWORD', 'admin123'),
+    'free_registration' => env('FREE_REGISTRATION', false),
 
 ];
