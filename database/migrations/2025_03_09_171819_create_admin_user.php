@@ -14,7 +14,7 @@ return new class extends Migration {
         $admin = User::create([
             'name'     => 'Admin',
             'email'    => config('app.admin_email'),
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make(config('app.admin_password')),
             'status'   => UserStatus::ACTIVE,
         ]);
 

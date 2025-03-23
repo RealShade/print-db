@@ -30,7 +30,7 @@ class ApiTokenController extends Controller
 
     public function store(): JsonResponse
     {
-        $token = auth()->user()->apiTokens()->create([
+        auth()->user()->apiTokens()->create([
             'token' => Str::random(64)
         ]);
 

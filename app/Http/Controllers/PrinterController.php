@@ -21,6 +21,8 @@ class PrinterController extends Controller
 
     public function destroy(Printer $printer) : RedirectResponse
     {
+        abort_if($printer->user_id !== auth()->id(), 403);
+
         $printer->delete();
 
         return redirect()
@@ -30,6 +32,8 @@ class PrinterController extends Controller
 
     public function edit(Printer $printer) : View
     {
+        abort_if($printer->user_id !== auth()->id(), 403);
+
         return view('printers.form', compact('printer'));
     }
 
@@ -42,7 +46,7 @@ class PrinterController extends Controller
 
     public function store(PrinterRequest $request) : JsonResponse
     {
-        $printer = auth()->user()->printers()->create([
+        auth()->user()->printers()->create([
             'name'   => $request->name,
             'status' => PrinterStatus::ACTIVE,
         ]);
@@ -52,6 +56,8 @@ class PrinterController extends Controller
 
     public function toggleStatus(Printer $printer) : RedirectResponse
     {
+        abort_if($printer->user_id !== auth()->id(), 403);
+
         $printer->update([
             'status' => $printer->status === PrinterStatus::ACTIVE
                 ? PrinterStatus::INACTIVE
@@ -65,6 +71,8 @@ class PrinterController extends Controller
 
     public function update(PrinterRequest $request, Printer $printer) : JsonResponse
     {
+        abort_if($printer->user_id !== auth()->id(), 403);
+
         $printer->update([
             'name' => $request->name,
         ]);

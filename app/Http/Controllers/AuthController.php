@@ -38,7 +38,7 @@ class AuthController extends Controller
     {
         $userData             = $request->userData();
         $userData['password'] = Hash::make($userData['password']);
-        $userData['status']   = UserStatus::NEW;
+        $userData['status']   = config('app.free_registration') ? UserStatus::ACTIVE : UserStatus::NEW;
 
         User::create($userData);
 
