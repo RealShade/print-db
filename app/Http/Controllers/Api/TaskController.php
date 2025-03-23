@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Print;
+namespace App\Http\Controllers\Api;
 
 use App\Enums\TaskStatus;
 use App\Http\Controllers\Controller;
