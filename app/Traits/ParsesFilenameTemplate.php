@@ -9,7 +9,7 @@ trait ParsesFilenameTemplate
     /* **************************************** Protected **************************************** */
     protected function parseFilename(string $filename, int $userID) : array
     {
-        $pattern = '/\[(pid_(\d+)(\(x(\d+)\))?@(\d+))]|\[(tid_(\d+)(\(x(\d+)\))?)]/';
+        $pattern = '/\((pid_(\d+)(\(x(\d+)\))?_(\d+))\)|\((tid_(\d+)(\(x(\d+)\))?)\)/';
         preg_match_all($pattern, $filename, $matches, PREG_SET_ORDER);
 
         if (empty($matches)) {
@@ -124,11 +124,11 @@ trait ParsesFilenameTemplate
         foreach ($dataResult as &$item) {
             $item['count_set_printing'] = min(array_map(function($part) {
                 return (int)($part['count_printing'] / $part['count_per_set']);
-            }, $item['parts']));
+            }, $item['parts'] ?? []), 0);
 
             $item['count_set_future'] = min(array_map(function($part) {
                 return (int)($part['count_future'] / $part['count_per_set']);
-            }, $item['parts']));
+            }, $item['parts'] ?? []), 0);
         }
         unset($item);
 
