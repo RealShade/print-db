@@ -35,8 +35,8 @@ class TaskController extends Controller
             foreach ($taskData['parts'] ?? [] as $partData) {
                 if ($partData['count_printing']) {
                     $partTask = PartTask::find($partData['part_task_id']);
-                    if ($partTask) {
-                        $partTask->count_printed = $partData['count_future'];
+                    if ($partTask && $partData['is_printing']) {
+                        $partTask->count_printed += $partData['count_printing'];
                         $partTask->save();
                     }
                 }

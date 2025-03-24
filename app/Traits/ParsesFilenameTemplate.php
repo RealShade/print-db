@@ -92,13 +92,13 @@ trait ParsesFilenameTemplate
                             'part_task_id'   => $part->pivot->id,
                             'name'           => $part->name,
                             'version'        => $part->version,
-                            'is_printing'    => false,
+                            'is_printing'    => empty($item['part_id']) || $item['part_id'] === $part->id, // якщо частина не вказана, то вважаємо, що це друкується вся партія
                             'count_per_set'  => $part->pivot->count_per_set,
                             'count_required' => $part->pivot->count_per_set * $task->count_set_planned,
                             'count_printed'  => $part->pivot->count_printed,
-                            'count_printing' => empty($item['part_id']) ? $item['count'] * $part->pivot->count_per_set : 0, // якщо частина не вказана, то вважаємо, що це друкується вся партія
-                            'count_future'   => $part->pivot->count_printed + $item['count'] * $part->pivot->count_per_set,
+                            'count_printing' => empty($item['part_id']) || $item['part_id'] === $part->id ? $item['count'] * $part->pivot->count_per_set : 0, // якщо частина не вказана, то вважаємо, що це друкується вся партія
                         ];
+                        $dataResult[ $task->id ]['parts'][ $part->id ]['count_future'] = $part->pivot->count_printed + $dataResult[ $task->id ]['parts'][ $part->id ]['count_printing'];
                     }
                 }
             }
