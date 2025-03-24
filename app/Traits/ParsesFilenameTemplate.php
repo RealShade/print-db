@@ -9,7 +9,7 @@ trait ParsesFilenameTemplate
     /* **************************************** Protected **************************************** */
     protected function parseFilename(string $filename, int $userID) : array
     {
-        $pattern = '/\((pid_(\d+)(\(x(\d+)\))?@(\d+))\)|\((tid_(\d+)(\(x(\d+)\))?)\)/';
+        $pattern = '/\((pid_(\d+)(\(x(\d+)\))?_(\d+))\)|\((tid_(\d+)(\(x(\d+)\))?)\)/';
         preg_match_all($pattern, $filename, $matches, PREG_SET_ORDER);
 
         if (empty($matches)) {

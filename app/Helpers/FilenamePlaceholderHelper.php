@@ -14,7 +14,7 @@ class FilenamePlaceholderHelper
         $placeholder = '';
 
         if ($part) {
-            $placeholder .= "(pid_{$part->id}(x1)@{$task->id})";
+            $placeholder .= "(pid_{$part->id}(x1)_{$task->id})";
         } else {
             $placeholder .= "(tid_{$task->id}(x1))";
         }
