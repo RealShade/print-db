@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Print\AfterPrintRequest;
 use App\Http\Requests\Api\Print\BeforePrintRequest;
 use App\Models\PartTask;
+use App\Models\PrintingTask;
 use App\Models\Task;
 use App\Traits\ParsesFilenameTemplate;
 use Illuminate\Http\JsonResponse;
@@ -27,6 +28,8 @@ class TaskController extends Controller
             ], 422);
         }
 
+        $printer = $request->getPrinter();
+
         // Обновление значений count_printed в PartTask
         foreach ($validationResult['data'] as $taskData) {
             foreach ($taskData['parts'] ?? [] as $partData) {
@@ -39,6 +42,8 @@ class TaskController extends Controller
                 }
             }
         }
+
+        $printer->printingTasks()->delete();
 
         return response()->json($validationResult);
     }
@@ -53,6 +58,33 @@ class TaskController extends Controller
                 'errors'  => $validationResult['errors'],
             ], 422);
         }
+
+        $printer = $request->getPrinter();
+
+        foreach ($validationResult['data'] as $taskData) {
+            foreach ($taskData['parts'] ?? [] as $partData) {
+                if ($partData['count_printing']) {
+                    PrintingTask::create([
+                        'part_task_id' => $partData['part_task_id'],
+                        'printer_id'   => $printer->id,
+                        'count'        => $partData['count_printing'],
+                    ]);
+
+                    $partTask = PartTask::find($partData['part_task_id']);
+                    if ($partTask) {
+                        $task = $partTask->task;
+                        if ($task->status === TaskStatus::NEW) {
+                            $task->update(['status' => TaskStatus::IN_PROGRESS]);
+                        }
+                    }
+                }
+            }
+        }
+
+        $validationResult['data']['printer'] = [
+            'id'   => $printer->id,
+            'name' => $printer->name,
+        ];
 
         return response()->json($validationResult);
     }
