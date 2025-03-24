@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\Part;
 use App\Models\Task;
+use Throwable;
 
 class FilenamePlaceholderHelper
 {
@@ -13,15 +14,17 @@ class FilenamePlaceholderHelper
         $placeholder = '';
 
         if ($part) {
-            $placeholder .= "[pid_{$part->id}(x1)@{$task->id}]";
+            $placeholder .= "(pid_{$part->id}(x1)@{$task->id})";
         } else {
-            $placeholder .= "[tid_{$task->id}]";
+            $placeholder .= "(tid_{$task->id}(x1))";
         }
-
 
         return $placeholder;
     }
 
+    /**
+     * @throws Throwable
+     */
     public static function generateWithWrapper(?Task $task = null, ?Part $part = null) : string
     {
         return view('components.filename-placeholder', [

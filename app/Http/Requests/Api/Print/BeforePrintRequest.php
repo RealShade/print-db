@@ -44,7 +44,7 @@ class BeforePrintRequest extends ApiRequest
     /* **************************************** Protected **************************************** */
     protected function prepareForValidation() : void
     {
-        if (!$this->has('printer_id')) {
+        if (!$this->has('printer_id') || empty($this->printer_id)) {
             $this->merge([
                 'printer_id' => auth()->user()->printers()->first()->id ?? null,
             ]);

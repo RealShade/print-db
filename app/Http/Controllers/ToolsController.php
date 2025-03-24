@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\FilenameValidationService;
 use App\Traits\ParsesFilenameTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ class ToolsController extends Controller
         return view('tools.index');
     }
 
-    public function validateFilename(Request $request, FilenameValidationService $service): JsonResponse
+    public function validateFilename(Request $request): JsonResponse
     {
         $validationResult = $this->parseFilename($request->filename, $request->user()->id);
 
