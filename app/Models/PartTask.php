@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\PrinterStatus;
 use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 

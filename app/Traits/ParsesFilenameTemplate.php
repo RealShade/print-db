@@ -79,8 +79,8 @@ trait ParsesFilenameTemplate
                     'external_id'        => $task->external_id,
                     'count_set_planned'  => $task->count_set_planned,
                     'count_set_printed'  => $parts->map(function($part) {
-                        return (int)($part->pivot->count_printed / $part->pivot->count_per_set);
-                    })->min(),
+                            return (int)($part->pivot->count_printed / $part->pivot->count_per_set);
+                        })->min() ?? 0,
                     'count_set_printing' => 0,
                     'count_set_future'   => 0,
                 ];
@@ -92,15 +92,16 @@ trait ParsesFilenameTemplate
                             'part_task_id'   => $part->pivot->id,
                             'name'           => $part->name,
                             'version'        => $part->version,
-                            'is_printing'    => empty($item['part_id']) || $item['part_id'] === $part->id, // якщо частина не вказана, то вважаємо, що це друкується вся партія
+                            'is_printing'    => false, // якщо частина не вказана, то вважаємо, що це друкується вся партія
                             'count_per_set'  => $part->pivot->count_per_set,
                             'count_required' => $part->pivot->count_per_set * $task->count_set_planned,
                             'count_printed'  => $part->pivot->count_printed,
-                            'count_printing' => empty($item['part_id']) || $item['part_id'] === $part->id ? $item['count'] * $part->pivot->count_per_set : 0, // якщо частина не вказана, то вважаємо, що це друкується вся партія
+                            'count_printing' => 0,
+                            'count_future'   => $part->pivot->count_printed,
                         ];
-                        $dataResult[ $task->id ]['parts'][ $part->id ]['count_future'] = $part->pivot->count_printed + $dataResult[ $task->id ]['parts'][ $part->id ]['count_printing'];
                     }
                 }
+                unset($part);
             }
 
             if (!empty($item['part_id'])) {
@@ -109,9 +110,19 @@ trait ParsesFilenameTemplate
                     $result['errors'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
                 }
                 // якщо частина є, то додаємо до неї дані
-                $dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ]['count_printing'] += $item['count'];
-                $dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ]['count_future']   += $item['count'];
+                $part                   = &$dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ];
+                $part['count_printing'] += $item['count'];
+                $part['count_future']   += $item['count'];
+                $part['is_printing']    = true; // если часть указана, то считаем, что она печатается
+            } else {
+                foreach ($dataResult[ $item['task_id'] ]['parts'] ?? [] as &$part) {
+                    // якщо частина не вказана, то вважаємо, що це друкується вся партія
+                    $part['count_printing'] += $item['count'] * $part['count_per_set'];
+                    $part['count_future']   += $item['count'] * $part['count_per_set'];
+                    $part['is_printing']    = true;
+                }
             }
+            unset($part);
         }
         unset($item);
 
@@ -122,13 +133,15 @@ trait ParsesFilenameTemplate
 
         // розраховуємо кількість надрукованих комплектів для кожної частини
         foreach ($dataResult as &$item) {
-            $item['count_set_printing'] = min(array_map(function($part) {
-                return (int)($part['count_printing'] / $part['count_per_set']);
-            }, $item['parts'] ?? []), 0);
+            if (!empty($item['parts'])) {
+                $item['count_set_printing'] = min(array_map(function($part) {
+                    return (int)($part['count_printing'] / $part['count_per_set']);
+                }, $item['parts']));
 
-            $item['count_set_future'] = min(array_map(function($part) {
-                return (int)($part['count_future'] / $part['count_per_set']);
-            }, $item['parts'] ?? []), 0);
+                $item['count_set_future'] = min(array_map(function($part) {
+                    return (int)($part['count_future'] / $part['count_per_set']);
+                }, $item['parts'] ?? []));
+            }
         }
         unset($item);
 
