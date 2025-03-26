@@ -17,11 +17,10 @@ class PrintingTaskController extends Controller
     /* **************************************** Public **************************************** */
     public function create(Printer $printer)
     {
-        abort_if($printer->user_id !== auth()->id(), 403);
-
         $partsWithTasks = $this->getPartsWithTasks();
+        $printingTask = null;
 
-        return view('printers.printing-form', compact('partsWithTasks', 'printer'));
+        return view('printers.printing-form', compact('partsWithTasks', 'printer', 'printingTask'));
     }
 
     public function destroy(PrintingTask $printingTask) : JsonResponse
@@ -35,8 +34,6 @@ class PrintingTaskController extends Controller
 
     public function store(PrintingTaskRequest $request, Printer $printer): JsonResponse
     {
-        abort_if($printer->user_id !== auth()->id(), 403);
-
         $printer->printingTasks()->create([
             'part_task_id' => $request->part_task_id,
             'count' => $request->count
@@ -65,8 +62,6 @@ class PrintingTaskController extends Controller
     /* **************************************** Getters **************************************** */
     public function getParts(Task $task) : JsonResponse
     {
-        abort_if($task->user_id !== auth()->id(), 403);
-
         return response()->json([
             'parts' => $task->parts->map(fn($part) => [
                 'id'      => $part->id,

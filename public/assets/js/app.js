@@ -4975,12 +4975,20 @@ document.addEventListener('DOMContentLoaded', function () {
               window.location.reload();
             }
           })["catch"](function (error) {
+            var errors = modal.querySelector('#formErrors');
+            errors.classList.remove('d-none');
             error.json().then(function (data) {
-              var errors = modal.querySelector('#formErrors');
-              errors.classList.remove('d-none');
-              errors.innerHTML = Object.values(data.errors || {}).flat().map(function (error) {
-                return "<div>".concat(error, "</div>");
-              }).join('') || 'Виникла помилка при збереженні';
+              if (data.message) {
+                errors.innerHTML = data.message;
+              } else if (data.errors) {
+                errors.innerHTML = Object.values(data.errors).flat().map(function (error) {
+                  return "<div>".concat(error, "</div>");
+                }).join('');
+              } else {
+                errors.innerHTML = error.status + ' ' + error.statusText;
+              }
+            })["catch"](function (e) {
+              errors.innerHTML = 'Unknown error';
             });
           });
         });

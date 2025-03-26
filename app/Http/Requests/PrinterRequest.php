@@ -11,7 +11,9 @@ class PrinterRequest extends FormRequest
     /* **************************************** Public **************************************** */
     public function authorize() : bool
     {
-        return true;
+        $printer = $this->route('printer');
+
+        return $printer === null || $printer->user_id === auth()->id();
     }
 
     public function messages() : array
@@ -19,7 +21,7 @@ class PrinterRequest extends FormRequest
         return [
             'name.required' => 'Назва принтера є обов\'язковою.',
             'name.string'   => 'Назва принтера повинна бути рядком.',
-            'name.max'      => 'Назва принтера не може бути довшою за 255 символів.',
+            'name.max'      => 'Назва принтера не може бути довшою за :max символів.',
             'name.unique'   => 'Назва принтера вже зайнята.',
         ];
     }

@@ -20,8 +20,6 @@ class PartController extends Controller
 
     public function edit(Part $part) : View
     {
-        abort_if($part->user_id !== auth()->id(), 403);
-
         return view('print.parts.form', compact('part'));
     }
 
@@ -45,9 +43,14 @@ class PartController extends Controller
 
     public function update(PartRequest $request, Part $part) : JsonResponse
     {
-        abort_if($part->user_id !== auth()->id(), 403);
-
         $part->update($request->validated());
+
+        return response()->json(['success' => true]);
+    }
+
+    public function destroy(Part $part) : JsonResponse
+    {
+        $part->delete();
 
         return response()->json(['success' => true]);
     }

@@ -18,11 +18,16 @@ class PartRequest extends FormRequest
 
     public function authorize() : bool
     {
-        if ($this->route('part')) {
-            return $this->route('part')->user_id === auth()->id();
-        }
+        $part = $this->route('part');
 
-        return true;
+        return $part === null || $part->user_id === auth()->id();
+    }
+
+    public function messages() : array
+    {
+        return [
+            'parts.exists' => __('part.not_found_or_not_owned'),
+        ];
     }
 
     public function rules() : array
@@ -31,6 +36,7 @@ class PartRequest extends FormRequest
             'name'         => 'required|string|max:255',
             'version'      => 'nullable|string|max:50',
             'version_date' => 'nullable|date',
+            'part'         => 'nullable|exists:parts,id,user_id,' . auth()->id(),
         ];
     }
 

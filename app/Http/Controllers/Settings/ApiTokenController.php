@@ -11,11 +11,10 @@ use Illuminate\View\View;
 
 class ApiTokenController extends Controller
 {
+
     /* **************************************** Public **************************************** */
     public function destroy(ApiToken $token) : JsonResponse
     {
-        abort_if($token->user_id !== auth()->id(), 403);
-
         $token->delete();
 
         return response()->json(['success' => true]);

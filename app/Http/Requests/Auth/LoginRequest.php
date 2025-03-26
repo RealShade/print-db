@@ -6,27 +6,30 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-    public function authorize(): bool
+
+    /* **************************************** Public **************************************** */
+    public function authorize() : bool
     {
         return true;
     }
 
-    public function rules(): array
+    public function credentials() : array
+    {
+        return $this->only(['email', 'password']);
+    }
+
+    public function messages() : array
     {
         return [
-            'email' => 'required|email',
+        ];
+    }
+
+    public function rules() : array
+    {
+        return [
+            'email'    => 'required|email',
             'password' => 'required|string',
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-        ];
-    }
-
-    public function credentials(): array
-    {
-        return $this->only(['email', 'password']);
-    }
 }

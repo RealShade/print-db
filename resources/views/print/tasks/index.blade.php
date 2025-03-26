@@ -19,24 +19,25 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th class="text-end">ID</th>
-                    <th>{{ __('common.status') }}</th>
-                    <th>{{ __('task.created_at') }}</th>
-                    <th>{{ __('task.external_id') }}</th>
-                    <th>{{ __('common.name') }}</th>
-                    <th class="text-end">{{ __('task.count_set_planned') }}</th>
-                    <th class="text-end">{{ __('task.parts_count') }}</th>
-                    <th>{{ __('common.actions') }}</th>
+                    <th class="text-end table-id">ID</th>
+                    <th class="table-status">{{ __('common.status') }}</th>
+                    <th class="table-date">{{ __('task.created_at') }}</th>
+                    <th>{{ __('common.name') }}<br>{{ __('task.external_id') }}</th>
+                    <th class="text-end table-count">{{ __('task.count_set_planned') }}</th>
+                    <th class="text-end table-count">{{ __('task.parts_count') }}</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($tasks as $task)
                     <tr data-task-id="{{ $task->id }}">
-                        <td>
+                        <td class="table-chevron">
                             <i class="bi bi-chevron-right toggle-icon"></i>
                         </td>
-                        <td class="text-end">{{ $task->id }}</td>
-                        <td>
+                        <td class="text-end table-id">
+                            {{ $task->id }}
+                        </td>
+                        <td class="table-status">
                             <span class="badge badge-{{ strtolower($task->status->name) }}">
                                 {{ $task->status->label() }}
                             </span>
@@ -47,11 +48,10 @@
                             @endif
                         </td>
                         <td>{{ $task->created_at->format('d.m.Y') }}</td>
-                        <td>{{ $task->external_id }}</td>
-                        <td>{{ $task->name }}</td>
+                        <td>{{ $task->name }}@if ($task->external_id)<br>{{ $task->external_id }}@endif</td>
                         <td class="text-end">{{ $task->getCompletedSetsCount() }}/{{ $task->count_set_planned }}</td>
                         <td class="text-end">{{ $task->parts->count() }}</td>
-                        <td>
+                        <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#taskModal"
@@ -62,6 +62,19 @@
                                     data-id="{{ $task->id }}">
                                 <i class="bi bi-pencil"></i>
                             </button>
+                            <form action="{{ route('print.tasks.destroy', $task) }}"
+                                  method="POST"
+                                  class="d-inline-block confirm-delete"
+                                  data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                  data-confirm-text="{{ __('task.confirm_delete') }}"
+                                  data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                  data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     <tr class="detail-row d-none" data-parent-id="{{ $task->id }}">
@@ -70,33 +83,33 @@
                                 <thead class="table">
                                 <tr>
                                     <th></th>
-                                    <th class="text-end">ID</th>
+                                    <th class="text-end table-id">ID</th>
                                     <th>{{ __('common.name') }}</th>
                                     <th>{{ __('part.version') }}</th>
-                                    <th class="text-end">{{ __('task.count_per_set') }}</th>
-                                    <th class="text-end">{{ __('task.printing_count') }}</th>
-                                    <th class="text-end">{{ __('task.count_printed') }}</th>
-                                    <th>{{ __('common.actions') }}</th>
+                                    <th class="text-end table-count">{{ __('task.count_per_set') }}</th>
+                                    <th class="text-end table-count">{{ __('task.printing_count') }}</th>
+                                    <th class="text-end table-count">{{ __('task.count_printed') }}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($task->parts as $part)
                                     <tr>
-                                        <td class="ps-5"></td>
-                                        <td class="text-end pe-3">{{ $part->id }}</td>
+                                        <td class="ps-4"></td>
+                                        <td class="text-end table-id">{{ $part->id }}</td>
                                         <td>{{ $part->name }}</td>
                                         <td>{{ $part->version }}</td>
-                                        <td class="text-end">{{ $part->pivot->count_per_set }}</td>
-                                        <td class="text-end">
+                                        <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
+                                        <td class="text-end table-count">
                                             @if($part->pivot->printing_count > 0)
                                                 <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
-                                    <i class="bi bi-printer"></i>
-                                </span>
+                                                    <i class="bi bi-printer"></i>
+                                                </span>
                                             @endif
                                             {{ $part->pivot->printing_count }}
                                         </td>
-                                        <td class="text-end">{{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}</td>
-                                        <td>
+                                        <td class="text-end table-count">{{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}</td>
+                                        <td class="text-end">
                                             <button type="button"
                                                     class="btn btn-sm btn-primary"
                                                     data-bs-toggle="modal"

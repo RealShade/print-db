@@ -4,11 +4,14 @@
 namespace App\Http\Requests\Print;
 
 use App\Enums\TaskStatus;
-use App\Models\Part;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed $parts
+ */
 class TaskRequest extends FormRequest
 {
+
     /* **************************************** Public **************************************** */
     public function attributes() : array
     {
@@ -25,20 +28,21 @@ class TaskRequest extends FormRequest
 
     public function authorize() : bool
     {
-        if ($this->route('task') && $this->route('task')->user_id !== auth()->id()) {
-            return false;
-        }
+        $task = $this->route('task');
 
-        if ($this->has('parts')) {
-            $partIds        = collect($this->parts)->pluck('id')->toArray();
-            $userPartsCount = Part::where('user_id', auth()->id())
-                ->whereIn('id', $partIds)
-                ->count();
+        return $task === null || $task->user_id === auth()->id();
+    }
 
-            return count($partIds) === $userPartsCount;
-        }
+    public function failedAuthorization()
+    {
+        throw new \Illuminate\Auth\Access\AuthorizationException(__('task.not_found_or_not_owned'));
+    }
 
-        return true;
+    public function messages() : array
+    {
+        return [
+            'parts.*.id.exists' => __('part.not_found_or_not_owned'),
+        ];
     }
 
     public function rules() : array
@@ -49,7 +53,7 @@ class TaskRequest extends FormRequest
             'count_set_planned'     => 'required|integer|min:1',
             'status'                => 'required|string|in:' . implode(',', array_column(TaskStatus::cases(), 'value')),
             'parts'                 => 'nullable|array',
-            'parts.*.id'            => 'required_with:parts|exists:parts,id',
+            'parts.*.id'            => 'required_with:parts|exists:parts,id,user_id,' . auth()->id(),
             'parts.*.count_per_set' => 'required_with:parts|integer|min:1',
         ];
     }

@@ -6,15 +6,32 @@ namespace App\Http\Requests;
 use App\Models\PartTask;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed $part_task_id
+ * @property mixed $count
+ */
 class PrintingTaskRequest extends FormRequest
 {
-    public function authorize(): bool
+
+    /* **************************************** Public **************************************** */
+    public function attributes() : array
     {
-        $printer = $this->route('printer');
-        return $printer && $printer->user_id === auth()->id();
+        return [
+            'part_task_id' => __('part.title'),
+            'count'        => __('printer.print_count'),
+        ];
     }
 
-    public function rules(): array
+    public function authorize() : bool
+    {
+        $printer      = $this->route('printer');
+        $printingTask = $this->route('printingTask');
+
+        return ($printer === null || $printer->user_id === auth()->id())
+            && ($printingTask === null || $printingTask->printer->user_id === auth()->id());
+    }
+
+    public function rules() : array
     {
         return [
             'part_task_id' => [
@@ -22,32 +39,25 @@ class PrintingTaskRequest extends FormRequest
                 'exists:' . app(PartTask::class)->getTable() . ',id',
                 function($attribute, $value, $fail) {
                     $partTask = PartTask::find($value);
-                    if ($partTask->task->user_id !== auth()->id()) {
+                    if ($partTask->task->user_id !== auth()->id() || $partTask->part->user_id !== auth()->id()) {
                         $fail(__('validation.exists', ['attribute' => __('task.title')]));
                     }
                 },
             ],
-            'count' => 'required|integer|min:1',
+            'count'        => 'required|integer|min:1',
         ];
     }
 
-    public function getData(): array
+    /* **************************************** Getters **************************************** */
+    public function getData() : array
     {
         $partTask = PartTask::findOrFail($this->part_task_id);
 
         return [
             'task_id' => $partTask->task_id,
             'part_id' => $partTask->part_id,
-            'count' => $this->count,
+            'count'   => $this->count,
         ];
     }
 
-    public function attributes(): array
-    {
-        return [
-            'printer_id' => __('printer.title'),
-            'part_task_id' => __('part.title'),
-            'count' => __('printer.print_count'),
-        ];
-    }
 }

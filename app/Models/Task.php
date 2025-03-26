@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TaskStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     public const TASK_PARTS_TABLE = 'task_part';
 
@@ -29,11 +30,6 @@ class Task extends Model
     ];
 
     /* **************************************** Public **************************************** */
-    public function isPrinting() : bool
-    {
-        return $this->parts()->get()->map(fn($part) => $part->pivot->printingTasks->count())->sum() > 0;
-    }
-
     public function parts() : BelongsToMany
     {
         return $this->belongsToMany(Part::class)
@@ -56,6 +52,11 @@ class Task extends Model
             ->min() ?? 0;
     }
 
+    public function isPrinting() : bool
+    {
+        return $this->parts()->get()->map(fn($part) => $part->pivot->printingTasks->count())->sum() > 0;
+    }
+
     /* **************************************** Protected **************************************** */
     protected static function booted() : void
     {
@@ -67,6 +68,12 @@ class Task extends Model
                     $task->completed_at = null;
                 }
             }
+        });
+
+        static::deleting(function(Task $task) {
+            $task->parts->each(function($part) {
+                $part->pivot->printingTasks()->delete();
+            });
         });
     }
 }

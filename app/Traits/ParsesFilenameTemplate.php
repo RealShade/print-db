@@ -15,7 +15,9 @@ trait ParsesFilenameTemplate
         if (empty($matches)) {
             return [
                 'success' => false,
-                'errors'  => [__('api.validation.pattern_not_found')],
+                'errors'  => [
+                    'filename' => [__('api.validation.pattern_not_found')],
+                ],
             ];
         }
 
@@ -35,7 +37,9 @@ trait ParsesFilenameTemplate
             } else {
                 return [
                     'success' => false,
-                    'errors'  => [__('api.validation.invalid_format')],
+                    'errors'  => [
+                        'filename' => [__('api.validation.invalid_format')],
+                    ],
                 ];
             }
         }
@@ -52,14 +56,14 @@ trait ParsesFilenameTemplate
             'errors'  => [],
         ];
 
-        $dataResult = [];
+        $taskData = [];
         foreach ($parsedData as $item) {
             if (!isset($item['task_id'])) {
-                $result['errors'][] = __('api.validation.task_id_missing');
+                $result['errors']['tasks'][] = __('api.validation.task_id_missing');
                 continue;
             }
 
-            if (!isset($dataResult[ $item['task_id'] ])) {
+            if (!isset($taskData[ $item['task_id'] ])) {
                 // заповнюємо дані завдання, якщо їх ще немає
                 $task = Task::where('id', $item['task_id'])
                     ->where('user_id', $userId)
@@ -67,12 +71,12 @@ trait ParsesFilenameTemplate
                     ->first();
 
                 if (!$task) {
-                    $result['errors'][] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
+                    $result['errors']['tasks'][] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
                     continue;
                 }
 
-                $parts                   = $task->parts;
-                $dataResult[ $task->id ] = [
+                $parts                 = $task->parts;
+                $taskData[ $task->id ] = [
                     'id'                 => $task->id,
                     'name'               => $task->name,
                     'status'             => $task->status,
@@ -86,8 +90,8 @@ trait ParsesFilenameTemplate
                 ];
                 // ... також заповнюємо дані частин
                 foreach ($parts as $part) {
-                    if (!isset($dataResult[ $task->id ]['parts'][ $part->id ])) {
-                        $dataResult[ $task->id ]['parts'][ $part->id ] = [
+                    if (!isset($taskData[ $task->id ]['parts'][ $part->id ])) {
+                        $taskData[ $task->id ]['parts'][ $part->id ] = [
                             'id'             => $part->id,
                             'part_task_id'   => $part->pivot->id,
                             'name'           => $part->name,
@@ -106,20 +110,23 @@ trait ParsesFilenameTemplate
 
             if (!empty($item['part_id'])) {
                 // якщо частина вказана, то перевіряємо, чи вона є в даних завдання
-                if (!array_key_exists($item['part_id'], $dataResult[ $item['task_id'] ]['parts'])) {
-                    $result['errors'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
+                if (empty($taskData[ $item['task_id'] ]['parts']) || !array_key_exists($item['part_id'], $taskData[ $item['task_id'] ]['parts'])) {
+                    $result['errors']['parts'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
+                    continue;
                 }
                 // якщо частина є, то додаємо до неї дані
-                $part                   = &$dataResult[ $item['task_id'] ]['parts'][ $item['part_id'] ];
+                $part                   = &$taskData[ $item['task_id'] ]['parts'][ $item['part_id'] ];
                 $part['count_printing'] += $item['count'];
                 $part['count_future']   += $item['count'];
                 $part['is_printing']    = true; // если часть указана, то считаем, что она печатается
             } else {
-                foreach ($dataResult[ $item['task_id'] ]['parts'] ?? [] as &$part) {
-                    // якщо частина не вказана, то вважаємо, що це друкується вся партія
-                    $part['count_printing'] += $item['count'] * $part['count_per_set'];
-                    $part['count_future']   += $item['count'] * $part['count_per_set'];
-                    $part['is_printing']    = true;
+                if (!empty($taskData[ $item['task_id'] ]['parts'])) {
+                    foreach ($taskData[ $item['task_id'] ]['parts'] as &$part) {
+                        // якщо частина не вказана, то вважаємо, що це друкується вся партія
+                        $part['count_printing'] += $item['count'] * $part['count_per_set'];
+                        $part['count_future']   += $item['count'] * $part['count_per_set'];
+                        $part['is_printing']    = true;
+                    }
                 }
             }
             unset($part);
@@ -132,7 +139,7 @@ trait ParsesFilenameTemplate
         }
 
         // розраховуємо кількість надрукованих комплектів для кожної частини
-        foreach ($dataResult as &$item) {
+        foreach ($taskData as &$item) {
             if (!empty($item['parts'])) {
                 $item['count_set_printing'] = min(array_map(function($part) {
                     return (int)($part['count_printing'] / $part['count_per_set']);
@@ -140,13 +147,13 @@ trait ParsesFilenameTemplate
 
                 $item['count_set_future'] = min(array_map(function($part) {
                     return (int)($part['count_future'] / $part['count_per_set']);
-                }, $item['parts'] ?? []));
+                }, $item['parts']));
             }
         }
         unset($item);
 
-        $result['success'] = true;
-        $result['data']    = $dataResult;
+        $result['success']       = true;
+        $result['data']['tasks'] = $taskData;
 
         return $result;
     }

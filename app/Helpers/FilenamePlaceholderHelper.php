@@ -9,14 +9,14 @@ use Throwable;
 class FilenamePlaceholderHelper
 {
     /* **************************************** Static **************************************** */
-    public static function generate(Task $task, ?Part $part = null) : string
+    public static function generate(Task $task, ?Part $part = null, ?int $count = 1) : string
     {
         $placeholder = '';
 
         if ($part) {
-            $placeholder .= "(pid_{$part->id}(x1)_{$task->id})";
+            $placeholder .= "(pid_{$part->id}(x{$count})_{$task->id})";
         } else {
-            $placeholder .= "(tid_{$task->id}(x1))";
+            $placeholder .= "(tid_{$task->id}(x{$count}))";
         }
 
         return $placeholder;
@@ -25,10 +25,10 @@ class FilenamePlaceholderHelper
     /**
      * @throws Throwable
      */
-    public static function generateWithWrapper(?Task $task = null, ?Part $part = null) : string
+    public static function generateWithWrapper(?Task $task = null, ?Part $part = null, ?int $count = 1) : string
     {
         return view('components.filename-placeholder', [
-            'placeholder' => self::generate($task, $part),
+            'placeholder' => self::generate($task, $part, $count),
         ])->render();
     }
 }

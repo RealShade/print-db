@@ -23,8 +23,6 @@ class TaskController extends Controller
 
     public function edit(Task $task) : View
     {
-        abort_if($task->user_id !== auth()->id(), 403);
-
         $parts = Part::where('user_id', auth()->id())->get();
 
         return view('print.tasks.form', compact('task', 'parts'));
@@ -53,12 +51,18 @@ class TaskController extends Controller
 
     public function update(TaskRequest $request, Task $task) : JsonResponse
     {
-        abort_if($task->user_id !== auth()->id(), 403);
-
         $task->update($request->validated());
+
         $task->parts()->sync($request->getParts());
 
         return response()->json(['success' => true]);
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return redirect(route('print.tasks.index'));
     }
 
 }

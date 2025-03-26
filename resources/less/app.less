@@ -79,6 +79,7 @@ main {
     thead {
         th {
             color: lighten(@text-color, 20%);
+            vertical-align: middle;
         }
     }
 
@@ -88,6 +89,38 @@ main {
                 color: @text-color;
             }
         }
+    }
+    .table-id {
+        max-width: 6ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table-date {
+        max-width: 12ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table-count {
+        max-width: 8ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .table-status {
+        max-width: 12ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .table-chevron {
+        max-width: 3ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 

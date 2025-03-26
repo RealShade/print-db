@@ -221,13 +221,21 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                             })
                             .catch(error => {
+                                const errors = modal.querySelector('#formErrors');
+                                errors.classList.remove('d-none');
                                 error.json().then(data => {
-                                    const errors = modal.querySelector('#formErrors');
-                                    errors.classList.remove('d-none');
-                                    errors.innerHTML = Object.values(data.errors || {})
-                                                             .flat()
-                                                             .map(error => `<div>${ error }</div>`)
-                                                             .join('') || 'Виникла помилка при збереженні';
+                                    if (data.message) {
+                                        errors.innerHTML = data.message;
+                                    } else if (data.errors) {
+                                        errors.innerHTML = Object.values(data.errors)
+                                                                 .flat()
+                                                                 .map(error => `<div>${ error }</div>`)
+                                                                 .join('');
+                                    } else {
+                                        errors.innerHTML = error.status + ' ' + error.statusText;
+                                    }
+                                }).catch(e => {
+                                    errors.innerHTML = 'Unknown error';
                                 });
                             });
                     });

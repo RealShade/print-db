@@ -18,20 +18,22 @@
             <thead>
             <tr>
                 <th></th>
-                <th>{{ __('printer.id') }}</th>
+                <th class="text-end table-id">{{ __('printer.id') }}</th>
+                <th class="table-status">{{ __('common.status') }}</th>
                 <th>{{ __('printer.name') }}</th>
-                <th>{{ __('common.status') }}</th>
-                <th>{{ __('common.actions') }}</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             @foreach($printers as $printer)
                 <tr data-printer-id="{{ $printer->id }}">
-                    <td>
+                    <td class="table-chevron">
                         <i class="bi bi-chevron-right toggle-icon"></i>
                     </td>
-                    <td class="text-end">{{ $printer->id }}</td>
-                    <td>
+                    <td class="text-end table-id">
+                        {{ $printer->id }}
+                    </td>
+                    <td class="table-status">
                         <span class="badge badge-{{ strtolower($printer->status->value()) }}">
                             {{ $printer->status->label() }}
                         </span>
@@ -44,7 +46,7 @@
                     <td>
                         {{ $printer->name }}
                     </td>
-                    <td>
+                    <td class="text-end">
                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#printerModal"
                                 data-action="{{ route('printers.update', $printer) }}"
                                 data-edit-route="{{ route('printers.edit', $printer) }}"
@@ -52,15 +54,6 @@
                                 data-id="{{ $printer->id }}">
                             <i class="bi bi-pencil"></i>
                         </button>
-
-                        <form action="{{ route('printers.toggle-status', $printer) }}"
-                              method="POST"
-                              class="d-inline-block">
-                            @csrf
-                            <button type="submit" class="btn btn-sm btn-{{ $printer->status === \App\Enums\PrinterStatus::ACTIVE ? 'warning' : 'success' }}">
-                                <i class="bi bi-{{ $printer->status === \App\Enums\PrinterStatus::ACTIVE ? 'pause' : 'play' }}"></i>
-                            </button>
-                        </form>
 
                         <form action="{{ route('printers.destroy', $printer) }}"
                               method="POST"
@@ -87,7 +80,15 @@
                                 <th>{{ __('part.title') }}</th>
                                 <th class="text-end">{{ __('printer.print_count') }}</th>
                                 <th class="text-end">{{ __('task.count_printed') }}</th>
-                                <th>{{ __('common.actions') }}</th>
+                                <th class="text-end">
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#printingTaskModal"
+                                            data-action="{{ route('printing-tasks.store', $printer) }}"
+                                            data-create-route="{{ route('printing-tasks.create', $printer) }}">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -135,15 +136,6 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="p-2">
-                            <button type="button" class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#printingTaskModal"
-                                    data-action="{{ route('printing-tasks.store', $printer) }}"
-                                    data-create-route="{{ route('printing-tasks.create', $printer) }}"
-                                <i class="bi bi-plus-lg"></i> {{ __('printer.add_printing') }}
-                            </button>
-                        </div>
                     </td>
                 </tr>
             @endforeach

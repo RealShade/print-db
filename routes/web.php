@@ -23,7 +23,7 @@ Route::middleware('guest')->group(function() {
     //    })->name('register.success');
 });
 
-Route::middleware(['auth', 'check.user.status'])->group(function() {
+Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function() {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -43,6 +43,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
         Route::post('parts', [PartController::class, 'store'])->name('parts.store');
         Route::get('parts/{part}/edit', [PartController::class, 'edit'])->name('parts.edit');
         Route::put('parts/{part}', [PartController::class, 'update'])->name('parts.update');
+        Route::delete('parts/{part}', [PartController::class, 'destroy'])->name('parts.destroy');
 
         // Маршруты для задач (tasks)
         Route::get('tasks', [TaskController::class, 'index'])->name('tasks.index');
@@ -82,3 +83,4 @@ Route::middleware(['auth', 'check.user.status'])->group(function() {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 });
+

@@ -31,7 +31,7 @@ class TaskController extends Controller
         $printer = $request->getPrinter();
 
         // Обновление значений count_printed в PartTask
-        foreach ($validationResult['data'] as $taskData) {
+        foreach ($validationResult['data']['tasks'] as $taskData) {
             foreach ($taskData['parts'] ?? [] as $partData) {
                 if ($partData['count_printing']) {
                     $partTask = PartTask::find($partData['part_task_id']);
@@ -61,7 +61,7 @@ class TaskController extends Controller
 
         $printer = $request->getPrinter();
 
-        foreach ($validationResult['data'] as $taskData) {
+        foreach ($validationResult['data']['tasks'] as $taskData) {
             foreach ($taskData['parts'] ?? [] as $partData) {
                 if ($partData['count_printing']) {
                     PrintingTask::create([
@@ -81,10 +81,7 @@ class TaskController extends Controller
             }
         }
 
-        $validationResult['data']['printer'] = [
-            'id'   => $printer->id,
-            'name' => $printer->name,
-        ];
+        $validationResult['data']['printer'][$printer->id] = $printer->name;
 
         return response()->json($validationResult);
     }

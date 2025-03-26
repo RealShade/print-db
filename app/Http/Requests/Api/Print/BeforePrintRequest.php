@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests\Api\Print;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\Api\ApiRequest;
 use App\Models\Printer;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 /**
  * @property mixed $printer_id
@@ -15,6 +18,12 @@ class BeforePrintRequest extends ApiRequest
     public function authorize() : bool
     {
         return true;
+    }
+
+    public function failedValidation(Validator $validator) : void
+    {
+        $errors = $validator->errors()->toArray();
+        throw new HttpResponseException(ApiResponseHelper::error($errors, __('common.validation_errors'), 422));
     }
 
     public function messages() : array

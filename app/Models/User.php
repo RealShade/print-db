@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserStatus;
 use App\Models\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,8 +29,8 @@ use Illuminate\Support\Facades\Http;
  */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use Notifiable, SoftDeletes, HasRoles;
+
+    use Notifiable, SoftDeletes, HasRoles, HasFactory;
 
     /**
      * The attributes that are mass assignable.
