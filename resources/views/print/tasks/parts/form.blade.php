@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    {!! FilenamePlaceholder::generateWithWrapper($task, $part) !!}
+    {!! \App\Helpers\FilenamePlaceholderHelper::generateWithWrapper($task, $part, $part->pivot->count_per_set * $task->count_set_planned) !!}
 
     <div class="alert alert-danger d-none" id="formErrors"></div>
 

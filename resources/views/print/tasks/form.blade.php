@@ -1,6 +1,6 @@
 <form id="taskForm" method="POST">
     @if ($task)
-        {!! FilenamePlaceholder::generateWithWrapper($task) !!}
+        {!! \App\Helpers\FilenamePlaceholderHelper::generateWithWrapper($task) !!}
     @endif
     <div class="mb-3">
         <label for="external_id" class="form-label">{{ __('task.external_id') }}</label>
