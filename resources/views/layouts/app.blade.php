@@ -95,6 +95,7 @@
     </main>
 </div>
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('js/translations.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 @stack('scripts')
 </body>

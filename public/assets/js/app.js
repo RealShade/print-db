@@ -4780,9 +4780,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
 /* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var js_cookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! js-cookie */ "./node_modules/js-cookie/dist/js.cookie.mjs");
+/* harmony import */ var _translations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./translations */ "./resources/js/translations.js");
+
 
 
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default());
+sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+  title: _translations__WEBPACK_IMPORTED_MODULE_2__["default"].get('common.actions'),
+  input: 'number',
+  showCancelButton: true,
+  confirmButtonText: _translations__WEBPACK_IMPORTED_MODULE_2__["default"].get('app.add_button')
+});
 document.addEventListener('DOMContentLoaded', function () {
   // Password toggle
   var togglePassword = document.querySelector('.toggle-password');
@@ -5123,6 +5131,75 @@ document.addEventListener('click', function (e) {
     }
   });
 });
+
+/***/ }),
+
+/***/ "./resources/js/translations.js":
+/*!**************************************!*\
+  !*** ./resources/js/translations.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
+function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
+function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var Translator = /*#__PURE__*/function () {
+  function Translator(locale) {
+    _classCallCheck(this, Translator);
+    this.locale = locale || document.documentElement.lang || 'uk';
+    this.translations = window.translations || {};
+  }
+  return _createClass(Translator, [{
+    key: "get",
+    value: function get(key) {
+      var replacements = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      // Разбираем ключ вида "app.add_copies.title"
+      var parts = key.split('.');
+      var fileKey = parts[0];
+      var translationKey = parts.slice(1).join('.');
+      var translation;
+
+      // Доступ к нужному файлу переводов и ключу
+      if (this.translations[this.locale] && this.translations[this.locale][fileKey]) {
+        // Для вложенных ключей
+        translation = parts.slice(1).reduce(function (obj, i) {
+          return obj && obj[i] !== undefined ? obj[i] : null;
+        }, this.translations[this.locale][fileKey]);
+      }
+      if (!translation) {
+        return key; // Возвращаем ключ, если перевод не найден
+      }
+
+      // Заменяем плейсхолдеры
+      return this._applyReplacements(translation, replacements);
+    }
+  }, {
+    key: "_applyReplacements",
+    value: function _applyReplacements(translation, replacements) {
+      for (var key in replacements) {
+        translation = translation.replace(new RegExp(":".concat(key), 'g'), replacements[key]);
+      }
+      return translation;
+    }
+  }, {
+    key: "has",
+    value: function has(key) {
+      var parts = key.split('.');
+      return parts.slice(1).reduce(function (obj, i) {
+        return obj && obj[i] !== undefined ? obj[i] : null;
+      }, this.translations[this.locale] && this.translations[this.locale][parts[0]]) !== null;
+    }
+  }]);
+}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (new Translator());
 
 /***/ }),
 
