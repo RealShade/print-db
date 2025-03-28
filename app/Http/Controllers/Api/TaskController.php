@@ -6,6 +6,7 @@ use App\Enums\TaskStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Print\AfterPrintRequest;
 use App\Http\Requests\Api\Print\BeforePrintRequest;
+use App\Http\Requests\Api\Print\StopPrintRequest;
 use App\Models\PartTask;
 use App\Models\PrintingTask;
 use App\Models\Task;
@@ -81,7 +82,7 @@ class TaskController extends Controller
             }
         }
 
-        $validationResult['data']['printer'][$printer->id] = $printer->name;
+        $validationResult['data']['printer'][ $printer->id ] = $printer->name;
 
         return response()->json($validationResult);
     }
@@ -140,6 +141,21 @@ class TaskController extends Controller
                     'count_per_set' => $part->pivot->count_per_set,
                 ];
             }),
+        ]);
+    }
+
+    public function stopPrint(StopPrintRequest $request) : JsonResponse
+    {
+        $printer = $request->getPrinter();
+
+        $printer->printingTasks()->delete();
+
+        return response()->json([
+            'success' => true,
+            'printer' => [
+                $printer->id => $printer->name,
+            ],
+            'message' => __('printer.printing_tasks_purged'),
         ]);
     }
 }

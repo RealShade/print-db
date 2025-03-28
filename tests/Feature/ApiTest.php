@@ -7,6 +7,7 @@ use App\Helpers\FilenamePlaceholderHelper;
 use App\Models\ApiToken;
 use App\Models\Part;
 use App\Models\Printer;
+use App\Models\PrintingTask;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +22,7 @@ class ApiTest extends TestCase
     protected ApiToken $apiToken;
 
     /* **************************************** Tests **************************************** */
-    public function test_01_api_print_start_fails_no_data() : void
+    public function test_api_print_start_fails_no_data() : void
     {
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->apiToken->token,
@@ -40,7 +41,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_02_api_print_start_fails_no_printer() : void
+    public function test_api_print_start_fails_no_printer() : void
     {
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->apiToken->token,
@@ -59,7 +60,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_03_api_print_start_fails_no_template() : void
+    public function test_api_print_start_fails_no_template() : void
     {
         Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -81,7 +82,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_05_api_print_start_fails_other_printer() : void
+    public function test_api_print_start_fails_other_printer() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->otherUser->id,
@@ -105,7 +106,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_06_api_print_start_fails_wrong_printer() : void
+    public function test_api_print_start_fails_wrong_printer() : void
     {
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->apiToken->token,
@@ -125,7 +126,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_07_api_print_start_fails_wrong_task() : void
+    public function test_api_print_start_fails_wrong_task() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -156,7 +157,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_08_api_print_start_fails_other_task() : void
+    public function test_api_print_start_fails_other_task() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -184,7 +185,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_09_api_print_start_success_tasks_without_parts() : void
+    public function test_api_print_start_success_tasks_without_parts() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -224,9 +225,12 @@ class ApiTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertDatabaseMissing(app(PrintingTask::class)->getTable(), [
+            'printer_id' => $printer->id,
+        ]);
     }
 
-    public function test_10_api_print_start_fails_tasks_with_unlinked_parts() : void
+    public function test_api_print_start_fails_tasks_with_unlinked_parts() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -264,7 +268,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_11_api_print_start_fails_tasks_with_other_parts() : void
+    public function test_api_print_start_fails_tasks_with_other_parts() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -295,7 +299,7 @@ class ApiTest extends TestCase
             'printer_id' => $printer->id,
         ]);
 
-//        dump($response->json());
+        //        dump($response->json());
 
         $response->assertStatus(422);
         $response->assertJson([
@@ -306,7 +310,7 @@ class ApiTest extends TestCase
         ]);
     }
 
-    public function test_12_api_print_start_success_tasks_with_parts() : void
+    public function test_api_print_start_success_tasks_with_parts() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -363,9 +367,12 @@ class ApiTest extends TestCase
                 ],
             ],
         ]);
+        $this->assertDatabaseHas(app(PrintingTask::class)->getTable(), [
+            'printer_id' => $printer->id,
+        ]);
     }
 
-    public function test_13_api_print_start_success_tasks_with_auto_parts() : void
+    public function test_api_print_start_success_tasks_with_auto_parts() : void
     {
         $printer = Printer::factory()->create([
             'user_id' => $this->activeUser->id,
@@ -421,6 +428,185 @@ class ApiTest extends TestCase
                     1 => true,
                 ],
             ],
+        ]);
+    }
+
+    public function test_api_print_start_success_tasks_with_auto_multi_parts() : void
+    {
+        $printer = Printer::factory()->create([
+            'user_id' => $this->activeUser->id,
+        ]);
+
+        $task = Task::factory()->create([
+            'user_id'           => $this->activeUser->id,
+            'count_set_planned' => 10,
+        ]);
+
+        $part1 = Part::factory()->create([
+            'user_id' => $this->activeUser->id,
+        ]);
+        $part2 = Part::factory()->create([
+            'user_id' => $this->activeUser->id,
+        ]);
+
+        $task->parts()->attach($part1->id, [
+            'count_per_set' => 2,
+            'count_printed' => 2,
+        ]);
+        $task->parts()->attach($part2->id, [
+            'count_per_set' => 3,
+            'count_printed' => 3,
+        ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken->token,
+        ])->post('/api/print-start', [
+            'filename'   => FilenamePlaceholderHelper::generate($task, null, 5),
+            'printer_id' => $printer->id,
+        ]);
+
+        //                dump($response->json());
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+            'data'    => [
+                'tasks'   => [
+                    1 => [
+                        'count_set_planned'  => 10,
+                        'count_set_printed'  => 1,
+                        'count_set_printing' => 5,
+                        'count_set_future'   => 6,
+                        'parts'              => [
+                            1 => [
+                                'part_task_id'   => 1,
+                                'is_printing'    => true,
+                                'count_per_set'  => 2,
+                                'count_required' => 20,
+                                'count_printed'  => 2,
+                                'count_printing' => 10,
+                                'count_future'   => 12,
+                            ],
+                            2 => [
+                                'part_task_id'   => 2,
+                                'is_printing'    => true,
+                                'count_per_set'  => 3,
+                                'count_required' => 30,
+                                'count_printed'  => 3,
+                                'count_printing' => 15,
+                                'count_future'   => 18,
+                            ],
+                        ],
+                    ],
+                ],
+                'printer' => [
+                    1 => true,
+                ],
+            ],
+        ]);
+        $this->assertDatabaseCount(app(PrintingTask::class)->getTable(), 2);
+    }
+
+
+    public function test_api_print_stop_fails_no_printer_set()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken->token,
+        ])->post('/api/print-stop', [
+        ]);
+
+        //                dump($response->json());
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'errors'  => [
+                'printer_id' => true,
+            ],
+        ]);
+    }
+
+    public function test_api_print_stop_fails_no_printer_found()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken->token,
+        ])->post('/api/print-stop', [
+            'printer_id' => 999,
+        ]);
+
+        //                dump($response->json());
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'errors'  => [
+                'printer_id' => true,
+            ],
+        ]);
+    }
+
+    public function test_api_print_stop_fails_other_printer()
+    {
+        $printer = Printer::factory()->create([
+            'user_id' => $this->otherUser->id,
+        ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken->token,
+        ])->post('/api/print-stop', [
+            'printer_id' => $printer->id,
+        ]);
+
+        //                dump($response->json());
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'success' => false,
+            'errors'  => [
+                'printer_id' => true,
+            ],
+        ]);
+    }
+
+    public function test_api_print_stop_success()
+    {
+        $printer = Printer::factory()->create([
+            'user_id' => $this->activeUser->id,
+        ]);
+        $part = Part::factory()->create([
+            'user_id' => $this->activeUser->id,
+        ]);
+        $task = Task::factory()->create([
+            'user_id'           => $this->activeUser->id,
+            'count_set_planned' => 10,
+        ]);
+        $task->parts()->attach($part->id, [
+            'count_per_set' => 2,
+            'count_printed' => 2,
+        ]);
+        $printer->printingTasks()->create([
+            'part_task_id' => 1,
+            'count'        => 5,
+        ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->apiToken->token,
+        ])->post('/api/print-stop', [
+            'printer_id' => $printer->id,
+        ]);
+
+        //                dump($response->json());
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+            'printer' => [
+                1 => $printer->name,
+            ],
+            'message' => __('printer.printing_tasks_purged'),
+        ]);
+        $this->assertDatabaseMissing(app(PrintingTask::class)->getTable(), [
+            'printer_id' => $printer->id,
         ]);
     }
 
