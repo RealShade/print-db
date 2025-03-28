@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Print;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Print\PartTaskRequest;
+use App\Http\Requests\Print\AddPrintedCountRequest;
 use App\Models\Task;
 use App\Models\Part;
+use App\Models\PartTask;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -24,4 +26,19 @@ class PartTaskController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function addPrinted(AddPrintedCountRequest $request)
+    {
+        $partTask = PartTask::findOrFail($request->input('part_task_id'));
+        $addedCount = $request->input('printed_count');
+        $partTask->update([
+            'count_printed' => $partTask->count_printed + $addedCount
+        ]);
+
+        return response()->json([
+            'success'   => true,
+            'new_count' => $partTask->count_printed
+        ]);
+    }
 }
+

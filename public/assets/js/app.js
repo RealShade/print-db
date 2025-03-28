@@ -5089,6 +5089,40 @@ function initToggleRows() {
   });
 }
 window.initToggleRows = initToggleRows;
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('.update-printed-btn');
+  if (!btn) return;
+  var partTaskId = btn.dataset.partTaskId;
+  sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
+    title: 'Введите количество моделей',
+    input: 'number',
+    // inputAttributes: { min: 1 },
+    showCancelButton: true,
+    confirmButtonText: 'Добавить'
+  }).then(function (result) {
+    if (result.isConfirmed && result.value) {
+      fetch('/print/task-parts/add-printed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          printed_count: parseInt(result.value),
+          part_task_id: partTaskId
+        })
+      }).then(function (response) {
+        return response.json();
+      }).then(function (data) {
+        if (data.success) {
+          // Можно обновить UI или перезагрузить страницу
+          location.reload();
+        }
+      });
+    }
+  });
+});
 
 /***/ }),
 

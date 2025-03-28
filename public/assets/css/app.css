@@ -242,4 +242,8 @@ a:hover {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+.count-complete {
+  color: lightgreen;
+  font-weight: bold;
+}
 

@@ -370,3 +370,39 @@ function initToggleRows(options = {}) {
 }
 
 window.initToggleRows = initToggleRows;
+
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.update-printed-btn');
+    if (!btn) return;
+    const partTaskId = btn.dataset.partTaskId;
+    Swal.fire({
+        title: 'Введите количество моделей',
+        input: 'number',
+        // inputAttributes: { min: 1 },
+        showCancelButton: true,
+        confirmButtonText: 'Добавить'
+    }).then(result => {
+        if (result.isConfirmed && result.value) {
+            fetch('/print/task-parts/add-printed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    printed_count: parseInt(result.value),
+                    part_task_id: partTaskId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Можно обновить UI или перезагрузить страницу
+                    location.reload();
+                }
+            });
+        }
+    });
+});
+

@@ -57,6 +57,9 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
             ->name('task-parts.edit');
         Route::put('tasks/{task}/parts/{part}', [PartTaskController::class, 'update'])
             ->name('task-parts.update');
+
+        Route::post('task-parts/add-printed', [PartTaskController::class, 'addPrinted'])
+            ->name('task-parts.add-printed');
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);
