@@ -3,14 +3,6 @@ import Cookies from 'js-cookie';
 import trans from './translations';
 
 window.Swal = Swal;
-
-Swal.fire({
-    title: trans.get('common.actions'),
-    input: 'number',
-    showCancelButton: true,
-    confirmButtonText: trans.get('app.add_button')
-});
-
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle
     const togglePassword = document.querySelector('.toggle-password');
