@@ -4785,12 +4785,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default());
-sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-  title: _translations__WEBPACK_IMPORTED_MODULE_2__["default"].get('common.actions'),
-  input: 'number',
-  showCancelButton: true,
-  confirmButtonText: _translations__WEBPACK_IMPORTED_MODULE_2__["default"].get('app.add_button')
-});
 document.addEventListener('DOMContentLoaded', function () {
   // Password toggle
   var togglePassword = document.querySelector('.toggle-password');
