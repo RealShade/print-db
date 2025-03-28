@@ -5094,7 +5094,7 @@ document.addEventListener('click', function (e) {
   if (!btn) return;
   var partTaskId = btn.dataset.partTaskId;
   sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
-    title: 'Введите количество моделей',
+    title: 'Введіть кількість додаваних копій',
     input: 'number',
     // inputAttributes: { min: 1 },
     showCancelButton: true,

@@ -376,7 +376,7 @@ document.addEventListener('click', function(e) {
     if (!btn) return;
     const partTaskId = btn.dataset.partTaskId;
     Swal.fire({
-        title: 'Введите количество моделей',
+        title: 'Введіть кількість додаваних копій',
         input: 'number',
         // inputAttributes: { min: 1 },
         showCancelButton: true,
