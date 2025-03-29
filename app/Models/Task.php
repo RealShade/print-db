@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TaskStatus;
+use App\Enums\TaskStatus2;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,12 +21,14 @@ class Task extends Model
         'name',
         'count_set_planned',
         'status',
+        'status2',
         'completed_at',
         'user_id',
     ];
 
     protected $casts = [
         'status'       => TaskStatus::class,
+        'status2'      => TaskStatus2::class,
         'completed_at' => 'datetime',
     ];
 
