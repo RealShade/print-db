@@ -4,6 +4,7 @@
 namespace App\Http\Requests\Print;
 
 use App\Enums\TaskStatus;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -35,7 +36,7 @@ class TaskRequest extends FormRequest
 
     public function failedAuthorization()
     {
-        throw new \Illuminate\Auth\Access\AuthorizationException(__('task.not_found_or_not_owned'));
+        throw new AuthorizationException(__('task.not_found_or_not_owned'));
     }
 
     public function messages() : array
@@ -51,7 +52,7 @@ class TaskRequest extends FormRequest
             'external_id'           => 'nullable|string|max:255',
             'name'                  => 'required|string|max:255',
             'count_set_planned'     => 'required|integer|min:1',
-            'status'                => 'required|string|in:' . implode(',', array_column(TaskStatus::cases(), 'value')),
+            'status'                => 'required|integer|in:' . implode(',', array_column(TaskStatus::cases(), 'value')),
             'parts'                 => 'nullable|array',
             'parts.*.id'            => 'required_with:parts|exists:parts,id,user_id,' . auth()->id(),
             'parts.*.count_per_set' => 'required_with:parts|integer|min:1',
