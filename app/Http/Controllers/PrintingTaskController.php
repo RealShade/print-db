@@ -25,7 +25,7 @@ class PrintingTaskController extends Controller
 
     public function destroy(PrintingTask $printingTask) : JsonResponse
     {
-        abort_if($printingTask->printer->user_id !== auth()->id(), 403);
+        $this->authorizePrintingTask($printingTask);
 
         $printingTask->delete();
 
@@ -43,7 +43,7 @@ class PrintingTaskController extends Controller
     }
     public function edit(PrintingTask $printingTask)
     {
-        abort_if($printingTask->printer->user_id !== auth()->id(), 403);
+        $this->authorizePrintingTask($printingTask);
 
         $partsWithTasks = $this->getPartsWithTasks();
 
@@ -52,7 +52,7 @@ class PrintingTaskController extends Controller
 
     public function update(PrintingTaskRequest $request, PrintingTask $printingTask): JsonResponse
     {
-        abort_if($printingTask->printer->user_id !== auth()->id(), 403);
+        $this->authorizePrintingTask($printingTask);
 
         $printingTask->update($request->validated());
 
@@ -92,4 +92,10 @@ class PrintingTaskController extends Controller
             ->orderByDesc('tasks.id')
             ->get();
     }
+
+    protected function authorizePrintingTask(PrintingTask $printingTask) : void
+    {
+        abort_if($printingTask->printer->user_id !== auth()->id(), 403);
+    }
+
 }

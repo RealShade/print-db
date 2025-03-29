@@ -1,30 +1,53 @@
 <form id="partTaskForm" method="POST" data-type="modal">
+    @if(!empty($part))
+        @method('PUT')
+        @csrf
+    @endif
+    {{-- Если модель новая, показываем селект выбора модели --}}
     <div class="mb-3">
-        <label class="form-label">{{ __('common.name') }}</label>
-        <input type="text" class="form-control" value="{{ $part->name }}" disabled>
+        @if(empty($part))
+            <label class="form-label">{{ __('common.model') }}</label>
+            <select class="form-select" name="part_id" required>
+                <option value="">{{ __('Выберите модель') }}</option>
+                @foreach($parts as $model)
+                    <option value="{{ $model->id }}">
+                        #{{ $model->id }} {{ $model->name }} ({{ $model->version }}{{ $model->version_date ? $model->version_date->format('d.m.Y') : ""}})
+                    </option>
+                @endforeach
+            </select>
+        @else
+            <div class="mb-3">
+                <label class="form-label">{{ __('part.name_full') }}</label>
+                <input type="text"
+                       class="form-control"
+                       name=""
+                       disabled
+                       value="#{{ $part->id }} {{ $part->name }} ({{ $part->version }}{{ $part->version_date ? $part->version_date->format('d.m.Y') : ""}})">
+            </div>
+        @endif
     </div>
 
+    {{-- Ввод количества моделей в комплекте --}}
     <div class="mb-3">
-        <label class="form-label">{{ __('part.version') }}</label>
-        <input type="text" class="form-control" value="{{ $part->version }}" disabled>
+        <label class="form-label">{{ __('task.count_per_set') }}</label>
+        <input type="number"
+               class="form-control"
+               name="count_per_set"
+               value="{{ old('count_per_set', $partTask->count_per_set ?? 1) }}"
+               min="1"
+               required>
     </div>
 
+    {{-- Ввод количества напечатанных экземпляров --}}
     <div class="mb-3">
-        <label for="count_per_set" class="form-label">{{ __('task.count_per_set') }}</label>
-        <input type="number" class="form-control" id="count_per_set" name="count_per_set"
-               value="{{ old('count_per_set', $part->pivot->count_per_set) }}" min="1" disabled>
+        <label class="form-label">{{ __('task.count_printed') }}</label>
+        <input type="number"
+               class="form-control"
+               name="count_printed"
+               value="{{ old('count_printed', $partTask->count_printed ?? 0) }}"
+               min="0"
+               required>
     </div>
-
-    <div class="mb-3">
-        <label for="count_printed" class="form-label">{{ __('task.count_printed') }}</label>
-        <div class="input-group">
-            <input type="number" class="form-control" id="count_printed" name="count_printed"
-                   value="{{ old('count_printed', $part->pivot->count_printed) }}" min="0" required>
-            <span class="input-group-text">/{{ $part->pivot->count_per_set * $task->count_set_planned }}</span>
-        </div>
-    </div>
-
-    {!! \App\Helpers\FilenamePlaceholderHelper::generateWithWrapper($task, $part, $part->pivot->count_per_set * $task->count_set_planned) !!}
 
     <div class="alert alert-danger d-none" id="formErrors"></div>
 

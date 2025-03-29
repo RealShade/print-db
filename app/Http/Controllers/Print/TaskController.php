@@ -44,16 +44,12 @@ class TaskController extends Controller
         $task->user_id = auth()->id();
         $task->save();
 
-        $task->parts()->sync($request->getParts());
-
         return response()->json(['success' => true]);
     }
 
     public function update(TaskRequest $request, Task $task) : JsonResponse
     {
         $task->update($request->validated());
-
-        $task->parts()->sync($request->getParts());
 
         return response()->json(['success' => true]);
     }

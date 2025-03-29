@@ -32,6 +32,7 @@ class CheckOwner
             }
         }
 
+
         return $next($request);
     }
 }

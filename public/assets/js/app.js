@@ -5093,7 +5093,9 @@ function initToggleRows() {
 window.initToggleRows = initToggleRows;
 document.addEventListener('click', function (e) {
   var btn = e.target.closest('.update-printed-btn');
-  if (!btn) return;
+  if (!btn) {
+    return;
+  }
   var partTaskId = btn.dataset.partTaskId;
   sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
     title: 'Введіть кількість додаваних копій',
@@ -5103,7 +5105,7 @@ document.addEventListener('click', function (e) {
     confirmButtonText: 'Добавить'
   }).then(function (result) {
     if (result.isConfirmed && result.value) {
-      fetch('/print/task-parts/add-printed', {
+      fetch('/print/task-parts/' + partTaskId + '/add-printed', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -5111,8 +5113,7 @@ document.addEventListener('click', function (e) {
           'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({
-          printed_count: parseInt(result.value),
-          part_task_id: partTaskId
+          printed_count: parseInt(result.value)
         })
       }).then(function (response) {
         return response.json();
