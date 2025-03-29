@@ -2,26 +2,15 @@
 
 namespace App\Enums;
 
-enum TaskStatus: string
+enum TaskStatus: int
 {
-    case NEW = 'new';
-    case IN_PROGRESS = 'in_progress';
-    case CANCELLED = 'cancelled';
-    case PRINTED = 'printed';
-    case COMPLETED = 'completed';
+    case NEW = 0;
+    case IN_PROGRESS = 1;
+    case CANCELLED = 2;
+    case PRINTED = 3;
+    case COMPLETED = 4;
 
     /* **************************************** Public **************************************** */
-    public function id() : int
-    {
-        return match ($this) {
-            self::NEW => 0,
-            self::IN_PROGRESS => 1,
-            self::CANCELLED => 2,
-            self::PRINTED => 3,
-            self::COMPLETED => 4,
-        };
-    }
-
     public function label() : string
     {
         return match ($this) {
