@@ -35,15 +35,37 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-speedometer2 me-2"></i>
+                        <i class="bi bi-list-task me-2"></i>
                         {{ __('menu.tasks') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-table me-2"></i>
+                        <i class="bi bi-puzzle me-2"></i>
                         {{ __('menu.parts') }}
                     </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex align-items-center justify-content-between" data-bs-toggle="collapse" href="#filamentCollapse" role="button" aria-expanded="false" aria-controls="filamentCollapse">
+                    <span>
+                    <i class="bi bi-box2-fill me-2"></i>
+                    {{ __('menu.filament.title') }}
+                    </span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse" id="filamentCollapse">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">{{ __('menu.filament.reels') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">{{ __('menu.filament.filaments') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">{{ __('menu.filament.manufacturers') }}</a>
+                            </li>
+                        </ul>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('tools.index') }}" class="nav-link {{ request()->routeIs('tools.*') ? 'active' : 'text-white' }}">
