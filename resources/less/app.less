@@ -1,16 +1,14 @@
-// Основные цвета
-@primary-bg: #001F3F; // Глубокий синий фон
-@primary-color: #007BFF; // Основной синий
-@secondary-bg: #343A40; // Темно-серый для второстепенных элементов
-@secondary-color: #6C757D; // Серый цвет текста
-@text-color: #F8F9FA; // Основной цвет текста
+@primary-bg: #001F3F;
+@primary-color: #007BFF;
+@secondary-bg: #343A40;
+@secondary-color: #6C757D;
+@text-color: #F8F9FA;
 @lighter-bg: mix(@primary-bg, @text-color, 95%);
 
-// Элементы ввода и карточек
 @input-bg: mix(@primary-color, @primary-bg, 30%);
 @input-border: mix(@primary-color, @primary-bg, 50%);
 @card-border: @input-border;
-@card-footer-bg: mix(@primary-color, @primary-bg, 5%); // Цвет футера (чуть ярче фона)
+@card-footer-bg: mix(@primary-color, @primary-bg, 5%);
 
 :root {
     --bs-body-bg: @primary-bg;
@@ -216,30 +214,30 @@ a {
 
 .badge {
     &-new {
-        background-color: #007BFF; // Синий для нового пользователя
+        background-color: #007BFF;
     }
 
     &-active, &-completed {
-        background-color: #28A745; // Зеленый для активного пользователя
+        background-color: #28A745;
     }
 
     &-blocked {
-        background-color: #DC3545; // Красный для заблокированного пользователя
+        background-color: #DC3545;
     }
 
     &-deleted, &-cancelled {
-        background-color: #6C757D; // Серый для удаленного пользователя
+        background-color: #6C757D;
     }
 
     &-in_progress {
-        background-color: #FFC107; // Желтый для пользователя в процессе
+        background-color: #FFC107;
     }
 
     &-printed {
-        background-color: #17A2B8; // Голубой для напечатанного пользователя
+        background-color: #17A2B8;
     }
     &-printing {
-        background-color: #28A745; // Зеленый для индикации активной печати
+        background-color: #28A745;
 
         i {
             font-size: 0.875em;
@@ -285,7 +283,6 @@ a {
             padding: 0.5rem 0.75rem;
         }
 
-        // Выравнивание для числовых значений
         .text-end {
             padding-right: 1rem;
         }
@@ -310,8 +307,8 @@ a {
 
     pre {
         margin: 0;
-        white-space: pre-wrap; // Позволяет переносить длинные строки
-        word-wrap: break-word; // Переносит длинные слова
+        white-space: pre-wrap;
+        word-wrap: break-word;
     }
 
 }

@@ -15,4 +15,7 @@ return [
     'name'              => 'Назва',
     'quantity'          => 'Кількість',
     'validation_errors' => 'Помилки валідації',
+    'error'            => [
+        'something_went_wrong' => 'Виникла помилка при виконанні дії',
+    ],
 ];

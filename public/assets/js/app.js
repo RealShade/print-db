@@ -4849,7 +4849,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Обработчик AJAX-запросов для кнопок
+  // AJAX-queries for buttons
   document.addEventListener('click', function (e) {
     var button = e.target.closest('[data-transport="ajax"]');
     if (!button) {
@@ -4880,7 +4880,7 @@ document.addEventListener('DOMContentLoaded', function () {
           sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
             icon: 'error',
             title: 'Помилка',
-            text: data.message || 'Виникла помилка при виконанні дії'
+            text: data.message || _translations__WEBPACK_IMPORTED_MODULE_2__["default"].get('common.error.something_went_wrong')
           });
         });
       });
@@ -4932,30 +4932,7 @@ document.addEventListener('DOMContentLoaded', function () {
           form.appendChild(methodField);
         }
 
-        // Инициализация механизма выбора деталей для задачи
-        if (modal.id === 'taskModal') {
-          var newPartsModalContent = modalBody.querySelector('#partsModal');
-          if (newPartsModalContent) {
-            // Очищаем предыдущее модальное окно
-            if (partsModalElement) {
-              partsModalElement.remove();
-            }
-
-            // Перемещаем новое модальное окно
-            partsModalElement = newPartsModalContent;
-            document.body.appendChild(partsModalElement);
-            partsModal = new bootstrap.Modal(partsModalElement);
-            var addPartBtn = modalBody.querySelector('#addPartBtn');
-            if (addPartBtn) {
-              addPartBtn.addEventListener('click', function () {
-                partsModal.show();
-              });
-            }
-            initPartTaskHandlers(modalBody, partsModalElement, partsModal);
-          }
-        }
-
-        // Добавляем обработчик отправки формы
+        // Submit form handler
         form.addEventListener('submit', function (e) {
           e.preventDefault();
           var formData = new FormData(this);
@@ -5007,40 +4984,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  // Выносим обработчики в отдельную функцию
-  var initPartTaskHandlers = function initPartTaskHandlers(modalBody, partsModalElement, partsModal) {
-    var selectedParts = modalBody.querySelector('#selectedParts');
-    var partIndex = selectedParts.children.length;
-
-    // Обработчики выбора части теперь ищутся в перемещенном окне
-    partsModalElement.querySelectorAll('.select-part').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var partId = this.dataset.partId;
-        if (!selectedParts.querySelector("[data-part-id=\"".concat(partId, "\"]"))) {
-          addPartToForm({
-            partId: this.dataset.partId,
-            partName: this.dataset.partName,
-            partVersion: this.dataset.partVersion
-          });
-        }
-        partsModal.hide();
-      });
-    });
-
-    // Обработчик удаления части
-    selectedParts.addEventListener('click', function (e) {
-      var removeBtn = e.target.closest('.remove-part');
-      if (removeBtn) {
-        removeBtn.closest('.list-group-item').remove();
-      }
-    });
-    function addPartToForm(partData) {
-      var html = "\n            <div class=\"list-group-item\" data-part-id=\"".concat(partData.partId, "\">\n                <div class=\"d-flex justify-content-between align-items-center\">\n                    <div>\n                        <strong>#").concat(partData.partId, "</strong>\n                        ").concat(partData.partName, "\n                        <span class=\"text-muted\">(v").concat(partData.partVersion, ")\n                        ").concat(partData.partVersionDate ? " \u043E\u0442 ".concat(partData.partVersionDate) : '', ")</span>\n                    </div>\n                    <div class=\"d-flex gap-2 align-items-center\">\n                        <input type=\"hidden\" name=\"parts[").concat(partIndex, "][id]\" value=\"").concat(partData.partId, "\">\n                        <input type=\"number\" class=\"form-control form-control-sm w-auto\"\n                               name=\"parts[").concat(partIndex, "][count_per_set]\"\n                               placeholder=\"\u041A\u0456\u043B\u044C\u043A\u0456\u0441\u0442\u044C \u043D\u0430 \u043D\u0430\u0431\u0456\u0440\"\n                               required\n                               min=\"1\"\n                               style=\"width: 100px !important;\"\n                               value=\"1\">\n                        <button type=\"button\" class=\"btn btn-sm btn-outline-danger remove-part\">\n                            <i class=\"bi bi-x-lg\"></i>\n                        </button>\n                    </div>\n                </div>\n            </div>\n        ");
-      selectedParts.insertAdjacentHTML('beforeend', html);
-      partIndex++;
-    }
-  };
-
   // Initialize modals if they exist
   document.querySelectorAll('.modal[data-type="formModal"]').forEach(function (modal) {
     initModalForm(modal);
@@ -5054,12 +4997,10 @@ function initToggleRows() {
     _options$idAttribute = options.idAttribute,
     idAttribute = _options$idAttribute === void 0 ? 'id' : _options$idAttribute,
     _options$duration = options.duration,
-    duration = _options$duration === void 0 ? 1 / 24 : _options$duration;
-
-  // Добавим слушатель для кнопок внутри строк
+    duration = _options$duration === void 0 ? 1 : _options$duration;
   document.querySelectorAll("".concat(toggleSelector, " button, ").concat(toggleSelector, " a")).forEach(function (button) {
     button.addEventListener('click', function (e) {
-      e.stopPropagation(); // Останавливаем всплытие события
+      e.stopPropagation();
     });
   });
   document.querySelectorAll(toggleSelector).forEach(function (button) {
@@ -5119,7 +5060,6 @@ document.addEventListener('click', function (e) {
         return response.json();
       }).then(function (data) {
         if (data.success) {
-          // Можно обновить UI или перезагрузить страницу
           location.reload();
         }
       });
