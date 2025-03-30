@@ -53,12 +53,18 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
         Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-        Route::get('tasks/{task}/parts/{part}/edit', [PartTaskController::class, 'edit'])
+        // Маршруты для частей задач (task-parts)
+        Route::get('task-parts/{task}/create', [PartTaskController::class, 'create'])
+            ->name('task-parts.create');
+        Route::post('task-parts/{task}', [PartTaskController::class, 'store'])
+            ->name('task-parts.store');
+        Route::get('task-parts/{partTask}/edit', [PartTaskController::class, 'edit'])
             ->name('task-parts.edit');
-        Route::put('tasks/{task}/parts/{part}', [PartTaskController::class, 'update'])
+        Route::put('task-parts/{partTask}', [PartTaskController::class, 'update'])
             ->name('task-parts.update');
-
-        Route::post('task-parts/add-printed', [PartTaskController::class, 'addPrinted'])
+        Route::delete('task-parts/{partTask}', [PartTaskController::class, 'destroy'])
+            ->name('task-parts.destroy');
+        Route::post('task-parts/{partTask}/add-printed', [PartTaskController::class, 'addPrinted'])
             ->name('task-parts.add-printed');
     });
 

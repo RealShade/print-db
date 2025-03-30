@@ -373,35 +373,36 @@ window.initToggleRows = initToggleRows;
 
 document.addEventListener('click', function(e) {
     const btn = e.target.closest('.update-printed-btn');
-    if (!btn) return;
+    if (!btn) {
+        return;
+    }
     const partTaskId = btn.dataset.partTaskId;
     Swal.fire({
         title: 'Введіть кількість додаваних копій',
         input: 'number',
         // inputAttributes: { min: 1 },
-        showCancelButton: true,
+        showCancelButton : true,
         confirmButtonText: 'Добавить'
     }).then(result => {
         if (result.isConfirmed && result.value) {
-            fetch('/print/task-parts/add-printed', {
-                method: 'POST',
+            fetch('/print/task-parts/' + partTaskId + '/add-printed', {
+                method : 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Content-Type'    : 'application/json',
+                    'X-CSRF-TOKEN'    : document.querySelector('meta[name="csrf-token"]').content,
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({
-                    printed_count: parseInt(result.value),
-                    part_task_id: partTaskId
+                body   : JSON.stringify({
+                    printed_count: parseInt(result.value)
                 })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Можно обновить UI или перезагрузить страницу
-                    location.reload();
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Можно обновить UI или перезагрузить страницу
+                        location.reload();
+                    }
+                });
         }
     });
 });
