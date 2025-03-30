@@ -29,7 +29,7 @@ class CompileTranslations extends Command
             }
         }
 
-        $content = "window.translations = ".json_encode($translations).";";
+        $content = "window.translations = ".json_encode($translations).";\n";
         File::put(public_path('assets/js/translations.js'), $content);
 
         $this->info('Переводы скомпилированы в public/js/translations.js');

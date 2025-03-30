@@ -2,14 +2,14 @@ const fs = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
 
-// Путь к директории с языковыми файлами
+// Шлях до директорії з мовними файлами
 const langDir = path.resolve(process.cwd(), 'resources/lang');
-console.log(`Отслеживание изменений в директории: ${langDir}`);
+console.log(`Відстеження змін у директорії: ${langDir}`);
 
-// Компилируем переводы при запуске
-compileTranslations();
+// Компілюємо переклади при запуску
+// compileTranslations();
 
-// Функция для поиска всех PHP-файлов в директории
+// Функція для пошуку всіх PHP-файлів у директорії
 function findPhpFiles(dir, fileList = []) {
     const files = fs.readdirSync(dir);
 
@@ -27,51 +27,52 @@ function findPhpFiles(dir, fileList = []) {
     return fileList;
 }
 
-// Получаем список всех PHP-файлов
+// Отримуємо список всіх PHP-файлів
 const phpFiles = findPhpFiles(langDir);
-console.log(`Найдено ${phpFiles.length} PHP файлов для отслеживания`);
+console.log(`Знайдено ${phpFiles.length} PHP файлів для відстеження`);
 
-// Отслеживаем каждый файл индивидуально
+// Відстежуємо кожен файл індивідуально
 phpFiles.forEach(file => {
-    console.log(`Отслеживание файла: ${file}`);
+    console.log(`Відстеження файлу: ${file}`);
     fs.watchFile(file, { interval: 1000 }, (curr, prev) => {
         if (curr.mtime > prev.mtime) {
-            console.log(`Файл изменен: ${file}`);
+            console.log(`Файл змінено: ${file}`);
             compileTranslations();
         }
     });
 });
 
-// Функция компиляции переводов
+// Функція компіляції перекладів
 function compileTranslations() {
-    console.log('Компиляция переводов...');
+    console.log('Компіляція перекладів...');
     exec('php artisan translations:compile', (error, stdout) => {
         if (error) {
-            console.error(`Ошибка компиляции: ${error.message}`);
+            console.error(`Помилка компіляції: ${error.message}`);
             return;
         }
         console.log(stdout);
     });
 }
 
-console.log('Отслеживание запущено...');
+console.log('Відстеження запущено...');
 
-// Добавьте в конец текущего скрипта
+// Додайте в кінець поточного скрипту
 // setInterval(() => {
 //     const newFiles = findPhpFiles(langDir);
 //     const currentWatchedFiles = phpFiles.slice();
 //
-//     // Проверка на новые файлы
+//     // Перевірка на нові файли
 //     newFiles.forEach(file => {
 //         if (!currentWatchedFiles.includes(file)) {
-//             console.log(`Обнаружен новый файл: ${file}`);
+//             console.log(`Виявлено новий файл: ${file}`);
 //             phpFiles.push(file);
 //             fs.watchFile(file, { interval: 1000 }, (curr, prev) => {
 //                 if (curr.mtime > prev.mtime) {
-//                     console.log(`Файл изменен: ${file}`);
+//                     console.log(`Файл змінено: ${file}`);
 //                     compileTranslations();
 //                 }
 //             });
 //         }
 //     });
-// }, 30000); // Проверка каждые 30 секунд
+// }, 30000); // Перевірка кожні 30 секунд
+

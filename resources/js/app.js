@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Обработчик AJAX-запросов для кнопок
+    // AJAX-queries for buttons
     document.addEventListener('click', function(e) {
         const button = e.target.closest('[data-transport="ajax"]');
         if (!button) {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         Swal.fire({
                             icon : 'error',
                             title: 'Помилка',
-                            text : data.message || 'Виникла помилка при виконанні дії'
+                            text : data.message || trans.get('common.error.something_went_wrong')
                         });
                     });
                 });
@@ -170,32 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         form.appendChild(methodField);
                     }
 
-                    // Инициализация механизма выбора деталей для задачи
-                    if (modal.id === 'taskModal') {
-                        const newPartsModalContent = modalBody.querySelector('#partsModal');
-                        if (newPartsModalContent) {
-                            // Очищаем предыдущее модальное окно
-                            if (partsModalElement) {
-                                partsModalElement.remove();
-                            }
-
-                            // Перемещаем новое модальное окно
-                            partsModalElement = newPartsModalContent;
-                            document.body.appendChild(partsModalElement);
-                            partsModal = new bootstrap.Modal(partsModalElement);
-
-                            const addPartBtn = modalBody.querySelector('#addPartBtn');
-                            if (addPartBtn) {
-                                addPartBtn.addEventListener('click', () => {
-                                    partsModal.show();
-                                });
-                            }
-
-                            initPartTaskHandlers(modalBody, partsModalElement, partsModal);
-                        }
-                    }
-
-                    // Добавляем обработчик отправки формы
+                    // Submit form handler
                     form.addEventListener('submit', function(e) {
                         e.preventDefault();
                         const formData = new FormData(this);
@@ -253,65 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    // Выносим обработчики в отдельную функцию
-    const initPartTaskHandlers = (modalBody, partsModalElement, partsModal) => {
-        const selectedParts = modalBody.querySelector('#selectedParts');
-        let partIndex = selectedParts.children.length;
-
-        // Обработчики выбора части теперь ищутся в перемещенном окне
-        partsModalElement.querySelectorAll('.select-part').forEach(button => {
-            button.addEventListener('click', function() {
-                const partId = this.dataset.partId;
-                if (!selectedParts.querySelector(`[data-part-id="${ partId }"]`)) {
-                    addPartToForm({
-                        partId     : this.dataset.partId,
-                        partName   : this.dataset.partName,
-                        partVersion: this.dataset.partVersion
-                    });
-                }
-                partsModal.hide();
-            });
-        });
-
-        // Обработчик удаления части
-        selectedParts.addEventListener('click', (e) => {
-            const removeBtn = e.target.closest('.remove-part');
-            if (removeBtn) {
-                removeBtn.closest('.list-group-item').remove();
-            }
-        });
-
-        function addPartToForm(partData) {
-            const html = `
-            <div class="list-group-item" data-part-id="${ partData.partId }">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>#${ partData.partId }</strong>
-                        ${ partData.partName }
-                        <span class="text-muted">(v${ partData.partVersion })
-                        ${ partData.partVersionDate ? ` от ${ partData.partVersionDate }` : '' })</span>
-                    </div>
-                    <div class="d-flex gap-2 align-items-center">
-                        <input type="hidden" name="parts[${ partIndex }][id]" value="${ partData.partId }">
-                        <input type="number" class="form-control form-control-sm w-auto"
-                               name="parts[${ partIndex }][count_per_set]"
-                               placeholder="Кількість на набір"
-                               required
-                               min="1"
-                               style="width: 100px !important;"
-                               value="1">
-                        <button type="button" class="btn btn-sm btn-outline-danger remove-part">
-                            <i class="bi bi-x-lg"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-            selectedParts.insertAdjacentHTML('beforeend', html);
-            partIndex++;
-        }
-    };
-
     // Initialize modals if they exist
     document.querySelectorAll('.modal[data-type="formModal"]').forEach(modal => {
         initModalForm(modal);
@@ -322,17 +238,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initToggleRows(options = {}) {
     const {
-        toggleSelector,      // Селектор кнопки раскрытия
-        rowSelector,         // Селектор строки с содержимым
-        cookiePrefix,        // Префикс для имени куки
-        idAttribute = 'id',  // Атрибут для получения ID
-        duration = 1 / 24    // Срок хранения куки в днях
+        toggleSelector,
+        rowSelector,
+        cookiePrefix,
+        idAttribute = 'id',
+        duration = 1    // days
     } = options;
 
-    // Добавим слушатель для кнопок внутри строк
     document.querySelectorAll(`${ toggleSelector } button, ${ toggleSelector } a`).forEach(button => {
         button.addEventListener('click', (e) => {
-            e.stopPropagation(); // Останавливаем всплытие события
+            e.stopPropagation();
         });
     });
 
@@ -399,7 +314,6 @@ document.addEventListener('click', function(e) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Можно обновить UI или перезагрузить страницу
                         location.reload();
                     }
                 });
