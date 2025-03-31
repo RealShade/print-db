@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TaskStatus;
+use App\Models\Traits\HasUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, HasUser;
 
     public const TASK_PARTS_TABLE = 'task_part';
 
@@ -36,11 +37,6 @@ class Task extends Model
             ->using(PartTask::class)
             ->withPivot(['id', 'count_per_set', 'count_printed'])
             ->withTimestamps();
-    }
-
-    public function user() : BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     /* **************************************** Getters **************************************** */

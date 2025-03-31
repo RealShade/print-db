@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasUser;
 use Illuminate\Database\Eloquent\Model;
 
 class RoleUser extends Model
 {
+
+    use HasUser;
 
     public const PERMISSION_ROLE_TABLE = 'permission_role';
 

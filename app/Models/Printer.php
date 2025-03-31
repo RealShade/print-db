@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PrinterStatus;
+use App\Models\Traits\HasUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Printer extends Model
 {
-    use SoftDeletes, HasFactory;
+    use SoftDeletes, HasFactory, HasUser;
 
     protected $fillable = [
         'name',
@@ -32,11 +33,6 @@ class Printer extends Model
     ];
 
     /* **************************************** Public **************************************** */
-    public function user() : BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function printingTasks() : HasMany|Printer
     {
         return $this->hasMany(PrintingTask::class);

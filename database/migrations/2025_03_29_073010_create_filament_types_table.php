@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create(app(FilamentType::class)->getTable(), function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->timestamps();
         });

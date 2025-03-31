@@ -14,8 +14,9 @@ return new class extends Migration
     {
         Schema::create(app(FilamentVendor::class)->getTable(), function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('rate');
+            $table->tinyInteger('rate');
             $table->text('comment');
             $table->timestamps();
         });

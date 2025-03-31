@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Print\FilamentTypeController;
+use App\Http\Controllers\Print\FilamentVendorController;
 use App\Http\Controllers\Print\PartController;
 use App\Http\Controllers\Print\TaskController;
 use App\Http\Controllers\Print\PartTaskController;
@@ -66,6 +68,22 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
             ->name('task-parts.destroy');
         Route::post('task-parts/{partTask}/add-printed', [PartTaskController::class, 'addPrinted'])
             ->name('task-parts.add-printed');
+
+        // Маршруты для вендоров филамента (filament-vendors)
+        Route::get('filament-vendors', [FilamentVendorController::class, 'index'])->name('filament-vendors.index');
+        Route::get('filament-vendors/create', [FilamentVendorController::class, 'create'])->name('filament-vendors.create');
+        Route::post('filament-vendors', [FilamentVendorController::class, 'store'])->name('filament-vendors.store');
+        Route::get('filament-vendors/{vendor}/edit', [FilamentVendorController::class, 'edit'])->name('filament-vendors.edit');
+        Route::put('filament-vendors/{vendor}', [FilamentVendorController::class, 'update'])->name('filament-vendors.update');
+        Route::delete('filament-vendors/{vendor}', [FilamentVendorController::class, 'destroy'])->name('filament-vendors.destroy');
+
+        // Маршруты для типов филамента (filament-types)
+        Route::get('filament-types', [FilamentTypeController::class, 'index'])->name('filament-types.index');
+        Route::get('filament-types/create', [FilamentTypeController::class, 'create'])->name('filament-types.create');
+        Route::post('filament-types', [FilamentTypeController::class, 'store'])->name('filament-types.store');
+        Route::get('filament-types/{filament_type}/edit', [FilamentTypeController::class, 'edit'])->name('filament-types.edit');
+        Route::put('filament-types/{filament_type}', [FilamentTypeController::class, 'update'])->name('filament-types.update');
+        Route::delete('filament-types/{filament_type}', [FilamentTypeController::class, 'destroy'])->name('filament-types.destroy');
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);

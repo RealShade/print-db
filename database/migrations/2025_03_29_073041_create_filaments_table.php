@@ -14,10 +14,11 @@ return new class extends Migration
     {
         Schema::create(app(Filament::class)->getTable(), function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('filament_vendor_id')->constrained()->cascadeOnDelete();
             $table->foreignId('filament_type_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->json('colors');
+            $table->string('colors');
             $table->decimal('density', 4)->nullable();
             $table->decimal('cost')->nullable();
             $table->timestamps();
