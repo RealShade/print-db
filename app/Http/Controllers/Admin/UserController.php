@@ -65,7 +65,7 @@ class UserController extends Controller
     {
         $users = User::with('roles')
             ->orderBy('created_at', 'desc')
-            ->paginate(config('app.users_per_page'));
+            ->paginate(config('app.pagination.default'));
 
         return view('admin.users.index', compact('users'));
     }

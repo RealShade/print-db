@@ -123,7 +123,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'users_per_page' => env('USERS_PER_PAGE', 100),
+    'pagination' => [
+        'default' => env('PAGINATION_DEFAULT', 50),
+    ],
     'admin_email' => env('ADMIN_EMAIL', 'admin@admin'),
     'admin_password' => env('ADMIN_PASSWORD', 'admin123'),
     'free_registration' => env('FREE_REGISTRATION', false),

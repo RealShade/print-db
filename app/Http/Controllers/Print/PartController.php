@@ -27,7 +27,7 @@ class PartController extends Controller
     {
         $parts = Part::where('user_id', auth()->id())
             ->latest()
-            ->paginate();
+            ->paginate(config('app.pagination.default'));
 
         return view('print.parts.index', compact('parts'));
     }
