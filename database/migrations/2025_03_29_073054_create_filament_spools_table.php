@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('filament_id')->constrained()->restrictOnDelete();
             $table->foreignId('filament_packaging_id')->constrained()->restrictOnDelete();
-            $table->string('name')->nullable();
+            $table->string('name');
             $table->decimal('weight_initial', 10, 4)->nullable();
             $table->decimal('weight_used', 10, 4)->nullable();
             $table->dateTime('date_first_used')->nullable();

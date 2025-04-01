@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('filament_vendor_id')->constrained()->restrictOnDelete();
             $table->foreignId('filament_type_id')->constrained()->restrictOnDelete();
             $table->string('name');
-            $table->string('colors');
+            $table->string('colors')->nullable();
             $table->decimal('density', 4)->nullable();
             $table->decimal('cost')->nullable();
             $table->timestamps();

@@ -59,7 +59,7 @@
                                 <a class="nav-link text-white" href="#">{{ __('menu.filament.reels') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="#">{{ __('menu.filament.filaments') }}</a>
+                                <a class="nav-link text-white" href="{{ route('filament.filament.index') }}">{{ __('menu.filament.filaments') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="{{ route('filament.vendors.index') }}">{{ __('menu.filament.manufacturers') }}</a>

@@ -24,7 +24,7 @@ class Filament extends Model
 
     protected $casts = [
         'colors'  => 'array',
-        'density' => 'decimal:4',
+        'density' => 'decimal:2',
         'cost'    => 'decimal:2',
     ];
 
