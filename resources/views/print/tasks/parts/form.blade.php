@@ -3,6 +3,9 @@
         @method('PUT')
         @csrf
     @endif
+    @if ($part)
+        {!! \App\Helpers\FilenamePlaceholderHelper::generateWithWrapper($task, $part) !!}
+    @endif
     <div class="mb-3">
         @if(empty($part))
             <label class="form-label">{{ __('common.model') }}</label>

@@ -23,9 +23,7 @@ class TaskController extends Controller
 
     public function edit(Task $task) : View
     {
-        $parts = Part::where('user_id', auth()->id())->get();
-
-        return view('print.tasks.form', compact('task', 'parts'));
+        return view('print.tasks.form', compact('task'));
     }
 
     public function index() : View
@@ -33,9 +31,8 @@ class TaskController extends Controller
         $tasks = Task::where('user_id', auth()->id())
             ->orderBy('id', 'desc')
             ->paginate();
-        $parts = Part::all();
 
-        return view('print.tasks.index', compact('tasks', 'parts'));
+        return view('print.tasks.index', compact('tasks'));
     }
 
     public function store(TaskRequest $request) : JsonResponse
