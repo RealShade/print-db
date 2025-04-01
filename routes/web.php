@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Print\FilamentController;
 use App\Http\Controllers\Print\FilamentTypeController;
+use App\Http\Controllers\Print\FilamentPackagingTypeController;
 use App\Http\Controllers\Print\FilamentVendorController;
+use App\Http\Controllers\Print\FilamentSpoolController;
 use App\Http\Controllers\Print\PartController;
 use App\Http\Controllers\Print\TaskController;
 use App\Http\Controllers\Print\PartTaskController;
@@ -88,6 +90,14 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         Route::put('types/{filament_type}', [FilamentTypeController::class, 'update'])->name('types.update');
         Route::delete('types/{filament_type}', [FilamentTypeController::class, 'destroy'])->name('types.destroy');
 
+        // Маршруты для типов фасовки филамента (packaging-types)
+        Route::get('packaging', [FilamentPackagingTypeController::class, 'index'])->name('packaging.index');
+        Route::get('packaging/create', [FilamentPackagingTypeController::class, 'create'])->name('packaging.create');
+        Route::post('packaging', [FilamentPackagingTypeController::class, 'store'])->name('packaging.store');
+        Route::get('packaging/{packaging_type}/edit', [FilamentPackagingTypeController::class, 'edit'])->name('packaging.edit');
+        Route::put('packaging/{packaging_type}', [FilamentPackagingTypeController::class, 'update'])->name('packaging.update');
+        Route::delete('packaging/{packaging_type}', [FilamentPackagingTypeController::class, 'destroy'])->name('packaging.destroy');
+
         // Маршруты для филаментов (filament)
         Route::get('filament', [FilamentController::class, 'index'])->name('filament.index');
         Route::get('filament/create', [FilamentController::class, 'create'])->name('filament.create');
@@ -95,6 +105,14 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         Route::get('filament/{filament}/edit', [FilamentController::class, 'edit'])->name('filament.edit');
         Route::put('filament/{filament}', [FilamentController::class, 'update'])->name('filament.update');
         Route::delete('filament/{filament}', [FilamentController::class, 'destroy'])->name('filament.destroy');
+
+        // Маршруты для катушек филамента (filament-spools)
+        Route::get('spools', [FilamentSpoolController::class, 'index'])->name('spools.index');
+        Route::get('spools/create', [FilamentSpoolController::class, 'create'])->name('spools.create');
+        Route::post('spools', [FilamentSpoolController::class, 'store'])->name('spools.store');
+        Route::get('spools/{spool}/edit', [FilamentSpoolController::class, 'edit'])->name('spools.edit');
+        Route::put('spools/{spool}', [FilamentSpoolController::class, 'update'])->name('spools.update');
+        Route::delete('spools/{spool}', [FilamentSpoolController::class, 'destroy'])->name('spools.destroy');
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);

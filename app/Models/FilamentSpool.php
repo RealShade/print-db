@@ -24,8 +24,8 @@ class FilamentSpool extends Model
     ];
 
     protected $casts = [
-        'weight_initial'  => 'decimal:10:2',
-        'weight_used'     => 'decimal:10:2',
+        'weight_initial'  => 'decimal:4',
+        'weight_used'     => 'decimal:4',
         'date_first_used' => 'datetime',
         'date_last_used'  => 'datetime',
         'cost'            => 'decimal:2',
@@ -43,9 +43,9 @@ class FilamentSpool extends Model
     }
 
     /* **************************************** Getters **************************************** */
-    public function getRemainingWeightAttribute() : int
+    public function getRemainingWeightAttribute() : float
     {
-        return $this->weight_initial - ($this->weight_used ?? 0);
+        return round($this->weight_initial - ($this->weight_used ?? 0), 4);
     }
 
     public function getUsedPercentageAttribute() : float

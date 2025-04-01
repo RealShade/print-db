@@ -56,7 +56,7 @@
                     <div class="collapse" id="filamentCollapse">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="#">{{ __('menu.filament.reels') }}</a>
+                                <a class="nav-link text-white" href="{{ route('filament.spools.index') }}">{{ __('menu.filament.reels') }}</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="{{ route('filament.filament.index') }}">{{ __('menu.filament.filaments') }}</a>
@@ -66,6 +66,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="{{ route('filament.types.index') }}">{{ __('menu.filament.types') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{{ route('filament.packaging.index') }}">{{ __('menu.filament.packaging') }}</a>
                             </li>
                         </ul>
                     </div>
