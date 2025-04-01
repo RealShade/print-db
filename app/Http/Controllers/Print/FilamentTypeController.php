@@ -16,12 +16,12 @@ class FilamentTypeController extends Controller
     {
         $filamentType = null;
 
-        return view('print.filament-types.form', compact('filamentType'));
+        return view('filament.types.form', compact('filamentType'));
     }
 
     public function edit(FilamentType $filamentType): View
     {
-        return view('print.filament-types.form', compact('filamentType'));
+        return view('filament.types.form', compact('filamentType'));
     }
 
     public function index(): View
@@ -30,7 +30,7 @@ class FilamentTypeController extends Controller
             ->orderBy('name', 'asc')
             ->paginate();
 
-        return view('print.filament-types.index', compact('filamentTypes'));
+        return view('filament.types.index', compact('filamentTypes'));
     }
 
     public function store(FilamentTypeRequest $request): JsonResponse

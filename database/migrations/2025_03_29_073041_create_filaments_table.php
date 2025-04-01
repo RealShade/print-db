@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create(app(Filament::class)->getTable(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('filament_vendor_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('filament_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('filament_vendor_id')->constrained()->restrictOnDelete();
+            $table->foreignId('filament_type_id')->constrained()->restrictOnDelete();
             $table->string('name');
             $table->string('colors');
             $table->decimal('density', 4)->nullable();

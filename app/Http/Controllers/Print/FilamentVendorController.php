@@ -15,12 +15,12 @@ class FilamentVendorController extends Controller
     {
         $vendor = null;
 
-        return view('print.filament-vendors.form', compact('vendor'));
+        return view('filament.vendors.form', compact('vendor'));
     }
 
     public function edit(FilamentVendor $vendor) : View
     {
-        return view('print.filament-vendors.form', compact('vendor'));
+        return view('filament.vendors.form', compact('vendor'));
     }
 
     public function index() : View
@@ -29,7 +29,7 @@ class FilamentVendorController extends Controller
             ->orderBy('name')
             ->paginate();
 
-        return view('print.filament-vendors.index', compact('vendors'));
+        return view('filament.vendors.index', compact('vendors'));
     }
 
     public function store(FilamentVendorRequest $request) : JsonResponse
@@ -52,6 +52,6 @@ class FilamentVendorController extends Controller
     {
         $vendor->delete();
 
-        return redirect(route('print.filament-vendors.index'));
+        return redirect(route('filament.vendors.index'));
     }
 }

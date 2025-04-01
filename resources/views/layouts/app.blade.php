@@ -62,10 +62,10 @@
                                 <a class="nav-link text-white" href="#">{{ __('menu.filament.filaments') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('print.filament-vendors.index') }}">{{ __('menu.filament.manufacturers') }}</a>
+                                <a class="nav-link text-white" href="{{ route('filament.vendors.index') }}">{{ __('menu.filament.manufacturers') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('print.filament-types.index') }}">{{ __('menu.filament.types') }}</a>
+                                <a class="nav-link text-white" href="{{ route('filament.types.index') }}">{{ __('menu.filament.types') }}</a>
                             </li>
                         </ul>
                     </div>

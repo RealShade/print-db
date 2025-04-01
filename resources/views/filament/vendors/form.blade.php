@@ -8,8 +8,7 @@
     <div class="mb-3">
         <label for="rate" class="form-label">{{ __('filament_vendor.rate') }}</label>
         <select class="form-select" id="rate" name="rate">
-            <option value="">{{ __('common.not_selected') }}</option>
-            @for($i = 1; $i <= 5; $i++)
+            @for($i = 5; $i >= 1; $i--)
                 <option value="{{ $i }}" {{ old('rate', $vendor?->rate) == $i ? 'selected' : '' }}>
                     {{ $i }}
                 </option>

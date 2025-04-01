@@ -68,22 +68,24 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
             ->name('task-parts.destroy');
         Route::post('task-parts/{partTask}/add-printed', [PartTaskController::class, 'addPrinted'])
             ->name('task-parts.add-printed');
+    });
 
+    Route::prefix('filament')->name('filament.')->group(function() {
         // Маршруты для вендоров филамента (filament-vendors)
-        Route::get('filament-vendors', [FilamentVendorController::class, 'index'])->name('filament-vendors.index');
-        Route::get('filament-vendors/create', [FilamentVendorController::class, 'create'])->name('filament-vendors.create');
-        Route::post('filament-vendors', [FilamentVendorController::class, 'store'])->name('filament-vendors.store');
-        Route::get('filament-vendors/{vendor}/edit', [FilamentVendorController::class, 'edit'])->name('filament-vendors.edit');
-        Route::put('filament-vendors/{vendor}', [FilamentVendorController::class, 'update'])->name('filament-vendors.update');
-        Route::delete('filament-vendors/{vendor}', [FilamentVendorController::class, 'destroy'])->name('filament-vendors.destroy');
+        Route::get('vendors', [FilamentVendorController::class, 'index'])->name('vendors.index');
+        Route::get('vendors/create', [FilamentVendorController::class, 'create'])->name('vendors.create');
+        Route::post('vendors', [FilamentVendorController::class, 'store'])->name('vendors.store');
+        Route::get('vendors/{vendor}/edit', [FilamentVendorController::class, 'edit'])->name('vendors.edit');
+        Route::put('vendors/{vendor}', [FilamentVendorController::class, 'update'])->name('vendors.update');
+        Route::delete('vendors/{vendor}', [FilamentVendorController::class, 'destroy'])->name('vendors.destroy');
 
         // Маршруты для типов филамента (filament-types)
-        Route::get('filament-types', [FilamentTypeController::class, 'index'])->name('filament-types.index');
-        Route::get('filament-types/create', [FilamentTypeController::class, 'create'])->name('filament-types.create');
-        Route::post('filament-types', [FilamentTypeController::class, 'store'])->name('filament-types.store');
-        Route::get('filament-types/{filament_type}/edit', [FilamentTypeController::class, 'edit'])->name('filament-types.edit');
-        Route::put('filament-types/{filament_type}', [FilamentTypeController::class, 'update'])->name('filament-types.update');
-        Route::delete('filament-types/{filament_type}', [FilamentTypeController::class, 'destroy'])->name('filament-types.destroy');
+        Route::get('types', [FilamentTypeController::class, 'index'])->name('types.index');
+        Route::get('types/create', [FilamentTypeController::class, 'create'])->name('types.create');
+        Route::post('types', [FilamentTypeController::class, 'store'])->name('types.store');
+        Route::get('types/{filament_type}/edit', [FilamentTypeController::class, 'edit'])->name('types.edit');
+        Route::put('types/{filament_type}', [FilamentTypeController::class, 'update'])->name('types.update');
+        Route::delete('types/{filament_type}', [FilamentTypeController::class, 'destroy'])->name('types.destroy');
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);

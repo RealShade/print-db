@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create(app(FilamentSpool::class)->getTable(), function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('filament_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('filament_packaging_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('filament_id')->constrained()->restrictOnDelete();
+            $table->foreignId('filament_packaging_id')->constrained()->restrictOnDelete();
             $table->string('name')->nullable();
             $table->decimal('weight_initial', 10, 4)->nullable();
             $table->decimal('weight_used', 10, 4)->nullable();
