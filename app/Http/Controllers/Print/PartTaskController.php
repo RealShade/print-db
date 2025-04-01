@@ -33,7 +33,7 @@ class PartTaskController extends Controller
     public function create(Task $task) : View
     {
         $part  = null;
-        $parts = Part::where('user_id', auth()->id())->get();
+        $parts = Part::where('user_id', auth()->id())->orderByDesc('id')->get();
 
         return view('print.tasks.parts.form', compact('task', 'part', 'parts'));
     }
