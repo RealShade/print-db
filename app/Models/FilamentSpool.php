@@ -6,13 +6,13 @@ use App\Models\Traits\HasUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FilamentSpool extends Model
 {
     use HasFactory, HasUser;
 
     protected $fillable = [
-        'name',
         'filament_id',
         'filament_packaging_id',
         'weight_initial',
@@ -35,6 +35,11 @@ class FilamentSpool extends Model
     public function filament() : BelongsTo
     {
         return $this->belongsTo(Filament::class);
+    }
+
+    public function filamentUsed() : HasMany
+    {
+        return $this->hasMany(FilamentUsedLog::class)->latest('id');
     }
 
     public function packaging() : BelongsTo

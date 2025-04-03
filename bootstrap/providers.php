@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\EventServiceProvider;
 use App\Providers\RouteServiceProvider;
 
 return [

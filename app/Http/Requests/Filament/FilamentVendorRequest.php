@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Print;
+namespace App\Http\Requests\Filament;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;

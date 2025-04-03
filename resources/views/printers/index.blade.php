@@ -47,7 +47,9 @@
                         {{ $printer->name }}
                     </td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#printerModal"
+                        <button class="btn btn-sm btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#printerModal"
                                 data-action="{{ route('printers.update', $printer) }}"
                                 data-edit-route="{{ route('printers.edit', $printer) }}"
                                 data-method="PUT"
@@ -55,6 +57,19 @@
                             <i class="bi bi-pencil"></i>
                         </button>
 
+                        @if($printer->printingTasks->isNotEmpty())
+                            <button class="btn btn-sm btn-success"
+                                    data-transport="ajax"
+                                    data-action="{{ route('printers.complete-print', $printer) }}"
+                                    data-method="POST"
+                                    data-confirm="true"
+                                    data-confirm-title="{{ __('printer.confirm.complete_print.title') }}"
+                                    data-confirm-text="{{ __('printer.confirm.complete_print.text') }}"
+                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                <i class="bi bi-check"></i>
+                            </button>
+                        @endif
                         <form action="{{ route('printers.destroy', $printer) }}"
                               method="POST"
                               class="d-inline-block confirm-delete"

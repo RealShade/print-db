@@ -6,7 +6,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="filament_vendor_id" class="form-label">{{ __('filament.vendor') }}*</label>
+        <label for="filament_vendor_id" class="form-label">{{ __('filament.vendor.field') }}*</label>
         <select class="form-select" id="filament_vendor_id" name="filament_vendor_id" required>
             <option value="">{{ __('common.select.placeholder') }}</option>
             @foreach($vendors as $vendor)
@@ -18,7 +18,7 @@
     </div>
     
     <div class="mb-3">
-        <label for="filament_type_id" class="form-label">{{ __('filament.type') }}*</label>
+        <label for="filament_type_id" class="form-label">{{ __('filament.type.field') }}*</label>
         <select class="form-select" id="filament_type_id" name="filament_type_id" required>
             <option value="">{{ __('common.select.placeholder') }}</option>
             @foreach($types as $type)
@@ -47,16 +47,6 @@
         </div>
     </div>
     
-    <div class="mb-3">
-        <label for="cost" class="form-label">{{ __('filament.cost') }}</label>
-        <div class="input-group">
-            <input type="number" class="form-control" id="cost" name="cost" 
-                   step="0.01" min="0" 
-                   value="{{ old('cost', $filament?->cost) }}">
-            <span class="input-group-text">₽</span>
-        </div>
-    </div>
-
     <div class="alert alert-danger d-none" id="formErrors"></div>
 
     <div class="modal-footer">

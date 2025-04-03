@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Print;
+namespace App\Http\Controllers\Filament;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Print\FilamentVendorRequest;
+use App\Http\Requests\Filament\FilamentVendorRequest;
 use App\Models\FilamentVendor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;

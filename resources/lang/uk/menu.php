@@ -12,5 +12,7 @@ return [
         'reels' => 'Котушки',
         'filaments' => 'Філамент',
         'manufacturers' => 'Виробники',
+        'types' => 'Типи',
+        'packaging' => 'Упаковки',
     ],
 ];

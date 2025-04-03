@@ -2,22 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PrintTaskEventSource;
 use App\Enums\TaskStatus;
+use App\Events\PrintCompleted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Print\AfterPrintRequest;
 use App\Http\Requests\Api\Print\BeforePrintRequest;
 use App\Http\Requests\Api\Print\StopPrintRequest;
 use App\Models\PartTask;
 use App\Models\PrintingTask;
+use App\Models\PrintingTaskLog;
 use App\Models\Task;
 use App\Traits\ParsesFilenameTemplate;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Throwable;
 
 class TaskController extends Controller
 {
     use ParsesFilenameTemplate;
 
     /* **************************************** Public **************************************** */
+    /**
+     * @throws Throwable
+     */
     public function afterPrint(AfterPrintRequest $request) : JsonResponse
     {
         $validationResult = $this->parseFilename($request->filename, $request->user()->id);
@@ -29,22 +38,37 @@ class TaskController extends Controller
             ], 422);
         }
 
-        $printer = $request->getPrinter();
+        DB::transaction(function() use ($request, $validationResult) {
+            $printer = $request->getPrinter();
 
-        // Обновление значений count_printed в PartTask
-        foreach ($validationResult['data']['tasks'] as $taskData) {
-            foreach ($taskData['parts'] ?? [] as $partData) {
-                if ($partData['count_printing']) {
-                    $partTask = PartTask::find($partData['part_task_id']);
-                    if ($partTask && $partData['is_printing']) {
-                        $partTask->count_printed += $partData['count_printing'];
-                        $partTask->save();
+            // Обновление значений count_printed в PartTask
+            foreach ($validationResult['data']['tasks'] as $taskData) {
+                foreach ($taskData['parts'] ?? [] as $partData) {
+                    if (!$partData['count_printing'] || $partData['is_printing']) {
+                        continue;
                     }
+
+                    $partTask = PartTask::find($partData['part_task_id']);
+                    if (!$partTask) {
+                        continue;
+                    }
+
+                    $partTask->count_printed += $partData['count_printing'];
+                    $partTask->save();
+
+                    PrintingTaskLog::create([
+                        'part_task_id' => $partData['part_task_id'],
+                        'printer_id'   => $printer->id,
+                        'count'        => $partData['count_printing'],
+                        'event_source' => PrintTaskEventSource::API,
+                    ]);
+
+
                 }
             }
-        }
 
-        $printer->printingTasks()->delete();
+            $printer->printingTasks()->delete();
+        });
 
         return response()->json($validationResult);
     }

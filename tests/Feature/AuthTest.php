@@ -27,7 +27,7 @@ class AuthTest extends TestCase
 
     public function test_login_fails_with_empty_email()
     {
-        $response = $this->post('/login', [
+        $response = $this->post(route('login'), [
             'email' => '',
             'password' => 'password',
         ]);

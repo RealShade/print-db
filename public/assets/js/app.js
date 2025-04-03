@@ -4805,7 +4805,7 @@ document.addEventListener('DOMContentLoaded', function () {
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: form.dataset.confirmTitle,
         text: form.dataset.confirmText,
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonText: form.dataset.confirmButton,
         cancelButtonText: form.dataset.cancelButton
@@ -4889,7 +4889,7 @@ document.addEventListener('DOMContentLoaded', function () {
       sweetalert2__WEBPACK_IMPORTED_MODULE_0___default().fire({
         title: button.dataset.confirmTitle,
         text: button.dataset.confirmText,
-        icon: 'warning',
+        icon: 'question',
         showCancelButton: true,
         confirmButtonText: button.dataset.confirmButton,
         cancelButtonText: button.dataset.cancelButton
@@ -4998,11 +4998,14 @@ function initToggleRows() {
     idAttribute = _options$idAttribute === void 0 ? 'id' : _options$idAttribute,
     _options$duration = options.duration,
     duration = _options$duration === void 0 ? 1 : _options$duration;
-  document.querySelectorAll("".concat(toggleSelector, " button, ").concat(toggleSelector, " a")).forEach(function (button) {
-    button.addEventListener('click', function (e) {
-      e.stopPropagation();
-    });
-  });
+
+  // Удаляем этот блок, так как он нам больше не нужен
+  // document.querySelectorAll(`${toggleSelector} button:not([data-transport]), ${toggleSelector} a:not([data-transport])`).forEach(button => {
+  //     button.addEventListener('click', (e) => {
+  //         e.stopPropagation();
+  //     });
+  // });
+
   document.querySelectorAll(toggleSelector).forEach(function (button) {
     var id = button.dataset[idAttribute];
     var row = document.querySelector("".concat(rowSelector, "[data-parent-id=\"").concat(id, "\"]"));
@@ -5013,11 +5016,17 @@ function initToggleRows() {
     }
     if (isExpanded) {
       row.classList.remove('d-none');
-      button.querySelector('i').classList.remove('bi-chevron-right');
-      button.querySelector('i').classList.add('bi-chevron-down');
+      button.querySelector('i.toggle-icon').classList.remove('bi-chevron-right');
+      button.querySelector('i.toggle-icon').classList.add('bi-chevron-down');
     }
-    button.addEventListener('click', function () {
-      var icon = this.querySelector('i');
+    button.addEventListener('click', function (e) {
+      // Проверяем, что клик был по самой строке, шеврону или ячейке с шевроном,
+      // но не по кнопкам или другим интерактивным элементам
+      if (e.target.closest('button, a, .btn, [data-transport]')) {
+        return;
+      }
+      var icon = this.querySelector('i.toggle-icon');
+      if (!icon) return;
       row.classList.toggle('d-none');
       icon.classList.toggle('bi-chevron-right');
       icon.classList.toggle('bi-chevron-down');

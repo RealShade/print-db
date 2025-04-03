@@ -18,14 +18,12 @@ class Filament extends Model
         'filament_type_id',
         'colors',
         'density',
-        'cost',
         'user_id',
     ];
 
     protected $casts = [
         'colors'  => 'array',
         'density' => 'decimal:2',
-        'cost'    => 'decimal:2',
     ];
 
     /* **************************************** Public **************************************** */

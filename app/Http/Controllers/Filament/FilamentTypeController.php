@@ -1,10 +1,10 @@
 <?php
 // app/Http/Controllers/Print/FilamentTypeController.php
 
-namespace App\Http\Controllers\Print;
+namespace App\Http\Controllers\Filament;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Print\FilamentTypeRequest;
+use App\Http\Requests\Filament\FilamentTypeRequest;
 use App\Models\FilamentType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;

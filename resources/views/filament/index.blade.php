@@ -20,11 +20,10 @@
                 <tr>
                     <th class="text-end table-id">ID</th>
                     <th>{{ __('common.name') }}</th>
-                    <th>{{ __('filament.vendor') }}</th>
-                    <th>{{ __('filament.type') }}</th>
+                    <th>{{ __('filament.vendor.field') }}</th>
+                    <th>{{ __('filament.type.field') }}</th>
                     <th>{{ __('filament.colors') }}</th>
                     <th>{{ __('filament.density') }}</th>
-                    <th>{{ __('filament.cost') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -43,7 +42,6 @@
                             @endif
                         </td>
                         <td>{{ $filament->density }}</td>
-                        <td>{{ $filament->cost }}</td>
                         <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"

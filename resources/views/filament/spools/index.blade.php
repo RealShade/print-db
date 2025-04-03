@@ -3,14 +3,14 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{{ __('filament_spool.title') }}</h1>
+            <h1>{{ __('filament.spool.title') }}</h1>
             <button type="button"
                     class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#spoolModal"
                     data-action="{{ route('filament.spools.store') }}"
                     data-create-route="{{ route('filament.spools.create') }}">
-                <i class="bi bi-plus-lg"></i> {{ __('filament_spool.add') }}
+                <i class="bi bi-plus-lg"></i> {{ __('filament.spool.add') }}
             </button>
         </div>
 
@@ -19,14 +19,12 @@
                 <thead>
                 <tr>
                     <th class="text-end table-id">ID</th>
-                    <th>{{ __('common.name') }}</th>
-                    <th>{{ __('filament_spool.filament') }}</th>
-                    <th>{{ __('filament_spool.packaging') }}</th>
-                    <th>{{ __('filament_spool.weight_initial') }}</th>
-                    <th>{{ __('filament_spool.weight_used') }}</th>
-                    <th>{{ __('filament_spool.remaining_weight') }}</th>
-                    <th>{{ __('filament_spool.usage_percent') }}</th>
-                    <th>{{ __('filament_spool.cost') }}</th>
+                    <th>{{ __('filament.spool.filament') }}</th>
+                    <th>{{ __('filament.type.field') }}</th>
+                    <th>{{ __('filament.vendor.field') }}</th>
+                    <th>{{ __('filament.spool.weight_used') }}</th>
+                    <th>{{ __('filament.spool.remaining_weight') }}</th>
+                    <th>{{ __('filament.spool.date_last_used') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -34,21 +32,12 @@
                 @foreach($spools as $spool)
                     <tr>
                         <td class="text-end table-id">{{ $spool->id }}</td>
-                        <td>{{ $spool->name }}</td>
                         <td>{{ $spool->filament->name }}</td>
-                        <td>{{ $spool->packaging->name }}</td>
-                        <td>{{ number_format($spool->weight_initial, 2) }} г</td>
+                        <td>{{ $spool->filament->type->name }}</td>
+                        <td>{{ $spool->filament->vendor->name }}</td>
                         <td>{{ number_format($spool->weight_used ?? 0, 2) }} г</td>
                         <td>{{ number_format($spool->remaining_weight, 2) }} г</td>
-                        <td>
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: {{ $spool->used_percentage }}%"
-                                     aria-valuenow="{{ $spool->used_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                    {{ round($spool->used_percentage) }}%
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ $spool->cost ? number_format($spool->cost, 2) : '' }}</td>
+                        <td>{{ $spool->date_last_used ? $spool->date_last_used->format('Y-m-d H:m:s') : '' }}</td>
                         <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"
@@ -63,7 +52,7 @@
                                   method="POST"
                                   class="d-inline-block confirm-delete"
                                   data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament_spool.action.delete.confirm') }}"
+                                  data-confirm-text="{{ __('filament.spool.action.delete.confirm') }}"
                                   data-confirm-button="{{ __('common.buttons.confirm') }}"
                                   data-cancel-button="{{ __('common.buttons.cancel') }}">
                                 @csrf
@@ -85,7 +74,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('filament_spool.form_title') }}</h5>
+                    <h5 class="modal-title">{{ __('filament.spool.form_title') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

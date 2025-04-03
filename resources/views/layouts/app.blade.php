@@ -46,29 +46,33 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white d-flex align-items-center justify-content-between" data-bs-toggle="collapse" href="#filamentCollapse" role="button" aria-expanded="false" aria-controls="filamentCollapse">
-                    <span>
-                    <i class="bi bi-box2-fill me-2"></i>
-                    {{ __('menu.filament.title') }}
-                    </span>
+                    <a class="nav-link text-white d-flex align-items-center justify-content-between"
+                       data-bs-toggle="collapse"
+                       href="#filamentCollapse"
+                       role="button"
+                       aria-expanded="{{ request()->routeIs('filament.*') ? 'true' : 'false' }}"
+                       aria-controls="filamentCollapse">
+                        <span>
+                            <i class="bi bi-box2-fill me-2"></i> {{ __('menu.filament.title') }}
+                        </span>
                         <i class="bi bi-chevron-down"></i>
                     </a>
-                    <div class="collapse" id="filamentCollapse">
+                    <div class="collapse {{ request()->routeIs('filament.*') ? 'show' : '' }}" id="filamentCollapse">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('filament.spools.index') }}">{{ __('menu.filament.reels') }}</a>
+                                <a class="nav-link {{ request()->routeIs('filament.spools.*') ? 'active' : 'text-white' }}" href="{{ route('filament.spools.index') }}">{{ __('menu.filament.reels') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('filament.filament.index') }}">{{ __('menu.filament.filaments') }}</a>
+                                <a class="nav-link {{ request()->routeIs('filament.filament.*') ? 'active' : 'text-white' }}" href="{{ route('filament.filament.index') }}">{{ __('menu.filament.filaments') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('filament.vendors.index') }}">{{ __('menu.filament.manufacturers') }}</a>
+                                <a class="nav-link {{ request()->routeIs('filament.vendors.*') ? 'active' : 'text-white' }}" href="{{ route('filament.vendors.index') }}">{{ __('menu.filament.manufacturers') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('filament.types.index') }}">{{ __('menu.filament.types') }}</a>
+                                <a class="nav-link {{ request()->routeIs('filament.types.*') ? 'active' : 'text-white' }}" href="{{ route('filament.types.index') }}">{{ __('menu.filament.types') }}</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" href="{{ route('filament.packaging.index') }}">{{ __('menu.filament.packaging') }}</a>
+                                <a class="nav-link {{ request()->routeIs('filament.packaging.*') ? 'active' : 'text-white' }}" href="{{ route('filament.packaging.index') }}">{{ __('menu.filament.packaging') }}</a>
                             </li>
                         </ul>
                     </div>

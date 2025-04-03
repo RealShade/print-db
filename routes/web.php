@@ -3,11 +3,11 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Print\FilamentController;
-use App\Http\Controllers\Print\FilamentTypeController;
-use App\Http\Controllers\Print\FilamentPackagingTypeController;
-use App\Http\Controllers\Print\FilamentVendorController;
-use App\Http\Controllers\Print\FilamentSpoolController;
+use App\Http\Controllers\Filament\FilamentController;
+use App\Http\Controllers\Filament\FilamentTypeController;
+use App\Http\Controllers\Filament\FilamentPackagingTypeController;
+use App\Http\Controllers\Filament\FilamentVendorController;
+use App\Http\Controllers\Filament\FilamentSpoolController;
 use App\Http\Controllers\Print\PartController;
 use App\Http\Controllers\Print\TaskController;
 use App\Http\Controllers\Print\PartTaskController;
@@ -118,6 +118,8 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     Route::resource('printers', PrinterController::class)->except(['show']);
     Route::post('printers/{printer}/toggle-status', [PrinterController::class, 'toggleStatus'])
         ->name('printers.toggle-status');
+    Route::post('/printers/{printer}/complete-print', [PrinterController::class, 'complete'])
+        ->name('printers.complete-print');
 
     Route::get('printing-tasks/{printer}/create', [PrintingTaskController::class, 'create'])->name('printing-tasks.create');
     Route::post('printing-tasks/{printer}', [PrintingTaskController::class, 'store'])->name('printing-tasks.store');

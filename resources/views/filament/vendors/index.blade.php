@@ -3,14 +3,14 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{{ __('filament_vendor.title') }}</h1>
+            <h1>{{ __('filament.vendor.title') }}</h1>
             <button type="button"
                     class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#vendorModal"
                     data-action="{{ route('filament.vendors.store') }}"
                     data-create-route="{{ route('filament.vendors.create') }}">
-                <i class="bi bi-plus-lg"></i> {{ __('filament_vendor.add') }}
+                <i class="bi bi-plus-lg"></i> {{ __('filament.vendor.add') }}
             </button>
         </div>
 
@@ -20,9 +20,9 @@
                 <tr>
                     <th class="text-end table-id">ID</th>
                     <th>{{ __('common.name') }}</th>
-                    <th class="text-center">{{ __('filament_vendor.rate') }}</th>
-                    <th>{{ __('filament_vendor.comment') }}</th>
-                    <th class="text-center">{{ __('filament_vendor.filaments_count') }}</th>
+                    <th class="text-center">{{ __('filament.vendor.rate') }}</th>
+                    <th>{{ __('filament.vendor.comment') }}</th>
+                    <th class="text-center">{{ __('filament.vendor.filaments_count') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -54,7 +54,7 @@
                                   method="POST"
                                   class="d-inline-block confirm-delete"
                                   data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament_vendor.action.delete.confirm') }}"
+                                  data-confirm-text="{{ __('filament.vendor.action.delete.confirm') }}"
                                   data-confirm-button="{{ __('common.buttons.confirm') }}"
                                   data-cancel-button="{{ __('common.buttons.cancel') }}">
                                 @csrf
@@ -76,7 +76,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('filament_vendor.form_title') }}</h5>
+                    <h5 class="modal-title">{{ __('filament.vendor.form_title') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

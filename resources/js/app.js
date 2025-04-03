@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 title            : form.dataset.confirmTitle,
                 text             : form.dataset.confirmText,
-                icon             : 'warning',
+                icon             : 'question',
                 showCancelButton : true,
                 confirmButtonText: form.dataset.confirmButton,
                 cancelButtonText : form.dataset.cancelButton
@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const makeRequest = () => {
             const action = button.dataset.action;
             const method = button.dataset.method || 'POST';
-
             fetch(action, {
                 method : method,
                 headers: {
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 title            : button.dataset.confirmTitle,
                 text             : button.dataset.confirmText,
-                icon             : 'warning',
+                icon             : 'question',
                 showCancelButton : true,
                 confirmButtonText: button.dataset.confirmButton,
                 cancelButtonText : button.dataset.cancelButton
@@ -245,17 +244,17 @@ function initToggleRows(options = {}) {
         duration = 1    // days
     } = options;
 
-    document.querySelectorAll(`${ toggleSelector } button, ${ toggleSelector } a`).forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    });
-
+    // Удаляем этот блок, так как он нам больше не нужен
+    // document.querySelectorAll(`${toggleSelector} button:not([data-transport]), ${toggleSelector} a:not([data-transport])`).forEach(button => {
+    //     button.addEventListener('click', (e) => {
+    //         e.stopPropagation();
+    //     });
+    // });
 
     document.querySelectorAll(toggleSelector).forEach(button => {
         const id = button.dataset[idAttribute];
-        const row = document.querySelector(`${ rowSelector }[data-parent-id="${ id }"]`);
-        const cookieName = `${ cookiePrefix }_expanded_${ id }`;
+        const row = document.querySelector(`${rowSelector}[data-parent-id="${id}"]`);
+        const cookieName = `${cookiePrefix}_expanded_${id}`;
         const isExpanded = Cookies.get(cookieName);
 
         if (!row) {
@@ -264,12 +263,19 @@ function initToggleRows(options = {}) {
 
         if (isExpanded) {
             row.classList.remove('d-none');
-            button.querySelector('i').classList.remove('bi-chevron-right');
-            button.querySelector('i').classList.add('bi-chevron-down');
+            button.querySelector('i.toggle-icon').classList.remove('bi-chevron-right');
+            button.querySelector('i.toggle-icon').classList.add('bi-chevron-down');
         }
 
-        button.addEventListener('click', function() {
-            const icon = this.querySelector('i');
+        button.addEventListener('click', function(e) {
+            // Проверяем, что клик был по самой строке, шеврону или ячейке с шевроном,
+            // но не по кнопкам или другим интерактивным элементам
+            if (e.target.closest('button, a, .btn, [data-transport]')) {
+                return;
+            }
+
+            const icon = this.querySelector('i.toggle-icon');
+            if (!icon) return;
 
             row.classList.toggle('d-none');
             icon.classList.toggle('bi-chevron-right');

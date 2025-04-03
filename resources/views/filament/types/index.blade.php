@@ -3,14 +3,14 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{{ __('filament_type.title') }}</h1>
+            <h1>{{ __('filament.type.title') }}</h1>
             <button type="button"
                     class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#filamentTypeModal"
                     data-action="{{ route('filament.types.store') }}"
                     data-create-route="{{ route('filament.types.create') }}">
-                <i class="bi bi-plus-lg"></i> {{ __('filament_type.add') }}
+                <i class="bi bi-plus-lg"></i> {{ __('filament.type.add') }}
             </button>
         </div>
 
@@ -44,7 +44,7 @@
                                   method="POST"
                                   class="d-inline-block confirm-delete"
                                   data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament_type.action.delete.confirm') }}"
+                                  data-confirm-text="{{ __('filament.type.action.delete.confirm') }}"
                                   data-confirm-button="{{ __('common.buttons.confirm') }}"
                                   data-cancel-button="{{ __('common.buttons.cancel') }}">
                                 @csrf
@@ -66,7 +66,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ __('filament_type.form_title') }}</h5>
+                    <h5 class="modal-title">{{ __('filament.type.form_title') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">

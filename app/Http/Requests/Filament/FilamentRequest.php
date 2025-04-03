@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Print;
+namespace App\Http\Requests\Filament;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,11 +12,10 @@ class FilamentRequest extends FormRequest
     {
         return [
             'name' => __('filament.name'),
-            'filament_vendor_id' => __('filament.vendor'),
-            'filament_type_id' => __('filament.type'),
+            'filament_vendor_id' => __('filament.vendor.field'),
+            'filament_type_id' => __('filament.type.field'),
             'colors' => __('filament.colors'),
             'density' => __('filament.density'),
-            'cost' => __('filament.cost'),
         ];
     }
 
@@ -36,12 +35,11 @@ class FilamentRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'filament_vendor_id' => 'required|exists:filament_vendors,id',
-            'filament_type_id' => 'required|exists:filament_types,id',
+            'filament_vendor_id' => 'required|exists:filament_vendors,id,user_id,' . auth()->id(),
+            'filament_type_id' => 'required|exists:filament_types,id,user_id,' . auth()->id(),
             'colors' => 'nullable|array',
             'colors.*' => 'string|max:50',
             'density' => 'nullable|numeric|min:0|max:10',
-            'cost' => 'nullable|numeric|min:0',
         ];
     }
     

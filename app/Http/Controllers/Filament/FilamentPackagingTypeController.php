@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Print;
+namespace App\Http\Controllers\Filament;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Print\FilamentPackagingRequest;
+use App\Http\Requests\Filament\FilamentPackagingRequest;
 use App\Models\FilamentPackaging;
 use App\Models\FilamentPackagingType;
 use Illuminate\Http\JsonResponse;

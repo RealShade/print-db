@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Print;
+namespace App\Http\Controllers\Filament;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Print\FilamentRequest;
+use App\Http\Requests\Filament\FilamentRequest;
 use App\Models\Filament;
 use App\Models\FilamentType;
 use App\Models\FilamentVendor;
