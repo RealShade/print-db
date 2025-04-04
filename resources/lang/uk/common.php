@@ -18,4 +18,5 @@ return [
     'error'            => [
         'something_went_wrong' => 'Виникла помилка при виконанні дії',
     ],
+    'select' => '- оберіть -',
 ];

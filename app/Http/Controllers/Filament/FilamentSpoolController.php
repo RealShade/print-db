@@ -43,7 +43,7 @@ class FilamentSpoolController extends Controller
         $spools = FilamentSpool::where('user_id', auth()->id())
             ->with(['filament', 'packaging'])
             ->orderByDesc('date_last_used')
-            ->orderByDesc('id')
+            ->orderBy('id')
             ->paginate();
 
         return view('filament.spools.index', compact('spools'));
@@ -51,11 +51,21 @@ class FilamentSpoolController extends Controller
 
     public function store(FilamentSpoolRequest $request) : JsonResponse
     {
-        $packaging             = FilamentPackaging::find($request->filament_packaging_id);
-        $spool                 = new FilamentSpool($request->validated());
-        $spool->user_id        = auth()->id();
-        $spool->weight_initial = $packaging->weight;
-        $spool->save();
+        $validatedData = $request->validated();
+        $packaging     = FilamentPackaging::find($request->filament_packaging_id);
+        $quantity      = $validatedData['quantity'] ?? 1;
+
+        // Удаляем quantity из данных, чтобы не передавать его в модель
+        unset($validatedData['quantity']);
+
+        // Создаем указанное количество катушек
+        for ($i = 0; $i < $quantity; $i++) {
+            $spool                 = new FilamentSpool($validatedData);
+            $spool->user_id        = auth()->id();
+            $spool->weight_initial = $packaging->weight;
+            $spool->cost           = $validatedData['cost'] ?? null;
+            $spool->save();
+        }
 
         return response()->json(['success' => true]);
     }

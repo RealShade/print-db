@@ -19,10 +19,10 @@
                 <thead>
                 <tr>
                     <th class="text-end table-id">ID</th>
+                    <th></th>
                     <th>{{ __('common.name') }}</th>
                     <th>{{ __('filament.vendor.field') }}</th>
                     <th>{{ __('filament.type.field') }}</th>
-                    <th>{{ __('filament.color') }}</th>
                     <th>{{ __('filament.density') }}</th>
                     <th></th>
                 </tr>
@@ -31,9 +31,6 @@
                 @foreach($filaments as $filament)
                     <tr>
                         <td class="text-end table-id">{{ $filament->id }}</td>
-                        <td>{{ $filament->name }}</td>
-                        <td>{{ $filament->vendor->name }}</td>
-                        <td>{{ $filament->type->name }}</td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
                                 @if($filament->colors)
@@ -43,6 +40,9 @@
                                 @endif
                             </div>
                         </td>
+                        <td>{{ $filament->name }}</td>
+                        <td>{{ $filament->vendor->name }}</td>
+                        <td>{{ $filament->type->name }}</td>
                         <td>{{ $filament->density }}</td>
                         <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"

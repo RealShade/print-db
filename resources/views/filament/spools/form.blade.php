@@ -24,17 +24,17 @@
     <div class="mb-3">
         <label for="filament_packaging_id" class="form-label">{{ __('filament.spool.packaging') }}*</label>
         @if ($spool)
-        <input type="text" class="form-control" id="filament_packaging_id" name="filament_packaging_id"
-               value="{{ $spool->packaging->name ?? 'н/д' }}" disabled>
-            @else
-        <select class="form-select" id="filament_packaging_id" name="filament_packaging_id" required>
-            <option value="">{{ __('common.select') }}</option>
-            @foreach($packaging as $packagingEach)
-                <option value="{{ $packagingEach->id }}" {{ old('filament_packaging_id', $spool?->filament_packaging_id) == $packagingEach->id ? 'selected' : '' }}>
-                    {{ $packagingEach->name }}
-                </option>
-            @endforeach
-        </select>
+            <input type="text" class="form-control" id="filament_packaging_id" name="filament_packaging_id"
+                   value="{{ $spool->packaging->name ?? 'н/д' }}" disabled>
+        @else
+            <select class="form-select" id="filament_packaging_id" name="filament_packaging_id" required>
+                <option value="">{{ __('common.select') }}</option>
+                @foreach($packaging as $packagingEach)
+                    <option value="{{ $packagingEach->id }}" {{ old('filament_packaging_id', $spool?->filament_packaging_id) == $packagingEach->id ? 'selected' : '' }}>
+                        {{ $packagingEach->name }}
+                    </option>
+                @endforeach
+            </select>
         @endif
     </div>
 
@@ -67,6 +67,13 @@
             <label for="date_last_used" class="form-label">{{ __('filament.spool.date_last_used') }}</label>
             <input type="datetime-local" class="form-control" id="date_last_used" name="date_last_used"
                    value="{{ old('date_last_used', $spool?->date_last_used?->format('Y-m-d H:i:s')) }}">
+        </div>
+    @else
+        <div class="mb-3">
+            <label for="quantity" class="form-label">{{ __('filament.spool.quantity') }}</label>
+            <input type="number" class="form-control" id="quantity" name="quantity"
+                   value="{{ old('quantity', 1) }}" min="1" max="100" required>
+            <div class="form-text">{{ __('filament.spool.quantity_hint') }}</div>
         </div>
     @endif
 

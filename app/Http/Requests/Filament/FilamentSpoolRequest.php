@@ -39,7 +39,7 @@ class FilamentSpoolRequest extends FormRequest
     public function rules() : array
     {
         $attr = [
-            'cost'                  => 'nullable|numeric|min:0',
+            'cost' => 'nullable|numeric|min:0',
         ];
 
         if ($this->spool) {
@@ -53,6 +53,7 @@ class FilamentSpoolRequest extends FormRequest
             $attr = array_merge($attr, [
                 'filament_id'           => 'required|exists:filaments,id,user_id,' . auth()->id(),
                 'filament_packaging_id' => 'required|exists:filament_packagings,id,user_id,' . auth()->id(),
+                'quantity'              => 'sometimes|integer|min:1|max:100',
             ]);
         }
 

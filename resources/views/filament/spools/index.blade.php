@@ -19,6 +19,7 @@
                 <thead>
                 <tr>
                     <th class="text-end table-id">ID</th>
+                    <th></th>
                     <th>{{ __('filament.spool.filament') }}</th>
                     <th>{{ __('filament.type.field') }}</th>
                     <th>{{ __('filament.vendor.field') }}</th>
@@ -32,6 +33,15 @@
                 @foreach($spools as $spool)
                     <tr>
                         <td class="text-end table-id">{{ $spool->id }}</td>
+                        <td>
+                            <div class="d-flex flex-wrap gap-1">
+                                @if($spool->filament->colors)
+                                    @foreach($spool->filament->colors as $color)
+                                        <div class="filament-color-preview" style="background-color: {{ $color }};" title="{{ $color }}"></div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </td>
                         <td>{{ $spool->filament->name }}</td>
                         <td>{{ $spool->filament->type->name }}</td>
                         <td>{{ $spool->filament->vendor->name }}</td>
