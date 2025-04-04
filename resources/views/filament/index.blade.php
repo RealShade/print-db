@@ -22,7 +22,7 @@
                     <th>{{ __('common.name') }}</th>
                     <th>{{ __('filament.vendor.field') }}</th>
                     <th>{{ __('filament.type.field') }}</th>
-                    <th>{{ __('filament.colors') }}</th>
+                    <th>{{ __('filament.color') }}</th>
                     <th>{{ __('filament.density') }}</th>
                     <th></th>
                 </tr>
@@ -35,11 +35,13 @@
                         <td>{{ $filament->vendor->name }}</td>
                         <td>{{ $filament->type->name }}</td>
                         <td>
-                            @if($filament->colors)
-                                @foreach($filament->colors as $color)
-                                    <span class="badge bg-secondary">{{ $color }}</span>
-                                @endforeach
-                            @endif
+                            <div class="d-flex flex-wrap gap-1">
+                                @if($filament->colors)
+                                    @foreach($filament->colors as $color)
+                                        <div class="filament-color-preview" style="background-color: {{ $color }};" title="{{ $color }}"></div>
+                                    @endforeach
+                                @endif
+                            </div>
                         </td>
                         <td>{{ $filament->density }}</td>
                         <td class="text-end">

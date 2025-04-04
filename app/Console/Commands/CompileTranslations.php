@@ -10,7 +10,7 @@ class CompileTranslations extends Command
     protected $signature = 'translations:compile {--lang=* : Языки для компиляции}';
     protected $description = 'Компилирует переводы в JS-файл';
 
-    public function handle()
+    public function handle() : void
     {
         $languages = $this->option('lang') ?: ['uk', 'ru'];
         $translations = [];

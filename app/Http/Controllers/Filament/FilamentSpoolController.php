@@ -51,9 +51,9 @@ class FilamentSpoolController extends Controller
 
     public function store(FilamentSpoolRequest $request) : JsonResponse
     {
-        $packaging = FilamentPackaging::find($request->filament_packaging_id);
-        $spool          = new FilamentSpool($request->validated());
-        $spool->user_id = auth()->id();
+        $packaging             = FilamentPackaging::find($request->filament_packaging_id);
+        $spool                 = new FilamentSpool($request->validated());
+        $spool->user_id        = auth()->id();
         $spool->weight_initial = $packaging->weight;
         $spool->save();
 
@@ -77,10 +77,10 @@ class FilamentSpoolController extends Controller
             ->with(['vendor', 'type'])
             ->orderBy('filament_vendors.name')
             ->orderBy('filament_types.name')
-//            ->orderBy(function($query) {
-//                // Извлекаем первый цвет из массива для сортировки
-//                $query->selectRaw("JSON_EXTRACT(colors, '$[0]')");
-//            })
+            //            ->orderBy(function($query) {
+            //                // Извлекаем первый цвет из массива для сортировки
+            //                $query->selectRaw("JSON_EXTRACT(colors, '$[0]')");
+            //            })
             ->get();
     }
 }

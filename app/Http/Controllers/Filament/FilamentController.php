@@ -16,16 +16,23 @@ class FilamentController extends Controller
     public function create() : View
     {
         $filament = null;
-        $vendors = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
-        $types = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
+        $vendors  = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
+        $types    = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
 
         return view('filament.form', compact('filament', 'vendors', 'types'));
+    }
+
+    public function destroy(Filament $filament)
+    {
+        $filament->delete();
+
+        return redirect(route('filament.index'));
     }
 
     public function edit(Filament $filament) : View
     {
         $vendors = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
-        $types = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
+        $types   = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
 
         return view('filament.form', compact('filament', 'vendors', 'types'));
     }
@@ -42,7 +49,7 @@ class FilamentController extends Controller
 
     public function store(FilamentRequest $request) : JsonResponse
     {
-        $filament = new Filament($request->validated());
+        $filament          = new Filament($request->validated());
         $filament->user_id = auth()->id();
         $filament->save();
 
@@ -54,12 +61,5 @@ class FilamentController extends Controller
         $filament->update($request->validated());
 
         return response()->json(['success' => true]);
-    }
-
-    public function destroy(Filament $filament)
-    {
-        $filament->delete();
-
-        return redirect(route('filament.index'));
     }
 }

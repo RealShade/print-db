@@ -1,8 +1,12 @@
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 import trans from './translations';
+import Pickr from '@simonwep/pickr';
+import { initFilamentForm } from "./filament-form";
+import '@simonwep/pickr/dist/themes/classic.min.css';
 
 window.Swal = Swal;
+window.Pickr = Pickr;
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle
     const togglePassword = document.querySelector('.toggle-password');
@@ -213,6 +217,21 @@ document.addEventListener('DOMContentLoaded', function() {
                                 });
                             });
                     });
+
+                    // Повторная инициализация всех динамических элементов
+                    // modalBody.querySelectorAll('script').forEach(oldScript => {
+                    //     let newScript = document.createElement('script');
+                    //     if (oldScript.src) {
+                    //         newScript.src = oldScript.src;
+                    //         newScript.onload = () => console.log(`Загружен: ${oldScript.src}`);
+                    //     } else {
+                    //         newScript.text = oldScript.innerHTML;
+                    //     }
+                    //     document.body.appendChild(newScript);
+                    // });
+
+                    // Инициализируем обработчики форм, копирования и т. д.
+                    document.dispatchEvent(new Event('modalContentLoaded'));
                 });
         });
 
@@ -290,40 +309,15 @@ function initToggleRows(options = {}) {
     });
 }
 
-window.initToggleRows = initToggleRows;
-
-document.addEventListener('click', function(e) {
-    const btn = e.target.closest('.update-printed-btn');
-    if (!btn) {
-        return;
-    }
-    const partTaskId = btn.dataset.partTaskId;
-    Swal.fire({
-        title: 'Введіть кількість додаваних копій',
-        input: 'number',
-        // inputAttributes: { min: 1 },
-        showCancelButton : true,
-        confirmButtonText: 'Добавить'
-    }).then(result => {
-        if (result.isConfirmed && result.value) {
-            fetch('/print/task-parts/' + partTaskId + '/add-printed', {
-                method : 'POST',
-                headers: {
-                    'Content-Type'    : 'application/json',
-                    'X-CSRF-TOKEN'    : document.querySelector('meta[name="csrf-token"]').content,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body   : JSON.stringify({
-                    printed_count: parseInt(result.value)
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                });
-        }
-    });
+// Добавьте в блок обработки события modalContentLoaded
+document.addEventListener('modalContentLoaded', function() {
+    initFilamentForm();
 });
 
+// Инициализация при прямой загрузке формы
+// document.addEventListener('DOMContentLoaded', function() {
+//     initFilamentForm();
+// });
+
+window.initToggleRows = initToggleRows;
+window.initFilamentForm = initFilamentForm;

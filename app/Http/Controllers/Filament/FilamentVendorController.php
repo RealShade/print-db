@@ -18,6 +18,13 @@ class FilamentVendorController extends Controller
         return view('filament.vendors.form', compact('vendor'));
     }
 
+    public function destroy(FilamentVendor $vendor)
+    {
+        $vendor->delete();
+
+        return redirect(route('filament.vendors.index'));
+    }
+
     public function edit(FilamentVendor $vendor) : View
     {
         return view('filament.vendors.form', compact('vendor'));
@@ -46,12 +53,5 @@ class FilamentVendorController extends Controller
         $vendor->update($request->validated());
 
         return response()->json(['success' => true]);
-    }
-
-    public function destroy(FilamentVendor $vendor)
-    {
-        $vendor->delete();
-
-        return redirect(route('filament.vendors.index'));
     }
 }

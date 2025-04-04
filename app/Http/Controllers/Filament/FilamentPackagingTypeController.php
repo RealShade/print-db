@@ -19,6 +19,13 @@ class FilamentPackagingTypeController extends Controller
         return view('filament.packaging_types.form', compact('packagingType'));
     }
 
+    public function destroy(FilamentPackaging $packagingType)
+    {
+        $packagingType->delete();
+
+        return redirect(route('filament.packaging_types.index'));
+    }
+
     public function edit(FilamentPackaging $packagingType) : View
     {
         return view('filament.packaging_types.form', compact('packagingType'));
@@ -49,10 +56,4 @@ class FilamentPackagingTypeController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function destroy(FilamentPackaging $packagingType)
-    {
-        $packagingType->delete();
-
-        return redirect(route('filament.packaging_types.index'));
-    }
 }

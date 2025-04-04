@@ -256,15 +256,15 @@ a:hover {
   margin: 0 0.25rem;
 }
 .pagination .page-item.disabled .page-link {
-  color: #6c757d;
+  color: #6C757D;
   pointer-events: none;
   cursor: auto;
-  background-color: #fff;
-  border-color: #dee2e6;
+  background-color: #FFF;
+  border-color: #DEE2E6;
 }
 .pagination .page-item.active .page-link {
   z-index: 1;
-  color: #fff;
+  color: #FFF;
   background-color: #007BFF;
   border-color: #007BFF;
 }
@@ -275,14 +275,67 @@ a:hover {
   margin-left: -1px;
   line-height: 1.25;
   color: #007BFF;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
+  background-color: #FFF;
+  border: 1px solid #DEE2E6;
 }
 .pagination .page-item .page-link:hover {
   z-index: 2;
   color: #007BFF;
   text-decoration: none;
-  background-color: #e9ecef;
-  border-color: #dee2e6;
+  background-color: #E9ECEF;
+  border-color: #DEE2E6;
+}
+.filament-color-preview {
+  width: 2rem;
+  height: 1.9rem;
+  border-radius: 3px;
+  border: 1px solid #DDD;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
+  position: relative;
+}
+.filament-color-preview::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: inherit;
+  z-index: 1;
+}
+.color-block {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 3px;
+}
+.color-picker {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  margin-right: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: visible;
+}
+.color-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.remove-color-block {
+  margin-left: 8px;
+}
+/* Улучшаем стили для кнопок Pickr */
+.pcr-app {
+  z-index: 10000;
 }
 
