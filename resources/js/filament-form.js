@@ -37,7 +37,7 @@ function initColorPickers() {
 function initColorPicker(element) {
     element.classList.add('pickr-initialized');
 
-    const defaultColor = element.dataset.defaultColor || '#FF0000';
+    const defaultColor = element.dataset.defaultColor || 'rgba(127, 127, 127, 0.5)';
     const inputElement = element.closest('.color-block').querySelector('.color-value');
 
     const pickr = Pickr.create({
@@ -62,8 +62,7 @@ function initColorPicker(element) {
     });
 
     pickr.on('save', (color) => {
-        const rgba = color.toRGBA().toString(0);
-        inputElement.value = rgba;
+        inputElement.value = color.toRGBA().toString(0);
         pickr.hide();
     });
 
@@ -81,7 +80,7 @@ function initRemoveColorButtons() {
 
 function removeColorBlock() {
     const colorBlocks = document.getElementById('color-blocks');
-    if (colorBlocks.children.length > 1) {
+    if (colorBlocks.children.length > 0) {
         this.closest('.color-block').remove();
     }
 }

@@ -5539,7 +5539,7 @@ function initColorPickers() {
 }
 function initColorPicker(element) {
   element.classList.add('pickr-initialized');
-  var defaultColor = element.dataset.defaultColor || '#FF0000';
+  var defaultColor = element.dataset.defaultColor || 'rgba(127, 127, 127, 0.5)';
   var inputElement = element.closest('.color-block').querySelector('.color-value');
   var pickr = Pickr.create({
     el: element,
@@ -5562,8 +5562,7 @@ function initColorPicker(element) {
     }
   });
   pickr.on('save', function (color) {
-    var rgba = color.toRGBA().toString(0);
-    inputElement.value = rgba;
+    inputElement.value = color.toRGBA().toString(0);
     pickr.hide();
   });
   if (defaultColor) {
@@ -5578,7 +5577,7 @@ function initRemoveColorButtons() {
 }
 function removeColorBlock() {
   var colorBlocks = document.getElementById('color-blocks');
-  if (colorBlocks.children.length > 1) {
+  if (colorBlocks.children.length > 0) {
     this.closest('.color-block').remove();
   }
 }

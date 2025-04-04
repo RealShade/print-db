@@ -40,7 +40,7 @@ class FilamentRequest extends FormRequest
             'name'               => 'required|string|max:255',
             'filament_vendor_id' => 'required|exists:filament_vendors,id,user_id,' . auth()->id(),
             'filament_type_id'   => 'required|exists:filament_types,id,user_id,' . auth()->id(),
-            'colors'             => 'nullable|array|max:8',
+            'colors'             => 'array|max:8',
             'colors.*'           => 'string|regex:/^rgba?\(\d{1,3},\s?\d{1,3},\s?\d{1,3}(,\s?\d(\.\d{1,2})?)?\)$/',
             'density'            => 'nullable|numeric|min:0|max:10',
         ];
@@ -49,10 +49,8 @@ class FilamentRequest extends FormRequest
     /* **************************************** Protected **************************************** */
     protected function prepareForValidation() : void
     {
-        if ($this->has('colors') && is_string($this->colors)) {
-            $colors = array_map('trim', explode(',', $this->colors));
-            $colors = array_filter($colors, fn($color) => !empty($color));
-            $this->merge(['colors' => $colors]);
+        if (!$this->has('colors')) {
+            $this->colors = [];
         }
     }
 }

@@ -58,7 +58,14 @@ class FilamentController extends Controller
 
     public function update(FilamentRequest $request, Filament $filament) : JsonResponse
     {
-        $filament->update($request->validated());
+        $data = $request->validated();
+
+        // Если colors отсутствует в валидированных данных, явно добавляем пустой массив
+        if (!isset($data['colors'])) {
+            $data['colors'] = [];
+        }
+
+        $filament->update($data);
 
         return response()->json(['success' => true]);
     }

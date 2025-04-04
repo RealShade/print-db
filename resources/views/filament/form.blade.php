@@ -42,14 +42,6 @@
                         </button>
                     </div>
                 @endforeach
-            @else
-                <div class="color-block">
-                    <div class="color-picker"></div>
-                    <input type="hidden" name="colors[]" class="color-value">
-                    <button type="button" class="btn btn-sm btn-danger remove-color-block">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
             @endif
         </div>
         <button type="button" id="add-color-block" class="btn btn-primary btn-sm mt-2">
