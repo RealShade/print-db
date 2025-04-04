@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatus;
 use App\Http\Requests\PrintingTaskRequest;
 use App\Models\PartTask;
 use App\Models\Printer;
@@ -79,6 +80,7 @@ class PrintingTaskController extends Controller
             ->join('tasks', 'tasks.id', '=', $table . '.task_id')
             ->join('parts', 'parts.id', '=', $table . '.part_id')
             ->where('tasks.user_id', auth()->id())
+            ->where('tasks.status', '!=', TaskStatus::PRINTED)
             ->select([
                 $table . '.id',
                 'tasks.id as task_id',
@@ -88,8 +90,8 @@ class PrintingTaskController extends Controller
                 $table . '.count_printed',
                 DB::raw("$table.count_per_set * tasks.count_set_planned as required_count"),
             ])
-            ->orderBy('parts.name')
             ->orderByDesc('tasks.id')
+            ->orderBy('parts.name')
             ->get();
     }
 
