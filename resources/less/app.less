@@ -4,6 +4,7 @@
 @secondary-color: #6C757D;
 @text-color: #F8F9FA;
 @lighter-bg: mix(@primary-bg, @text-color, 95%);
+@border-color: #004d9f;
 
 @input-bg: mix(@primary-color, @primary-bg, 30%);
 @input-border: mix(@primary-color, @primary-bg, 50%);
@@ -23,7 +24,9 @@
     --bs-secondary-border-color: @secondary-color;
     --bs-tertiary-bg: @primary-bg;
     --bs-light-rgb: red(@lighter-bg), green(@lighter-bg), blue(@lighter-bg);
+    --bs-border-color: @border-color;
 }
+
 
 html, body {
     height: 100%;

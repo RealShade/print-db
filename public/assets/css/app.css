@@ -11,6 +11,7 @@
   --bs-secondary-border-color: #6C757D;
   --bs-tertiary-bg: #001F3F;
   --bs-light-rgb: 12.4, 41.9, 72.35;
+  --bs-border-color: #004d9f;
 }
 html,
 body {
