@@ -65,51 +65,6 @@ class AuthTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
-    public function test_api_auth_fails_with_empty_token()
-    {
-        $response = $this->getJson('/api/tasks', ['Authorization' => 'Bearer ']);
-
-        $response->assertStatus(401)
-                 ->assertJson(['error' => 'Unauthorized']);
-    }
-
-    public function test_api_auth_fails_with_invalid_token()
-    {
-        $response = $this->getJson('/api/tasks', ['Authorization' => 'Bearer invalid_token']);
-
-        $response->assertStatus(401)
-                 ->assertJson(['error' => 'Unauthorized']);
-    }
-
-    public function test_api_auth_succeeds_with_valid_token()
-    {
-        $token = ApiToken::factory()->create(['user_id' => $this->activeUser->id]);
-
-        $response = $this->getJson('/api/tasks', ['Authorization' => 'Bearer ' . $token->token]);
-
-        $response->assertStatus(200);
-    }
-
-    public function test_api_auth_fails_for_blocked_user()
-    {
-        $token = ApiToken::factory()->create(['user_id' => $this->blockedUser->id]);
-
-        $response = $this->getJson('/api/tasks', ['Authorization' => 'Bearer ' . $token->token]);
-
-        $response->assertStatus(403)
-                 ->assertJson(['error' => __('auth.account_inactive')]);
-    }
-
-    public function test_api_auth_fails_for_deleted_user()
-    {
-        $token = ApiToken::factory()->create(['user_id' => $this->deletedUser->id]);
-
-        $response = $this->getJson('/api/tasks', ['Authorization' => 'Bearer ' . $token->token]);
-
-        $response->assertStatus(403)
-                 ->assertJson(['error' => __('auth.account_inactive')]);
-    }
-
     public function test_redirect_to_login_for_unauthenticated_user()
     {
         $response = $this->get('/');

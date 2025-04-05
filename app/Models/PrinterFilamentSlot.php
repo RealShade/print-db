@@ -2,22 +2,27 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUser;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 /**
- * FilamentLoaded
- * @property int         $id
- * @property string      $name
- * @property string      $attribute
- * @property string      $description
- * @property int         $filament_spool_id
- * @property int         $printer_id
+ * FilamentSlot
+ *
+ * @property int           $id
+ * @property string        $name
+ * @property string        $attribute
+ * @property string        $description
+ * @property int           $filament_spool_id
+ * @property int           $printer_id
+ * @property FilamentSpool $filamentSpool
+ * @property Printer       $printer
  **/
-class FilamentLoaded extends Model
+class PrinterFilamentSlot extends Model
 {
+
+    use HasFactory;
 
     protected $fillable = [
         'name',

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\FilamentLoaded;
+use App\Models\PrinterFilamentSlot;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create(app(FilamentLoaded::class)->getTable(), function (Blueprint $table) {
+        Schema::create('filament_loadeds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('printer_id')->constrained()->cascadeOnDelete();
             $table->foreignId('filament_spool_id')->nullable()->constrained()->nullOnDelete();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists(app(FilamentLoaded::class)->getTable());
+        Schema::dropIfExists('filament_loadeds');
     }
 };

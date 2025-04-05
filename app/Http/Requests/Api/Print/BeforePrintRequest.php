@@ -17,7 +17,7 @@ class BeforePrintRequest extends ApiRequest
     /* **************************************** Public **************************************** */
     public function authorize() : bool
     {
-        return true;
+        return auth()->check();
     }
 
     public function failedValidation(Validator $validator) : void
@@ -37,8 +37,9 @@ class BeforePrintRequest extends ApiRequest
     public function rules() : array
     {
         return [
-            'filename'   => ['required', 'string', 'max:255'],
-            'printer_id' => ['required', 'integer', 'min:1', 'exists:printers,id,user_id,' . auth()->id()],
+            'filename'   => ['nullable', 'string', 'max:255'],
+            'printer_id' => ['required', 'integer', 'min:1', 'exists:App\Models\Printer,id,user_id,' . auth()->id()],
+            'slots'      => ['nullable', 'array'],
         ];
     }
 

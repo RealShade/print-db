@@ -8,6 +8,7 @@ return [
         'validation_error'  => 'Помилка валідації',
         'invalid_format'    => 'Невірний формат даних',
         'pattern_not_found' => 'Шаблон не знайдено',
+        'filename_empty'    => 'Ім\'я файлу не вказано',
     ],
     'print'      => [
         'completed' => 'Дані про друк підтверджено',

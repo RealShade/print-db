@@ -20,7 +20,6 @@ class FilamentFactory extends Factory
             'filament_type_id' => FilamentType::factory(),
             'colors' => $this->faker->randomElements(['red', 'blue', 'green', 'yellow', 'black', 'white', 'orange', 'purple'], $this->faker->numberBetween(1, 3)),
             'density' => $this->faker->randomFloat(4, 1.0, 1.5),
-            'cost' => $this->faker->randomFloat(2, 15, 60),
             'user_id' => User::factory(),
         ];
     }

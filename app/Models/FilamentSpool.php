@@ -7,7 +7,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+
+/**
+ * FilamentSpool
+ *
+ * @property int           $id
+ * @property int           $filament_id
+ * @property int           $filament_packaging_id
+ * @property float         $weight_initial
+ * @property float         $weight_used
+ * @property Carbon|null $date_first_used
+ * @property Carbon|null $date_last_used
+ * @property float         $cost
+ * @property int           $user_id
+ * @property Filament      $filament
+ * @property FilamentUsedLog[]|null $filamentUsed
+ * @property FilamentPackaging $packaging
+ */
 class FilamentSpool extends Model
 {
     use HasFactory, HasUser;

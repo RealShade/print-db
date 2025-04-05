@@ -4,11 +4,19 @@ namespace App\Traits;
 
 use App\Models\Task;
 
-trait ParsesFilenameTemplate
+trait ParseFilename
 {
     /* **************************************** Protected **************************************** */
-    protected function parseFilename(string $filename, int $userID) : array
+    protected function parseFilename(?string $filename) : array
     {
+        if (empty($filename)) {
+            return [
+                'success' => false,
+                'errors'  => [
+                    'filename' => [__('api.validation.filename_empty')],
+                ],
+            ];
+        }
         $pattern = '/\((pid_(\d+)(\(x(\d+)\))?_(\d+))\)|\((tid_(\d+)(\(x(\d+)\))?)\)/';
         preg_match_all($pattern, $filename, $matches, PREG_SET_ORDER);
 
@@ -44,11 +52,11 @@ trait ParsesFilenameTemplate
             }
         }
 
-        return $this->validateParsedData($parsedData, $userID);
+        return $this->validateParsedData($parsedData);
     }
 
     /* **************************************** Private **************************************** */
-    private function validateParsedData(array $parsedData, int $userId) : array
+    private function validateParsedData(array $parsedData) : array
     {
         $result = [
             'success' => false,
@@ -66,7 +74,7 @@ trait ParsesFilenameTemplate
             if (!isset($taskData[ $item['task_id'] ])) {
                 // заповнюємо дані завдання, якщо їх ще немає
                 $task = Task::where('id', $item['task_id'])
-                    ->where('user_id', $userId)
+                    ->where('user_id', auth()->id())
                     ->with('parts')
                     ->first();
 
