@@ -57,11 +57,10 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title"><span class="card-text small text-muted">#{{ $printer->id }}</span> <strong>{{ $printer->name }}</strong></h5>
-                            <hr>
                             <!-- Загруженный филамент -->
                             <div class="mt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6>{{ __('printer.filament_loaded.title') }}:</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
+                                    <h6 class="mb-0">{{ __('printer.filament_loaded.title') }}:</h6>
                                     <button type="button" class="btn btn-sm btn-primary"
                                             data-bs-toggle="modal"
                                             data-bs-target="#filamentLoadedModal"
@@ -124,11 +123,11 @@
                                     <p class="text-muted small">{{ __('printer.filament_loaded.none') }}</p>
                                 @endif
                             </div>
-                            <hr>
+
                             <!-- Задачи печати -->
                             <div class="mt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6>{{ __('printer.printing') }}:</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
+                                    <h6 class="mb-0">{{ __('printer.printing') }}:</h6>
                                     <div class="btn-group">
                                         @if($printer->printingTasks->isNotEmpty())
                                             <button class="btn btn-sm btn-success"
