@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->hasMany(ApiToken::class);
     }
 
+    public function filamentSpools() : User|HasMany
+    {
+        return $this->hasMany(FilamentSpool::class);
+    }
+
+    public function printers() : HasMany
+    {
+        return $this->hasMany(Printer::class);
+    }
+
     /* **************************************** Getters **************************************** */
     public function getGravatarURLAttribute() : string
     {
@@ -76,11 +86,6 @@ class User extends Authenticatable
 
             return 'https://www.gravatar.com/avatar';
         });
-    }
-
-    public function printers(): HasMany
-    {
-        return $this->hasMany(Printer::class);
     }
 
     /* **************************************** Protected **************************************** */

@@ -33,6 +33,11 @@ class Printer extends Model
     ];
 
     /* **************************************** Public **************************************** */
+    public function filamentLoaded() : HasMany
+    {
+        return $this->hasMany(FilamentLoaded::class);
+    }
+
     public function filamentUsed() : HasMany
     {
         return $this->hasMany(FilamentUsedLog::class)->latest('id');

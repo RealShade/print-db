@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FilamentLoadedController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Filament\FilamentController;
 use App\Http\Controllers\Filament\FilamentTypeController;
@@ -116,10 +117,20 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);
-    Route::post('printers/{printer}/toggle-status', [PrinterController::class, 'toggleStatus'])
-        ->name('printers.toggle-status');
     Route::post('/printers/{printer}/complete-print', [PrinterController::class, 'complete'])
         ->name('printers.complete-print');
+
+    Route::get('printers/{printer}/filament-loaded/create', [FilamentLoadedController::class, 'create'])
+        ->name('filament-loaded.create');
+    Route::get('printers/{printer}/filament-loaded/{filamentLoaded}/edit', [FilamentLoadedController::class, 'edit'])
+        ->name('filament-loaded.edit');
+    Route::post('printers/{printer}/filament-loaded', [FilamentLoadedController::class, 'store'])
+        ->name('filament-loaded.store');
+    Route::put('printers/{printer}/filament-loaded/{filamentLoaded}', [FilamentLoadedController::class, 'update'])
+        ->name('filament-loaded.update');
+    Route::delete('printers/{printer}/filament-loaded/{filamentLoaded}', [FilamentLoadedController::class, 'destroy'])
+        ->name('filament-loaded.destroy');
+
 
     Route::get('printing-tasks/{printer}/create', [PrintingTaskController::class, 'create'])->name('printing-tasks.create');
     Route::post('printing-tasks/{printer}', [PrintingTaskController::class, 'store'])->name('printing-tasks.store');

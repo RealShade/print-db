@@ -9,12 +9,14 @@ return [
     'confirm_delete'           => 'Ви впевнені, що хочете видалити цей принтер?',
     'confirm_delete_task'      => 'Ви впевнені, що хочете видалити активний друк?',
     'print_count'              => 'Кількість',
-    'printing'                 => 'Друк',
+    'printing'                 => 'Друкується',
     'add_printing'             => 'Додати друк',
     'select_task'              => 'Виберіть завдання',
     'select_part'              => 'Виберіть частину',
     'printing_tasks_purged'    => 'Завдання на друк видалено',
     'printing_tasks_completed' => 'Завдання на друк завершено',
+    'no_tasks' => 'Нет активных задач печати',
+    'add_task' => 'Добавить задачу печати',
     'confirm'                  => [
         'complete_print' => [
             'title' => 'Відмітити як надруковане?',
@@ -34,4 +36,18 @@ return [
             'exists'   => 'Принтер не знайдено',
         ],
     ],
-];
+    'filament_loaded' => [
+        'title' => 'Слоти котушок',
+        'none' => 'Немає',
+        'empty' => 'Не загружен',
+        'form_title' => 'Слот котушки',
+        'name' => 'Назва',
+        'name_hint' => '',
+        'attribute' => 'Назва у вхідних даних на API',
+        'attribute_hint' => '',
+        'filament_spool' => 'Котушка філаменту',
+        'select_filament_spool' => '- оберіть котушку -',
+        'filament_spool_hint' => 'Залишити поле порожнім, якщо ви не хочете прив\'язувати котушку до слоту',
+        'description' => 'Примітка',
+        'confirm_delete' => 'Ви впевнені, що хочете видалити цей слот котушки?',
+    ],];

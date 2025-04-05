@@ -114,10 +114,14 @@
                                                     <i class="bi bi-printer"></i>
                                                 </span>
                                             @endif
-                                            <span @if ($part->pivot->count_printed + $part->pivot->printing_count >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>{{ $part->pivot->printing_count }}/{{ $part->pivot->count_per_set * $task->count_set_planned - $part->pivot->count_printed }}</span>
+                                            <span @if ($part->pivot->count_printed + $part->pivot->printing_count >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>
+                                                {{ $part->pivot->printing_count }}/{{ max(0, $part->pivot->count_per_set * $task->count_set_planned - $part->pivot->count_printed) }}
+                                            </span>
                                         </td>
                                         <td class="text-end table-count">
-                                            <span @if ($part->pivot->count_printed >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>{{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}</span>
+                                            <span @if ($part->pivot->count_printed >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>
+                                                {{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}
+                                            </span>
                                             <!-- Добавлена кнопка для ручного добавления -->
                                             <button type="button"
                                                     class="btn btn-sm btn-primary update-printed-btn"
