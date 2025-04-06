@@ -29,19 +29,19 @@
             @if(auth()->check())
                 <li class="nav-item">
                     <a href="{{ route('printers.index') }}" class="nav-link {{ request()->is('printers') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/3d-printer-cropped.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/printers.svg') }}" alt="Printers">
                         {{ __('menu.printers') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/paper-sheet-with-items-list-cropped.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/tasks.svg') }}" alt="Printers">
                         {{ __('menu.tasks') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/3d-model-of-cup-cropped.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/parts.svg') }}" alt="Printers">
                         {{ __('menu.parts') }}
                     </a>
                 </li>
@@ -53,7 +53,7 @@
                        aria-expanded="{{ request()->routeIs('filament.*') ? 'true' : 'false' }}"
                        aria-controls="filamentCollapse">
                         <span>
-                            <img src="{{ asset('images/filament-spool-cropped.svg') }}" alt="Printers">
+                            <img src="{{ asset('images/filament.svg') }}" alt="Printers">
                             {{ __('menu.filament.title') }}
                         </span>
                         <i class="bi bi-chevron-down"></i>
@@ -80,7 +80,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('tools.index') }}" class="nav-link {{ request()->routeIs('tools.*') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/tools-cropped.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/tools.svg') }}" alt="Printers">
                         {{ __('tools.title') }}
                     </a>
                 </li>
@@ -100,7 +100,7 @@
                        aria-expanded="{{ request()->routeIs('help.*') ? 'true' : 'false' }}"
                        aria-controls="helpCollapse">
                         <span>
-                            <img src="{{ asset('images/help-sign-for-menu-item-cropped.svg') }}" alt="Printers">
+                            <img src="{{ asset('images/help.svg') }}" alt="Printers">
                             {{ __('menu.help.title') }}
                         </span>
                         <i class="bi bi-chevron-down"></i>
