@@ -168,7 +168,7 @@
                                                             (<span class="card-text small text-muted">#{{ $printingTask->partTask->part->id }}</span>, {{ $printingTask->partTask->part->version }}{{ $printingTask->partTask->part->version_date ? ', ' . $printingTask->partTask->part->version_date->format('d.m.Y') : '' }})
                                                         </div>
                                                         <div class="small">
-                                                            {{ $printingTask->count }}/{{ $printingTask->count_remaining }} ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_planned }})
+                                                            {{ $printingTask->count }}/{{ $printingTask->partTask->count_remaining }} ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_planned }})
                                                         </div>
                                                     </div>
                                                     <div class="btn-group">
