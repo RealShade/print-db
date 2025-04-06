@@ -115,7 +115,7 @@
                                                 </span>
                                             @endif
                                             <span @if ($part->pivot->count_printed + $part->pivot->count_printing >= $part->pivot->count_planned) class="count-complete" @endif>
-                                                {{ $part->pivot->count_printing }}/{{ max(0, $part->pivot->count_planned - $part->pivot->count_printed) }}
+                                                {{ $part->pivot->count_printing }}/{{ $part->pivot->count_remaining }}
                                             </span>
                                         </td>
                                         <td class="text-end table-count">

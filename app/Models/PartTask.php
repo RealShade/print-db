@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int            $part_id
  * @property int            $task_id
  * @property int            $count_per_set
+ * @property int            $count_printed
  * @property Part           $part
  * @property Task           $task
  * @property PrintingTask[] $printingTasks
@@ -50,7 +51,7 @@ class PartTask extends Pivot
 
     public function getCountRemainingAttribute() : int
     {
-        return $this->count_planned - $this->printingCount;
+        return max(0, $this->count_planned - $this->count_printed);
     }
 
     /* **************************************** Protected **************************************** */
