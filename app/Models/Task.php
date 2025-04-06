@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
@@ -51,6 +52,11 @@ class Task extends Model
     public function isPrinting() : bool
     {
         return $this->parts()->get()->map(fn($part) => $part->pivot->printingTasks->count())->sum() > 0;
+    }
+
+    public function partTask() : HasMany
+    {
+        return $this->hasMany(PartTask::class);
     }
 
     /* **************************************** Protected **************************************** */

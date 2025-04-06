@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\PrinterFilamentSlotController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Filament\FilamentController;
@@ -32,6 +33,8 @@ Route::middleware('guest')->group(function() {
 Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function() {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::get('/help/api', [HelpController::class, 'api'])->name('help.api.index');
 
     Route::prefix('settings')->name('settings.')->group(function() {
         Route::get('/', [SettingsController::class, 'index'])->name('index');

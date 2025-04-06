@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasMany(Printer::class);
     }
 
+    public function tasks() : HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
     /* **************************************** Getters **************************************** */
     public function getGravatarURLAttribute() : string
     {

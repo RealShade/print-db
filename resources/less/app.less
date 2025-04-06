@@ -430,3 +430,47 @@ a {
 .pcr-app {
     z-index: 10000;
 }
+
+.documentation {
+    h1, h2, h3, h4, h5 {
+        color: @primary-color;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    ul {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    pre {
+        background-color: @lighter-bg;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+
+        code {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    }
+
+    code {
+        background-color: @lighter-bg;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+    }
+}
+
+.menu {
+    img {
+        width: 48px;
+        height: 48px;
+        margin-right: 1em;
+    }
+}

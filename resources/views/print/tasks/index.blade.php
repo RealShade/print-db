@@ -109,18 +109,18 @@
                                         <td>{{ $part->version }}</td>
                                         <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
                                         <td class="text-end table-count">
-                                            @if($part->pivot->printing_count > 0)
+                                            @if($part->pivot->count_printing > 0)
                                                 <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
                                                     <i class="bi bi-printer"></i>
                                                 </span>
                                             @endif
-                                            <span @if ($part->pivot->count_printed + $part->pivot->printing_count >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>
-                                                {{ $part->pivot->printing_count }}/{{ max(0, $part->pivot->count_per_set * $task->count_set_planned - $part->pivot->count_printed) }}
+                                            <span @if ($part->pivot->count_printed + $part->pivot->count_printing >= $part->pivot->count_planned) class="count-complete" @endif>
+                                                {{ $part->pivot->count_printing }}/{{ max(0, $part->pivot->count_planned - $part->pivot->count_printed) }}
                                             </span>
                                         </td>
                                         <td class="text-end table-count">
-                                            <span @if ($part->pivot->count_printed >= $part->pivot->count_per_set * $task->count_set_planned) class="count-complete" @endif>
-                                                {{ $part->pivot->count_printed }}/{{ $part->pivot->count_per_set * $task->count_set_planned }}
+                                            <span @if ($part->pivot->count_printed >= $part->pivot->count_planned) class="count-complete" @endif>
+                                                {{ $part->pivot->count_printed }}/{{ $part->pivot->count_planned }}
                                             </span>
                                             <!-- Добавлена кнопка для ручного добавления -->
                                             <button type="button"

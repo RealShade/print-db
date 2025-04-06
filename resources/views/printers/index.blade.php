@@ -161,14 +161,14 @@
                                                     <div>
                                                         <div>
                                                             <span class="card-text small text-muted">#{{ $printingTask->partTask->task->id }}</span>
-                                                            <strong>{{ $printingTask->partTask->task->name }}</strong> ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_per_set * $printingTask->partTask->task->count_set_planned }})
+                                                            <strong>{{ $printingTask->partTask->task->name }}</strong> ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_planned }})
                                                         </div>
                                                         <div class="small">
                                                             {{ $printingTask->partTask->part->name }}
                                                             (<span class="card-text small text-muted">#{{ $printingTask->partTask->part->id }}</span>, {{ $printingTask->partTask->part->version }}{{ $printingTask->partTask->part->version_date ? ', ' . $printingTask->partTask->part->version_date->format('d.m.Y') : '' }})
                                                         </div>
                                                         <div class="small">
-                                                            {{ $printingTask->count }} ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_per_set * $printingTask->partTask->task->count_set_planned }})
+                                                            {{ $printingTask->count }}/{{ $printingTask->count_remaining }} ({{ $printingTask->partTask->count_printed }}/{{ $printingTask->partTask->count_planned }})
                                                         </div>
                                                     </div>
                                                     <div class="btn-group">

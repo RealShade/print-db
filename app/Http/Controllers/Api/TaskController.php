@@ -65,7 +65,7 @@ class TaskController extends Controller
 
                         $partTask->count_printed += $partData['count_printing'];
                         $partTask->save();
-                        $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printed'] = $partTask->count_printed;
+                        $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printed']  = $partTask->count_printed;
                         $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printing'] = 0;
                         unset($dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['is_printing']);
 
@@ -76,9 +76,9 @@ class TaskController extends Controller
                             'event_source' => PrintTaskEventSource::API,
                         ]);
                     }
-                    $task = Task::find($taskID);
+                    $task                                                               = Task::find($taskID);
                     $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printing'] = 0;
-                    $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printed'] =  $task->getCompletedSetsCount();
+                    $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printed']  = $task->getCompletedSetsCount();
                 }
 
                 $printer->printingTasks()->delete();
@@ -186,8 +186,68 @@ class TaskController extends Controller
 
     public function index()
     {
+        $profile = auth()->user();
+        $tasks    = auth()->user()->tasks()
+            ->whereIn('status', [TaskStatus::NEW, TaskStatus::IN_PROGRESS, TaskStatus::PRINTED])
+            ->with([
+                'partTask',
+                'partTask.task',
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($task) {
+                // Сохраняем оригинальный статус
+                $statusEnum = $task->status;
+                // Создаем массив с нужным порядком полей
+                $taskArray = $task->toArray();
+                // Вставляем status_name сразу после status
+                $result = [];
+                foreach ($taskArray as $key => $value) {
+                    $result[$key] = $value;
+                    if ($key === 'status') {
+                        $result['status'] = $statusEnum->name;
+                    }
+                }
+                return $result;
+            });
+        $printers = auth()->user()->printers()
+            ->with([
+                'printingTasks',
+                'printingTasks.partTask',
+                'printingTasks.partTask.task',
+                'printingTasks.partTask.part',
+                'filamentSlots',
+                'filamentSlots.filamentSpool',
+                'filamentSlots.filamentSpool.packaging',
+                'filamentSlots.filamentSpool.filament',
+                'filamentSlots.filamentSpool.filament.vendor',
+                'filamentSlots.filamentSpool.filament.type',
+            ])
+            ->orderBy('name')
+            ->get()
+            ->map(function ($task) {
+                // Сохраняем оригинальный статус
+                $statusEnum = $task->status;
+                // Создаем массив с нужным порядком полей
+                $taskArray = $task->toArray();
+                // Вставляем status_name сразу после status
+                $result = [];
+                foreach ($taskArray as $key => $value) {
+                    $result[$key] = $value;
+                    if ($key === 'status') {
+                        $result['status'] = $statusEnum->name;
+                    }
+                }
+                return $result;
+            });
+
         return response()->json([
             'success' => true,
+            'data'    => [
+                'profile'  => $profile,
+                'printers' => $printers,
+                'tasks'    => $tasks,
+            ],
         ]);
     }
 

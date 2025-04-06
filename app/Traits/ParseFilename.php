@@ -79,7 +79,7 @@ trait ParseFilename
                     ->first();
 
                 if (!$task) {
-                    $result['errors']['tasks'][] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
+                    $result['errors']['tasks'][$item['task_id']] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
                     continue;
                 }
 
@@ -117,7 +117,7 @@ trait ParseFilename
             if (!empty($item['part_id'])) {
                 // якщо частина вказана, то перевіряємо, чи вона є в даних завдання
                 if (empty($taskData[ $item['task_id'] ]['parts']) || !array_key_exists($item['part_id'], $taskData[ $item['task_id'] ]['parts'])) {
-                    $result['errors']['parts'][] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
+                    $result['errors']['parts'][$item['part_id']] = __('api.validation.parts_not_found', ['part_id' => $item['part_id']]);
                     continue;
                 }
                 // якщо частина є, то додаємо до неї дані

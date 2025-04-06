@@ -3,30 +3,54 @@
 namespace App\Models;
 
 use App\Enums\TaskStatus;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+/**
+ * @property int            $id
+ * @property int            $part_id
+ * @property int            $task_id
+ * @property int            $count_per_set
+ * @property Part           $part
+ * @property Task           $task
+ * @property PrintingTask[] $printingTasks
+ * @property int            $count_printing
+ * @property int            $count_planned
+ * @property int            $count_remaining
+ */
 class PartTask extends Pivot
 {
     /* **************************************** Public **************************************** */
-    public function part()
+    public function part() : BelongsTo
     {
         return $this->belongsTo(Part::class);
     }
 
-    public function printingTasks()
+    public function printingTasks() : HasMany
     {
         return $this->hasMany(PrintingTask::class, 'part_task_id');
     }
 
-    public function task()
+    public function task() : BelongsTo
     {
         return $this->belongsTo(Task::class);
     }
 
     /* **************************************** Getters **************************************** */
-    public function getPrintingCountAttribute() : int
+    public function getCountPlannedAttribute() : int
+    {
+        return $this->count_per_set * $this->task->count_set_planned;
+    }
+
+    public function getCountPrintingAttribute() : int
     {
         return $this->printingTasks->sum('count');
+    }
+
+    public function getCountRemainingAttribute() : int
+    {
+        return $this->count_planned - $this->printingCount;
     }
 
     /* **************************************** Protected **************************************** */

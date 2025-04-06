@@ -340,4 +340,41 @@ a:hover {
 .pcr-app {
   z-index: 10000;
 }
+.documentation h1,
+.documentation h2,
+.documentation h3,
+.documentation h4,
+.documentation h5 {
+  color: #007BFF;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+.documentation ul {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+.documentation ul li {
+  margin-bottom: 0.5rem;
+}
+.documentation pre {
+  background-color: #0c2a48;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.documentation pre code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.documentation code {
+  background-color: #0c2a48;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+}
+.menu img {
+  width: 48px;
+  height: 48px;
+  margin-right: 1em;
+}
 

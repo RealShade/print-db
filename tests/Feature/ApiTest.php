@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Enums\UserStatus;
 use App\Helpers\FilenamePlaceholderHelper;
 use App\Models\ApiToken;
-use App\Models\FilamentPackaging;
 use App\Models\FilamentSpool;
 use App\Models\Part;
 use App\Models\Printer;
@@ -58,7 +57,23 @@ class ApiTest extends TestCase
 
         $response = $this->getJson('/api', ['Authorization' => 'Bearer ' . $token->token]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'data'    => [
+                    'profile'  => [
+                        'id'    => $this->activeUser->id,
+                        'name'  => $this->activeUser->name,
+                        'email' => $this->activeUser->email,
+                    ],
+                    'printers' => [
+                        [
+                            'id'   => $this->printer->id,
+                            'name' => $this->printer->name,
+                        ],
+                    ],
+                ],
+            ]);
     }
 
     public function test_api_auth_fails_for_blocked_user()
@@ -304,8 +319,6 @@ class ApiTest extends TestCase
             'filename'   => FilenamePlaceholderHelper::generate($task, $part, 5),
             'printer_id' => $this->printer->id,
         ]);
-
-        //        dump($response->json());
 
         $response->assertStatus(200)
             ->assertJson([
@@ -1034,7 +1047,6 @@ class ApiTest extends TestCase
             ]
         ]);
 
-        dump($response->json());
         $filamentSpool1->refresh();
         $filamentSpool2->refresh();
         $newData = [

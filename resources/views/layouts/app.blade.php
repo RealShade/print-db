@@ -25,23 +25,23 @@
             </a>
         </div>
         <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
+        <ul class="nav nav-pills flex-column mb-auto menu">
             @if(auth()->check())
                 <li class="nav-item">
                     <a href="{{ route('printers.index') }}" class="nav-link {{ request()->is('printers') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-printer me-2"></i>
+                        <img src="{{ asset('images/3d-printer-cropped.svg') }}" alt="Printers">
                         {{ __('menu.printers') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-list-task me-2"></i>
+                        <img src="{{ asset('images/paper-sheet-with-items-list-cropped.svg') }}" alt="Printers">
                         {{ __('menu.tasks') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-puzzle me-2"></i>
+                        <img src="{{ asset('images/3d-model-of-cup-cropped.svg') }}" alt="Printers">
                         {{ __('menu.parts') }}
                     </a>
                 </li>
@@ -53,7 +53,8 @@
                        aria-expanded="{{ request()->routeIs('filament.*') ? 'true' : 'false' }}"
                        aria-controls="filamentCollapse">
                         <span>
-                            <i class="bi bi-box2-fill me-2"></i> {{ __('menu.filament.title') }}
+                            <img src="{{ asset('images/filament-spool-cropped.svg') }}" alt="Printers">
+                            {{ __('menu.filament.title') }}
                         </span>
                         <i class="bi bi-chevron-down"></i>
                     </a>
@@ -79,7 +80,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('tools.index') }}" class="nav-link {{ request()->routeIs('tools.*') ? 'active' : 'text-white' }}">
-                        <i class="bi bi-tools me-2"></i>
+                        <img src="{{ asset('images/tools-cropped.svg') }}" alt="Printers">
                         {{ __('tools.title') }}
                     </a>
                 </li>
@@ -91,6 +92,27 @@
                         </a>
                     </li>
                 @endif
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex align-items-center justify-content-between"
+                       data-bs-toggle="collapse"
+                       href="#helpCollapse"
+                       role="button"
+                       aria-expanded="{{ request()->routeIs('help.*') ? 'true' : 'false' }}"
+                       aria-controls="helpCollapse">
+                        <span>
+                            <img src="{{ asset('images/help-sign-for-menu-item-cropped.svg') }}" alt="Printers">
+                            {{ __('menu.help.title') }}
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('help.*') ? 'show' : '' }}" id="helpCollapse">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('help.api.*') ? 'active' : 'text-white' }}" href="{{ route('help.api.index') }}">{{ __('menu.help.api') }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             @endif
         </ul>
         <hr>
@@ -100,8 +122,9 @@
                 <strong>{{ auth()->user()->name }}</strong>
             </a>
             <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+                <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i class="bi bi-gear me-2"></i>{{ __('menu.settings') }}
+                    </a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>{{ __('menu.profile') }}</a></li>
                 <li>
                     <hr class="dropdown-divider">
                 </li>
@@ -110,7 +133,7 @@
                         @csrf
                     </form>
                     <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-right me-2"></i>Sign out
+                        <i class="bi bi-box-arrow-right me-2"></i>{{ __('menu.logout') }}
                     </a>
                 </li>
             </ul>

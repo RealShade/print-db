@@ -6,6 +6,13 @@ return [
     'parts' => 'Моделі',
     'printers' => 'Принтери',
     'users' => 'Користувачі',
+    'settings' => 'Налаштування',
+    'profile' => 'Профіль',
+    'logout' => 'Вихід',
+    'help' => [
+        'title' => 'Допомога',
+        'api' => 'API',
+    ],
     // ...existing menu items...
     'filament' => [
         'title' => 'Філамент',
