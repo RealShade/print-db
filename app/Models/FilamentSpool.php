@@ -13,18 +13,19 @@ use Illuminate\Support\Carbon;
 /**
  * FilamentSpool
  *
- * @property int           $id
- * @property int           $filament_id
- * @property int           $filament_packaging_id
- * @property float         $weight_initial
- * @property float         $weight_used
- * @property Carbon|null $date_first_used
- * @property Carbon|null $date_last_used
- * @property float         $cost
- * @property int           $user_id
- * @property Filament      $filament
+ * @property int                    $id
+ * @property int                    $filament_id
+ * @property int                    $filament_packaging_id
+ * @property float                  $weight_initial
+ * @property float                  $weight_used
+ * @property Carbon|null            $date_first_used
+ * @property Carbon|null            $date_last_used
+ * @property float                  $cost
+ * @property int                    $user_id
+ * @property Filament               $filament
  * @property FilamentUsedLog[]|null $filamentUsed
- * @property FilamentPackaging $packaging
+ * @property FilamentPackaging      $packaging
+ * @property-read float             $weight_remaining
  */
 class FilamentSpool extends Model
 {
@@ -55,7 +56,7 @@ class FilamentSpool extends Model
         return $this->belongsTo(Filament::class);
     }
 
-    public function filamentUsed() : HasMany
+    public function filamentUsedLog() : HasMany
     {
         return $this->hasMany(FilamentUsedLog::class)->latest('id');
     }
@@ -66,11 +67,6 @@ class FilamentSpool extends Model
     }
 
     /* **************************************** Getters **************************************** */
-    public function getRemainingWeightAttribute() : float
-    {
-        return round($this->weight_initial - ($this->weight_used ?? 0), 4);
-    }
-
     public function getUsedPercentageAttribute() : float
     {
         if (!$this->weight_initial) {
@@ -79,4 +75,25 @@ class FilamentSpool extends Model
 
         return ($this->weight_used ?? 0) / $this->weight_initial * 100;
     }
+
+    public function getWeightRemainingAttribute() : float
+    {
+        return round(max(0, $this->weight_initial - $this->weight_used), 4);
+    }
+
+    /* **************************************** Protected **************************************** */
+    protected static function boot() : void
+    {
+        parent::boot();
+
+        static::creating(function($model) {
+            if ($model->filament_packaging_id) {
+                $packaging = FilamentPackaging::find($model->filament_packaging_id);
+                if ($packaging) {
+                    $model->weight_initial = $packaging->weight;
+                }
+            }
+        });
+    }
+
 }

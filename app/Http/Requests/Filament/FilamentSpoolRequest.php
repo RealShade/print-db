@@ -45,7 +45,7 @@ class FilamentSpoolRequest extends FormRequest
         if ($this->spool) {
             $attr = array_merge($attr, [
                 'weight_initial'  => 'required|numeric|min:0',
-                'weight_used'     => 'nullable|numeric|min:0|lte:weight_initial',
+                'weight_used'     => 'nullable|numeric|min:0',
                 'date_first_used' => 'nullable|date',
                 'date_last_used'  => 'nullable|date|after_or_equal:date_first_used',
             ]);

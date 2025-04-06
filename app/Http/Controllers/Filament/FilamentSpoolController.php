@@ -62,7 +62,6 @@ class FilamentSpoolController extends Controller
         for ($i = 0; $i < $quantity; $i++) {
             $spool                 = new FilamentSpool($validatedData);
             $spool->user_id        = auth()->id();
-            $spool->weight_initial = $packaging->weight;
             $spool->cost           = $validatedData['cost'] ?? null;
             $spool->save();
         }

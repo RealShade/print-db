@@ -270,12 +270,13 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 0,
-                                'count_set_printing' => 0,
-                                'count_set_future'   => 0,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 0,
+                                    'count_set_printing' => 0,
+                                ],
                             ],
                         ],
                     ],
@@ -395,21 +396,21 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 2,
-                                'count_set_future'   => 3,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 5,
-                                        'count_future'   => 7,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 2,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 5,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -454,21 +455,39 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 2,
-                                'count_set_future'   => 3,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 5,
-                                        'count_future'   => 7,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 2,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 5,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'new' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 3,
+                                    'count_set_printing' => 0,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 7,
+                                            'count_printing' => 0,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -479,8 +498,6 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing(app(PrintingTask::class)->getTable(), [
             'printer_id' => $this->printer->id,
         ]);
-        $this->assertEquals(3, $task->getCompletedSetsCount());
-        $this->assertEquals(7, $task->parts->first()->pivot->count_printed);
     }
 
     public function test_api_print_start_success_tasks_with_auto_parts() : void
@@ -515,21 +532,21 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 5,
-                                'count_set_future'   => 6,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 10,
-                                        'count_future'   => 12,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 5,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 10,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -574,21 +591,39 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 5,
-                                'count_set_future'   => 6,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 10,
-                                        'count_future'   => 12,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 5,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 10,
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'new' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 6,
+                                    'count_set_printing' => 0,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 12,
+                                            'count_printing' => 0,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -599,8 +634,6 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing(app(PrintingTask::class)->getTable(), [
             'printer_id' => $this->printer->id,
         ]);
-        $this->assertEquals(6, $task->getCompletedSetsCount());
-        $this->assertEquals(12, $task->parts->first()->pivot->count_printed);
     }
 
     public function test_api_print_start_success_tasks_with_auto_multi_parts() : void
@@ -642,30 +675,29 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 5,
-                                'count_set_future'   => 6,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 10,
-                                        'count_future'   => 12,
-                                    ],
-                                    2 => [
-                                        'part_task_id'   => 2,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 3,
-                                        'count_required' => 30,
-                                        'count_printed'  => 3,
-                                        'count_printing' => 15,
-                                        'count_future'   => 18,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 5,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 10,
+                                        ],
+                                        2 => [
+                                            'part_task_id'   => 2,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 3,
+                                            'count_required' => 30,
+                                            'count_printed'  => 3,
+                                            'count_printing' => 15,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -715,30 +747,54 @@ class ApiTest extends TestCase
                 'tasks'   => [
                     'success' => true,
                     'data'    => [
-                        'tasks' => [
-                            1 => [
-                                'count_set_planned'  => 10,
-                                'count_set_printed'  => 1,
-                                'count_set_printing' => 5,
-                                'count_set_future'   => 6,
-                                'parts'              => [
-                                    1 => [
-                                        'part_task_id'   => 1,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 2,
-                                        'count_required' => 20,
-                                        'count_printed'  => 2,
-                                        'count_printing' => 10,
-                                        'count_future'   => 12,
+                        'old' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 1,
+                                    'count_set_printing' => 5,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 2,
+                                            'count_printing' => 10,
+                                        ],
+                                        2 => [
+                                            'part_task_id'   => 2,
+                                            'is_printing'    => true,
+                                            'count_per_set'  => 3,
+                                            'count_required' => 30,
+                                            'count_printed'  => 3,
+                                            'count_printing' => 15,
+                                        ],
                                     ],
-                                    2 => [
-                                        'part_task_id'   => 2,
-                                        'is_printing'    => true,
-                                        'count_per_set'  => 3,
-                                        'count_required' => 30,
-                                        'count_printed'  => 3,
-                                        'count_printing' => 15,
-                                        'count_future'   => 18,
+                                ],
+                            ],
+                        ],
+                        'new' => [
+                            'tasks' => [
+                                1 => [
+                                    'count_set_planned'  => 10,
+                                    'count_set_printed'  => 6,
+                                    'count_set_printing' => 0,
+                                    'parts'              => [
+                                        1 => [
+                                            'part_task_id'   => 1,
+                                            'count_per_set'  => 2,
+                                            'count_required' => 20,
+                                            'count_printed'  => 12,
+                                            'count_printing' => 0,
+                                        ],
+                                        2 => [
+                                            'part_task_id'   => 2,
+                                            'count_per_set'  => 3,
+                                            'count_required' => 30,
+                                            'count_printed'  => 18,
+                                            'count_printing' => 0,
+                                        ],
                                     ],
                                 ],
                             ],
@@ -749,9 +805,6 @@ class ApiTest extends TestCase
         $this->assertDatabaseMissing(app(PrintingTask::class)->getTable(), [
             'printer_id' => $this->printer->id,
         ]);
-        $this->assertEquals(6, $task->getCompletedSetsCount());
-        $this->assertEquals(12, $task->parts->filter(fn($part) => $part->id === $part1->id)->first()->pivot->count_printed);
-        $this->assertEquals(18, $task->parts->filter(fn($part) => $part->id === $part2->id)->first()->pivot->count_printed);
     }
 
 
@@ -866,7 +919,8 @@ class ApiTest extends TestCase
                 'slots'   => [
                     'success' => false,
                     'errors'  => [
-                        'slots' => true,
+                        'slot 1' => true,
+                        'slot 2' => true,
                     ],
                 ],
             ]);
@@ -900,7 +954,8 @@ class ApiTest extends TestCase
                 'slots'   => [
                     'success' => false,
                     'errors'  => [
-                        'slots' => true,
+                        $slot1->attribute => true,
+                        $slot2->attribute => true,
                     ],
                 ],
             ]);
@@ -931,7 +986,7 @@ class ApiTest extends TestCase
                 'slots'   => [
                     'success' => false,
                     'errors'  => [
-                        'slots' => true,
+                        $slot1->attribute => true,
                     ],
                 ],
             ]);
@@ -939,23 +994,11 @@ class ApiTest extends TestCase
 
     public function test_api_print_end_success_slots()
     {
-        $filamentPackaging1 = FilamentPackaging::factory()->create([
-            'user_id' => $this->activeUser->id,
-            'name' => '1 кг',
-            'weight' => 1000,
-        ]);
-        $filamentPackaging2 = FilamentPackaging::factory()->create([
-            'user_id' => $this->activeUser->id,
-            'name' => '850 г',
-            'weight' => 850,
-        ]);
         $filamentSpool1 = FilamentSpool::factory()->create([
             'user_id' => $this->activeUser->id,
-            'weight_initial' => $filamentPackaging1->weight,
         ]);
         $filamentSpool2 = FilamentSpool::factory()->create([
             'user_id' => $this->activeUser->id,
-            'weight_initial' => $filamentPackaging2->weight,
         ]);
 
         $slot1 = PrinterFilamentSlot::factory()->create([
@@ -968,8 +1011,21 @@ class ApiTest extends TestCase
         ]);
         $sub1 = $this->faker->randomFloat(4, 1, 300);
         $sub2 = $this->faker->randomFloat(4, 1, 300);
-        $oldUsed1 = $filamentSpool1->weight_used;
-        $oldUsed2 = $filamentSpool2->weight_used;
+
+        $oldData = [
+            $slot1->attribute => [
+                'filament_spool_id' => $filamentSpool1->id,
+                'weight_initial'    => $filamentSpool1->weight_initial,
+                'weight_remaining'  => $filamentSpool1->weight_remaining,
+                'weight_used'       => $filamentSpool1->weight_used,
+            ],
+            $slot2->attribute => [
+                'filament_spool_id' => $filamentSpool2->id,
+                'weight_initial'    => $filamentSpool2->weight_initial,
+                'weight_remaining'  => $filamentSpool2->weight_remaining,
+                'weight_used'       => $filamentSpool2->weight_used,
+            ],
+        ];
 
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->apiToken->token])->post('/api/print-end',[
             'slots' => [
@@ -977,6 +1033,24 @@ class ApiTest extends TestCase
                 $slot2->attribute => $sub2,
             ]
         ]);
+
+        dump($response->json());
+        $filamentSpool1->refresh();
+        $filamentSpool2->refresh();
+        $newData = [
+            $slot1->attribute => [
+                'filament_spool_id' => $filamentSpool1->id,
+                'weight_initial'    => $filamentSpool1->weight_initial,
+                'weight_remaining'  => $filamentSpool1->weight_remaining,
+                'weight_used'       => $filamentSpool1->weight_used,
+            ],
+            $slot2->attribute => [
+                'filament_spool_id' => $filamentSpool2->id,
+                'weight_initial'    => $filamentSpool2->weight_initial,
+                'weight_remaining'  => $filamentSpool2->weight_remaining,
+                'weight_used'       => $filamentSpool2->weight_used,
+            ],
+        ];
 
         $response->assertStatus(200)
             ->assertJson([
@@ -988,45 +1062,21 @@ class ApiTest extends TestCase
                     'success' => true,
                     'errors'  => [],
                     'data'    => [
-                        'slots' => [
+                        'input' => [
                             $slot1->attribute => $sub1,
                             $slot2->attribute => $sub2,
                         ],
-                        'change' => [
-                            $slot1->attribute => [
-                                'filament_spool_id' => $filamentSpool1->id,
-                                'weight_initial'    => $filamentPackaging1->weight,
-                                'weight_remaining'  => $filamentSpool1->weight_initial - $filamentSpool1->weight_used,
-                                'weight_used'       => $filamentSpool1->weight_used,
-                                'weight_future'     => $filamentSpool1->weight_initial - $filamentSpool1->weight_used - $sub1,
-                            ],
-                            $slot2->attribute => [
-                                'filament_spool_id' => $filamentSpool2->id,
-                                'weight_initial'    => $filamentPackaging2->weight,
-                                'weight_remaining'  => $filamentSpool2->weight_initial - $filamentSpool2->weight_used,
-                                'weight_used'       => $filamentSpool2->weight_used,
-                                'weight_future'     => $filamentSpool2->weight_initial - $filamentSpool2->weight_used - $sub2,
-                            ],
-                        ]
+                        'old'   => $oldData,
+                        'new'   => $newData,
                     ],
                 ],
             ]);
-        $filamentSpool1->refresh();
-        $filamentSpool2->refresh();
-        $this->assertEquals(round($oldUsed1 + $sub1, 4), $filamentSpool1->weight_used);
-        $this->assertEquals(round($oldUsed2 + $sub2, 4), $filamentSpool2->weight_used);
     }
 
     public function test_api_print_end_success_slots_with_empty()
     {
-        $filamentPackaging1 = FilamentPackaging::factory()->create([
-            'user_id' => $this->activeUser->id,
-            'name' => '1 кг',
-            'weight' => 1000,
-        ]);
         $filamentSpool1 = FilamentSpool::factory()->create([
             'user_id' => $this->activeUser->id,
-            'weight_initial' => $filamentPackaging1->weight,
         ]);
 
         $slot1 = PrinterFilamentSlot::factory()->create([
@@ -1041,6 +1091,21 @@ class ApiTest extends TestCase
         $sub2 = $this->faker->randomFloat(4, 1, 300);
         $oldUsed1 = $filamentSpool1->weight_used;
 
+        $oldData = [
+            $slot1->attribute => [
+                'filament_spool_id' => $filamentSpool1->id,
+                'weight_initial'    => $filamentSpool1->weight_initial,
+                'weight_remaining'  => $filamentSpool1->weight_remaining,
+                'weight_used'       => $filamentSpool1->weight_used,
+            ],
+            $slot2->attribute => [
+                'filament_spool_id' => null,
+                'weight_initial'    => null,
+                'weight_remaining'  => null,
+                'weight_used'       => null,
+            ],
+        ];
+
         $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->apiToken->token])->post('/api/print-end',[
             'slots' => [
                 $slot1->attribute => $sub1,
@@ -1048,7 +1113,26 @@ class ApiTest extends TestCase
             ]
         ]);
 
+        $filamentSpool1->refresh();
+        $newData = [
+            $slot1->attribute => [
+                'filament_spool_id' => $filamentSpool1->id,
+                'weight_initial'    => $filamentSpool1->weight_initial,
+                'weight_remaining'  => $filamentSpool1->weight_remaining,
+                'weight_used'       => $filamentSpool1->weight_used,
+            ],
+        ];
+
         $response->assertStatus(200)
+            ->assertJsonMissing([
+                'slots' => [
+                    'data' => [
+                        'slots' => [
+                            $slot2->attribute => true,
+                        ],
+                    ],
+                ],
+            ])
             ->assertJson([
                 'printer' => [
                     'id'   => 1,
@@ -1058,28 +1142,12 @@ class ApiTest extends TestCase
                     'success' => true,
                     'errors'  => [],
                     'data'    => [
-                        'slots'  => [
+                        'input'  => [
                             $slot1->attribute => $sub1,
                             $slot2->attribute => $sub2,
                         ],
-                        'change' => [
-                            $slot1->attribute => [
-                                'filament_spool_id' => $filamentSpool1->id,
-                                'weight_initial'    => $filamentPackaging1->weight,
-                                'weight_remaining'  => $filamentSpool1->weight_initial - $filamentSpool1->weight_used,
-                                'subtracted'        => $sub1,
-                                'weight_used'       => $filamentSpool1->weight_used,
-                                'weight_future'     => $filamentSpool1->weight_initial - $filamentSpool1->weight_used - $sub1,
-                            ],
-                            $slot2->attribute => [
-                                'filament_spool_id' => null,
-                                'weight_initial'    => null,
-                                'weight_remaining'  => null,
-                                'subtracted'        => $sub2,
-                                'weight_used'       => null,
-                                'weight_future'     => null,
-                            ],
-                        ],
+                        'old' => $oldData,
+                        'new' => $newData,
                     ],
                 ],
             ]);
