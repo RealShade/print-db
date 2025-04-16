@@ -14,7 +14,9 @@ use App\Http\Controllers\Print\PartController;
 use App\Http\Controllers\Print\TaskController;
 use App\Http\Controllers\Print\PartTaskController;
 use App\Http\Controllers\PrinterController;
-use App\Http\Controllers\PrintingTaskController;
+use App\Http\Controllers\PrintJobController;
+use App\Http\Controllers\PrintJobFilamentSpoolController;
+use App\Http\Controllers\PrintJobPartTaskController;
 use App\Http\Controllers\Settings\ApiTokenController;
 use App\Http\Controllers\Settings\SettingsController;
 use App\Http\Controllers\ToolsController;
@@ -120,8 +122,6 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);
-    Route::post('/printers/{printer}/complete-print', [PrinterController::class, 'complete'])
-        ->name('printers.complete-print');
 
     Route::get('printers/{printer}/filament-slot/create', [PrinterFilamentSlotController::class, 'create'])
         ->name('filament-slot.create');
@@ -134,14 +134,22 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     Route::delete('printers/{printer}/filament-slot/{filamentSlot}', [PrinterFilamentSlotController::class, 'destroy'])
         ->name('filament-slot.destroy');
 
+    Route::get('print-job/{printer}/create', [PrintJobController::class, 'create'])->name('print-job.create');
+    Route::post('print-job/{printer}', [PrintJobController::class, 'store'])->name('print-job.store');
+    Route::delete('print-job/{printer}/{printJob}', [PrintJobController::class, 'destroy'])->name('print-job.destroy');
+    Route::post('/printers/{printer}/{printJob}/complete', [PrintJobController::class, 'complete'])->name('print-job.complete');
 
-    Route::get('printing-tasks/{printer}/create', [PrintingTaskController::class, 'create'])->name('printing-tasks.create');
-    Route::post('printing-tasks/{printer}', [PrintingTaskController::class, 'store'])->name('printing-tasks.store');
-    Route::get('printing-tasks/{printingTask}', [PrintingTaskController::class, 'edit'])->name('printing-tasks.edit');
-    Route::put('printing-tasks/{printingTask}', [PrintingTaskController::class, 'update'])->name('printing-tasks.update');
-    Route::delete('printing-tasks/{printingTask}', [PrintingTaskController::class, 'destroy'])->name('printing-tasks.destroy');
-    Route::get('printing-tasks/{task}/parts', [PrintingTaskController::class, 'getParts'])
-        ->name('printing-tasks.parts');
+    Route::get('print-job-task/{printJob}/create', [PrintJobPartTaskController::class, 'create'])->name('print-job.task.create');
+    Route::get('print-job-task/{printJob}/{partTask}/edit', [PrintJobPartTaskController::class, 'edit'])->name('print-job.task.edit');
+    Route::put('print-job-task/{printJob}/{partTask}', [PrintJobPartTaskController::class, 'update'])->name('print-job.task.update');
+    Route::post('print-job-task/{printJob}', [PrintJobPartTaskController::class, 'store'])->name('print-job.task.store');
+    Route::delete('print-job-task/{printJob}/{partTask}', [PrintJobPartTaskController::class, 'destroy'])->name('print-job.task.destroy');
+
+    Route::get('print-job-spool/{printJob}/create', [PrintJobFilamentSpoolController::class, 'create'])->name('print-job.spool.create');
+    Route::get('print-job-spool/{printJob}/{filamentSpool}/edit', [PrintJobFilamentSpoolController::class, 'edit'])->name('print-job.spool.edit');
+    Route::put('print-job-spool/{printJob}/{filamentSpool}', [PrintJobFilamentSpoolController::class, 'update'])->name('print-job.spool.update');
+    Route::post('print-job-spool/{printJob}', [PrintJobFilamentSpoolController::class, 'store'])->name('print-job.spool.store');
+    Route::delete('print-job-spool/{printJob}/{filamentSpool}', [PrintJobFilamentSpoolController::class, 'destroy'])->name('print-job.spool.destroy');
 
     Route::get('tools', [ToolsController::class, 'index'])->name('tools.index');
     Route::post('tools/validate-filename', [ToolsController::class, 'validateFilename'])

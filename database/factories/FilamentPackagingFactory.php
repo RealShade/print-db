@@ -14,7 +14,7 @@ class FilamentPackagingFactory extends Factory
     {
         return [
             'name' => $this->faker->randomElement(['Small Spool', 'Standard Spool', 'Large Spool', 'Mini Spool', 'XL Spool']),
-            'weight' => $this->faker->randomElement([250, 500, 750, 1000, 2000, 3000, 5000]),
+            'weight' => $this->faker->randomElement([2000, 3000, 5000]),
             'user_id' => User::factory(),
         ];
     }

@@ -22,7 +22,6 @@ class PrinterFilamentSlotFactory extends Factory
             'updated_at'  => Carbon::now(),
 
             'printer_id'        => Printer::factory(),
-            'filament_spool_id' => FilamentSpool::factory(),
         ];
     }
 }

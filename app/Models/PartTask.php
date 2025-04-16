@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\PrintJobStatus;
 use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int            $count_printed
  * @property Part           $part
  * @property Task           $task
- * @property PrintingTask[] $printingTasks
+ * @property PrintingTask[] $printJobs
  * @property int            $count_printing
  * @property int            $count_planned
  * @property int            $count_remaining
@@ -28,9 +30,10 @@ class PartTask extends Pivot
         return $this->belongsTo(Part::class);
     }
 
-    public function printingTasks() : HasMany
+    public function printJobs() : BelongsToMany
     {
-        return $this->hasMany(PrintingTask::class, 'part_task_id');
+        return $this->belongsToMany(PrintJob::class, PrintJobPartTask::class, 'part_task_id', 'print_job_id')
+            ->withPivot('count_printed');
     }
 
     public function task() : BelongsTo
@@ -46,7 +49,10 @@ class PartTask extends Pivot
 
     public function getCountPrintingAttribute() : int
     {
-        return $this->printingTasks->sum('count');
+        return $this->printJobs()
+            ->where('print_jobs.status', '=', PrintJobStatus::PRINTING)
+            ->withPivot('count_printed')
+            ->sum('print_job_part_task.count_printed');
     }
 
     public function getCountRemainingAttribute() : int
@@ -59,7 +65,7 @@ class PartTask extends Pivot
     {
         static::updated(function(PartTask $partTask) {
             $task          = $partTask->task;
-            $completedSets = $task->getCompletedSetsCount();
+            $completedSets = $task->count_set_printed;
             $plannedSets   = $task->count_set_planned;
 
             if ($completedSets >= $plannedSets) {

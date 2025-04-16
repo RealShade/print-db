@@ -16,8 +16,8 @@ class TaskFactory extends Factory
     {
         return [
             'external_id'       => $this->faker->numberBetween(0, 1000000),
-            'name'              => $this->faker->name(),
-            'count_set_planned' => $this->faker->randomNumber(),
+            'name'              => $this->faker->words(3, true),
+            'count_set_planned' => $this->faker->numberBetween(1, 100),
             'status'            => TaskStatus::NEW,
             'completed_at'      => null,
             'created_at'        => Carbon::now(),

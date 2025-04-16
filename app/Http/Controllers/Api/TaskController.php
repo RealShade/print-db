@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\PrintTaskEventSource;
+use App\Enums\PrintJobStatus;
 use App\Enums\TaskStatus;
-use App\Events\PrintCompleted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Print\AfterPrintRequest;
 use App\Http\Requests\Api\Print\BeforePrintRequest;
 use App\Http\Requests\Api\Print\StopPrintRequest;
+use App\Models\FilamentSpool;
 use App\Models\PrinterFilamentSlot;
 use App\Models\PartTask;
-use App\Models\PrintingTask;
-use App\Models\PrintingTaskLog;
+use App\Models\PrintJob;
 use App\Models\Task;
+use App\Services\PrinterService;
 use App\Traits\ParseFilament;
 use App\Traits\ParseFilename;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
 use Throwable;
 
 class TaskController extends Controller
@@ -31,7 +30,9 @@ class TaskController extends Controller
      */
     public function afterPrint(AfterPrintRequest $request) : JsonResponse
     {
-        $result = [];
+        $result = [
+            'success' => true,
+        ];
 
         $printer = $request->getPrinter();
         if (!$printer) {
@@ -42,54 +43,44 @@ class TaskController extends Controller
                 ],
             ], 422);
         }
+
         $result['printer'] = [
             'id'   => $printer->id,
             'name' => $printer->name,
         ];
 
-        $dataTasks = $this->parseFilename($request->filename);
-        if ($dataTasks['success']) {
-            $dataTasks['data']['new'] = $dataTasks['data']['old'];
-            DB::transaction(function() use ($request, &$dataTasks, $printer) {
+        DB::transaction(function() use (&$result, $request, $printer) {
+            $printJob = PrinterService::getActivePrintJob($printer, $request->filename, true);
+
+            $dataTasks = $this->parseFilename($request->filename);
+            if ($dataTasks['success']) {
+                $dataTasks['data']['new'] = $dataTasks['data']['old'];
+                $syncData                 = [];
                 // Обновление значений count_printed в PartTask
                 foreach ($dataTasks['data']['old']['tasks'] ?? [] as $taskID => $taskData) {
+                    $task = Task::find($taskID);
                     foreach ($taskData['parts'] ?? [] as $partID => $partData) {
                         if (!$partData['count_printing'] || !$partData['is_printing']) {
                             continue;
                         }
 
                         $partTask = PartTask::find($partData['part_task_id']);
-                        if (!$partTask) {
+                        if (!$partTask || $partTask->task_id !== $taskID) {
                             continue;
                         }
 
-                        $partTask->count_printed += $partData['count_printing'];
-                        $partTask->save();
-                        $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printed']  = $partTask->count_printed;
-                        $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printing'] = 0;
-                        unset($dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['is_printing']);
-
-                        PrintingTaskLog::create([
-                            'part_task_id' => $partID,
-                            'printer_id'   => $printer->id,
-                            'count'        => $partData['count_printing'],
-                            'event_source' => PrintTaskEventSource::API,
-                        ]);
+                        $syncData[ $partTask->id ] = [
+                            'count_printed' => $partData['count_printing'],
+                        ];
                     }
-                    $task                                                               = Task::find($taskID);
-                    $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printing'] = 0;
-                    $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printed']  = $task->getCompletedSetsCount();
                 }
+                $printJob->partTasks()->sync($syncData);
+            }
 
-                $printer->printingTasks()->delete();
-            });
-        }
-        $result['tasks'] = $dataTasks;
-
-        $dataSlots = $this->parseFilament($request, $printer);
-        if ($dataSlots['success']) {
-            DB::transaction(function() use ($printer, &$dataSlots) {
-                foreach ($dataSlots['data']['input'] ?? [] as $slotName => $usedWeight) {
+            $dataSlots = $this->parseFilament($request->slots ?? [], $printer);
+            if (isset($dataSlots['data']['input'])) {
+                $syncData = [];
+                foreach ($dataSlots['data']['input'] as $slotName => $usedWeight) {
                     /** @var PrinterFilamentSlot $slot */
                     $slot = $printer->filamentSlots()->where('attribute', $slotName)->first();
                     if (!$slot) {
@@ -98,49 +89,59 @@ class TaskController extends Controller
                     if ($slot->filamentSpool) {
                         $filamentSpool = $slot->filamentSpool;
 
-                        $dataSlots['data']['old'][ $slotName ] = [
-                            'filament_spool_id' => $filamentSpool->id,
-                            'filament_spool'    => sprintf('#%d %s %s (%s)', $filamentSpool->id, $filamentSpool->filament->name, $filamentSpool->filament->type->name, $filamentSpool->filament->vendor->name),
-                            'weight_initial'    => $filamentSpool->weight_initial,
-                            'weight_used'       => $filamentSpool->weight_used,
-                            'weight_remaining'  => $filamentSpool->weight_remaining,
-                            'date_last_used'    => $filamentSpool->date_last_used?->format('Y-m-d H:i:s'),
-                        ];
+                        $dataSlots['data']['old'][ $slotName ] = $this->getFilamentSpoolAsArray($filamentSpool);
 
-                        $filamentSpool->weight_used    = $filamentSpool->weight_used + $usedWeight;
-                        $filamentSpool->date_last_used = now();
-                        if (!$filamentSpool->date_first_used) {
-                            $filamentSpool->date_first_used = now();
-                        }
-                        $filamentSpool->save();
-                        $dataSlots['data']['new'][ $slotName ] = [
-                            'filament_spool_id' => $filamentSpool->id,
-                            'filament_spool'    => sprintf('#%d %s %s (%s)', $filamentSpool->id, $filamentSpool->filament->name, $filamentSpool->filament->type->name, $filamentSpool->filament->vendor->name),
-                            'weight_initial'    => $filamentSpool->weight_initial,
-                            'weight_used'       => $filamentSpool->weight_used,
-                            'weight_remaining'  => $filamentSpool->weight_remaining,
-                            'date_last_used'    => $filamentSpool->date_last_used?->format('Y-m-d H:i:s'),
+                        $syncData[ $filamentSpool->id ] = [
+                            'weight_used' => $usedWeight,
                         ];
                     } else {
-                        $dataSlots['data']['old'][ $slotName ] = [
-                            'filament_spool_id' => null,
-                            'filament_spool'    => __('printer.filament_slot.empty'),
-                            'weight_initial'    => null,
-                            'weight_used'       => null,
-                            'weight_remaining'  => null,
-                            'subtracted'        => $usedWeight,
-                            'weight_future'     => null,
-                            'date_last_used'    => null,
-                        ];
+                        $dataSlots['data']['old'][ $slotName ] = $this->getFilamentSpoolAsArray(null);
                     }
                 }
-            });
-        }
-        $result['slots'] = $dataSlots;
+                $printJob->spools()->sync($syncData);
+            }
+            PrinterService::completePrintJob($printJob);
+            foreach ($dataSlots['data']['old'] ?? [] as $slotName => $spool) {
+                if ($spool['filament_spool_id'] && $filamentSpool = FilamentSpool::find($spool['filament_spool_id'])) {
+                    $dataSlots['data']['new'][ $slotName ] = $this->getFilamentSpoolAsArray($filamentSpool);
+                }
+            }
+            foreach ($dataTasks['data']['old']['tasks'] ?? [] as $taskID => $taskData) {
+                $task = Task::find($taskID);
+                foreach ($taskData['parts'] ?? [] as $partID => $partData) {
+                    if (!$partData['count_printing'] || !$partData['is_printing']) {
+                        unset($dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]);
+                    }
+
+                    $partTask = PartTask::find($partData['part_task_id']);
+                    if (!$partTask || $partTask->task_id !== $taskID) {
+                        unset($dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]);
+                    }
+
+                    $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printed']  = $partTask->count_printed;
+                    $dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['count_printing'] = 0;
+                    unset($dataTasks['data']['new']['tasks'][ $taskID ]['parts'][ $partID ]['is_printing']);
+                }
+
+                $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printing'] = 0;
+                $dataTasks['data']['new']['tasks'][ $taskID ]['count_set_printed']  = $task->count_set_printed;
+            }
+            $result['print_job'] = [
+                'printer_id' => $printJob->printer_id,
+                'status'     => $printJob->status,
+                'filename'   => $printJob->filename,
+                'id'         => $printJob->id,
+            ];
+            $result['tasks']     = $dataTasks;
+            $result['slots']     = $dataSlots;
+        });
 
         return response()->json($result);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function beforePrint(BeforePrintRequest $request) : JsonResponse
     {
         $result  = [];
@@ -159,34 +160,23 @@ class TaskController extends Controller
             'name' => $printer->name,
         ];
 
-        $dataFilename    = $this->parseFilename($request->filename);
-        $result['tasks'] = $dataFilename;
+        $resultPrintJob = PrinterService::createPrintJob(
+            $printer,
+            $request->filename,
+            $request->slots
+        );
 
-        if ($dataFilename['success']) {
-            foreach ($dataFilename['data']['old']['tasks'] as $taskData) {
-                foreach ($taskData['parts'] ?? [] as $partData) {
-                    if ($partData['count_printing']) {
-                        PrintingTask::create([
-                            'part_task_id' => $partData['part_task_id'],
-                            'printer_id'   => $printer->id,
-                            'count'        => $partData['count_printing'],
-                        ]);
-
-                        $task = PartTask::find($partData['part_task_id'])?->task;
-                        if ($task && $task->status === TaskStatus::NEW) {
-                            $task->update(['status' => TaskStatus::IN_PROGRESS]);
-                        }
-                    }
-                }
-            }
-        }
+        $result['success']   = $resultPrintJob['success'];
+        $result['print_job'] = $resultPrintJob['printJob'] ?? null;
+        $result['tasks']     = $resultPrintJob['tasks'] ?? null;
+        $result['slots']     = $resultPrintJob['slots'] ?? null;
 
         return response()->json($result);
     }
 
     public function index()
     {
-        $profile = auth()->user();
+        $profile  = auth()->user();
         $tasks    = auth()->user()->tasks()
             ->whereIn('status', [TaskStatus::NEW, TaskStatus::IN_PROGRESS, TaskStatus::PRINTED])
             ->with([
@@ -195,7 +185,7 @@ class TaskController extends Controller
             ])
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function ($task) {
+            ->map(function($task) {
                 // Сохраняем оригинальный статус
                 $statusEnum = $task->status;
                 // Создаем массив с нужным порядком полей
@@ -203,11 +193,12 @@ class TaskController extends Controller
                 // Вставляем status_name сразу после status
                 $result = [];
                 foreach ($taskArray as $key => $value) {
-                    $result[$key] = $value;
+                    $result[ $key ] = $value;
                     if ($key === 'status') {
                         $result['status'] = $statusEnum->name;
                     }
                 }
+
                 return $result;
             });
         $printers = auth()->user()->printers()
@@ -225,7 +216,7 @@ class TaskController extends Controller
             ])
             ->orderBy('name')
             ->get()
-            ->map(function ($task) {
+            ->map(function($task) {
                 // Сохраняем оригинальный статус
                 $statusEnum = $task->status;
                 // Создаем массив с нужным порядком полей
@@ -233,11 +224,12 @@ class TaskController extends Controller
                 // Вставляем status_name сразу после status
                 $result = [];
                 foreach ($taskArray as $key => $value) {
-                    $result[$key] = $value;
+                    $result[ $key ] = $value;
                     if ($key === 'status') {
                         $result['status'] = $statusEnum->name;
                     }
                 }
+
                 return $result;
             });
 
@@ -255,15 +247,40 @@ class TaskController extends Controller
     {
         $printer = $request->getPrinter();
 
-        $printer->printingTasks()->delete();
+        $printJobs = [];
+        foreach ($printer->activeJobs as $printJob) {
+            $printJobs[ $printJob->id ] = [
+                'printer_id' => $printJob->printer_id,
+                'filename'   => $printJob->filename,
+                'status'     => PrintJobStatus::CANCELLED,
+                'id'         => $printJob->id,
+            ];
+        }
+
+        PrinterService::stopAllPrintJobs($printer);
 
         return response()->json([
-            'success' => true,
-            'printer' => [
-                $printer->id => $printer->name,
+            'success'    => true,
+            'printer'    => [
+                'id'   => $printer->id,
+                'name' => $printer->name,
             ],
-            'message' => __('printer.printing_tasks_purged'),
+            'print_jobs' => $printJobs,
+            'message'    => __('printer.printing_tasks_purged'),
         ]);
+    }
+
+    /* **************************************** Protected **************************************** */
+    protected function getFilamentSpoolAsArray(?FilamentSpool $filamentSpool) : array
+    {
+        return [
+            'filament_spool_id' => $filamentSpool?->id ?? null,
+            'filament_spool'    => $filamentSpool ? sprintf('#%d %s %s (%s)', $filamentSpool->id, $filamentSpool->filament->name, $filamentSpool->filament->type->name, $filamentSpool->filament->vendor->name) : __('printer.filament_slot.empty'),
+            'weight_initial'    => $filamentSpool?->weight_initial ?? null,
+            'weight_used'       => $filamentSpool?->weight_used ?? null,
+            'weight_remaining'  => $filamentSpool?->weight_remaining ?? null,
+            'date_last_used'    => $filamentSpool?->date_last_used?->format('Y-m-d H:i:s') ?? null,
+        ];
     }
 
 }

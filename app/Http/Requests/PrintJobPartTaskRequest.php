@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property mixed $part_task_id
  * @property mixed $count
  */
-class PrintingTaskRequest extends FormRequest
+class PrintJobPartTaskRequest extends FormRequest
 {
 
     /* **************************************** Public **************************************** */
@@ -24,11 +24,14 @@ class PrintingTaskRequest extends FormRequest
 
     public function authorize() : bool
     {
-        $printer      = $this->route('printer');
-        $printingTask = $this->route('printingTask');
+        $printJob = $this->route('printJob');
+        if ($printJob === null) {
+            return false;
+        }
 
-        return ($printer === null || $printer->user_id === auth()->id())
-            && ($printingTask === null || $printingTask->printer->user_id === auth()->id());
+        $partTask = $this->route('partTask');
+        return $printJob->printer->user_id === auth()->id()
+            && ($partTask === null || $printJob->partTasks->contains($partTask));
     }
 
     public function rules() : array
@@ -45,18 +48,6 @@ class PrintingTaskRequest extends FormRequest
                 },
             ],
             'count'        => 'required|integer|min:1',
-        ];
-    }
-
-    /* **************************************** Getters **************************************** */
-    public function getData() : array
-    {
-        $partTask = PartTask::findOrFail($this->part_task_id);
-
-        return [
-            'task_id' => $partTask->task_id,
-            'part_id' => $partTask->part_id,
-            'count'   => $this->count,
         ];
     }
 

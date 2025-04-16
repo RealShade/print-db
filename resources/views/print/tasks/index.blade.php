@@ -49,7 +49,7 @@
                         </td>
                         <td>{{ $task->created_at->format('d.m.Y') }}</td>
                         <td>{{ $task->name }}@if ($task->external_id)<br>{{ $task->external_id }}@endif</td>
-                        <td class="text-end"><span @if ($task->getCompletedSetsCount() >= $task->count_set_planned) class="count-complete" @endif>{{ $task->getCompletedSetsCount() }}/{{ $task->count_set_planned }}</span></td>
+                        <td class="text-end"><span @if ($task->count_set_printed >= $task->count_set_planned) class="count-complete" @endif>{{ $task->count_set_printed }}/{{ $task->count_set_planned }}</span></td>
                         <td class="text-end">{{ $task->parts->count() }}</td>
                         <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"

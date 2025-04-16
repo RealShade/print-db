@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Enums\PrinterStatus;
+use App\Enums\PrintJobStatus;
 use App\Models\Traits\HasUser;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,6 +43,17 @@ class Printer extends Model
     public function filamentUsed() : HasMany
     {
         return $this->hasMany(FilamentUsedLog::class)->latest('id');
+    }
+
+    public function printJobs() : HasMany
+    {
+        return $this->hasMany(PrintJob::class);
+    }
+
+    public function activeJobs() : HasMany
+    {
+        return $this->hasMany(PrintJob::class)
+            ->where('status', PrintJobStatus::PRINTING);
     }
 
     public function printingTasks() : HasMany
