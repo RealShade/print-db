@@ -203,10 +203,6 @@ class TaskController extends Controller
             });
         $printers = auth()->user()->printers()
             ->with([
-                'printingTasks',
-                'printingTasks.partTask',
-                'printingTasks.partTask.task',
-                'printingTasks.partTask.part',
                 'filamentSlots',
                 'filamentSlots.filamentSpool',
                 'filamentSlots.filamentSpool.packaging',

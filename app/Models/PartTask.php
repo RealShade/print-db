@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int            $count_printed
  * @property Part           $part
  * @property Task           $task
- * @property PrintingTask[] $printJobs
+ * @property PrintJob[]     $printJobs
  * @property int            $count_printing
  * @property int            $count_planned
  * @property int            $count_remaining

@@ -23,7 +23,7 @@
                                 <span class="badge badge-{{ strtolower($printer->status->value()) }} me-2">
                                     {{ $printer->status->label() }}
                                 </span>
-                                @if($printer->printingTasks->isNotEmpty())
+                                @if($printer->activeJobs->isNotEmpty())
                                     <span class="badge badge-printing" title="{{ __('printer.status.printing') }}">
                                         <i class="bi bi-printer"></i>
                                     </span>

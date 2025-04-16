@@ -77,7 +77,7 @@ class Task extends Model
 
     public function isPrinting() : bool
     {
-        return $this->parts()->get()->map(fn($part) => $part->pivot->printJobs->count())->sum() > 0;
+        return $this->parts()->get()->map(fn($part) => $part->pivot->count_printing)->sum() > 0;
     }
 
     /* **************************************** Protected **************************************** */
@@ -91,12 +91,6 @@ class Task extends Model
                     $task->completed_at = null;
                 }
             }
-        });
-
-        static::deleting(function(Task $task) {
-            $task->parts->each(function($part) {
-                $part->pivot->printingTasks()->delete();
-            });
         });
     }
 }

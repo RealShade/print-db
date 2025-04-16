@@ -3,20 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PrinterStatus;
-use App\Enums\PrintJobStatus;
-use App\Enums\PrintTaskEventSource;
-use App\Events\PrintCompleted;
 use App\Http\Requests\PrinterRequest;
-use App\Models\PartTask;
 use App\Models\Printer;
-use App\Models\PrintingTaskLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
-use Throwable;
 
 class PrinterController extends Controller
 {

@@ -56,11 +56,6 @@ class Printer extends Model
             ->where('status', PrintJobStatus::PRINTING);
     }
 
-    public function printingTasks() : HasMany
-    {
-        return $this->hasMany(PrintingTask::class);
-    }
-
     /* **************************************** Protected **************************************** */
     protected static function booted() : void
     {
