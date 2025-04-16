@@ -85,7 +85,7 @@
                                                                 <div>
                                                                     <span class="card-text small text-muted">#{{ $slot->filamentSpool->id }}</span> {{ $slot->filamentSpool->filament->name }} {{ $slot->filamentSpool->filament->type->name }}
                                                                     <br>
-                                                                    {{ $slot->filamentSpool->filament->vendor->name }}, ({{ $slot->filamentSpool->weight_initial - $slot->filamentSpool->weight_used }}/{{ $slot->filamentSpool->packaging->weight }})
+                                                                    {{ $slot->filamentSpool->filament->vendor->name }} ({{ $slot->filamentSpool->weight_initial - $slot->filamentSpool->weight_used }}/{{ $slot->filamentSpool->packaging->weight }})
                                                                 </div>
                                                             </div>
                                                         @else
@@ -193,8 +193,8 @@
                                                                 <div class="d-flex justify-content-between align-items-center">
                                                                     <div>
                                                                         <div class="small">
-                                                                            {{ $partTask->part->name }}
-                                                                            (<span class="card-text small text-muted">#{{ $partTask->part->id }}</span>, {{ $partTask->part->version }}{{ $partTask->part->version_date ? ', ' . $partTask->part->version_date->format('d.m.Y') : '' }})
+                                                                            <span class="card-text small text-muted">#{{ $partTask->part->id }}</span> {{ $partTask->part->name }}
+                                                                            <span class="card-text small text-muted">({{ $partTask->part->version }}{{ $partTask->part->version_date ? ', ' . $partTask->part->version_date->format('d.m.Y') : '' }})</span>
                                                                             ({{ $partTask->count_printed }}/{{ $partTask->count_planned }})
                                                                         </div>
                                                                         <div class="ms-5">
@@ -251,7 +251,7 @@
                                                             <div class="small">
                                                                 <span class="card-text small text-muted">#{{ $spool->id }}</span>
                                                                 {{ $spool->filament->name }} {{ $spool->filament->type->name }}
-                                                                {{ $spool->filament->vendor->name }}, ({{ $spool->weight_initial - $spool->weight_used }}/{{ $spool->packaging->weight }})
+                                                                {{ $spool->filament->vendor->name }} ({{ $spool->weight_initial - $spool->weight_used }}/{{ $spool->packaging->weight }})
                                                             </div>
                                                             <div>
                                                                 {{ $spool->pivot->weight_used }}
