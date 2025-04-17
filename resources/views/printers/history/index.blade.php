@@ -49,7 +49,7 @@
                             @if($printJob->spools)
                                 @foreach($printJob->spools as $filamentSpool)
                                     <div class="mb-1">
-                                        <b><x-number :value="$filamentSpool->weight_used" precision="4" noEmpty /></b>
+                                        <b><x-number :value="$filamentSpool->pivot->weight_used" precision="4" noEmpty /></b>
                                         @foreach($filamentSpool->filament->colors as $color)
                                             <span style="background-color: {{ $color }}; width: 20px; height: 20px; display: inline-block;"></span>
                                         @endforeach
