@@ -81,7 +81,7 @@
                 <li class="nav-item">
                     <a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : 'text-white' }}">
                         <img src="{{ asset('images/menu/history.svg') }}" alt="History">
-                        {{ __('menu.history') }}
+                        {{ __('printer.history.title') }}
                     </a>
                 </li>
                 <li class="nav-item">
