@@ -45,8 +45,8 @@
                         <td>{{ $spool->filament->name }}</td>
                         <td>{{ $spool->filament->type->name }}</td>
                         <td>{{ $spool->filament->vendor->name }}</td>
-                        <td>{{ number_format($spool->weight_used ?? 0, 2) }} г</td>
-                        <td>{{ number_format($spool->weight_remaining, 2) }} г</td>
+                        <td><x-number :value="$spool->weight_used" precision="4" /></td>
+                        <td><x-number :value="$spool->weight_remaining" precision="4" /></td>
                         <td>{{ $spool->date_last_used ? $spool->date_last_used->format('Y-m-d H:m:s') : '' }}</td>
                         <td class="text-end">
                             <button type="button" class="btn btn-sm btn-primary"

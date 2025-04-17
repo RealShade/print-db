@@ -9,7 +9,8 @@
         "php": "^8.3",
         "josiasmontag/laravel-recaptchav3": "^1.0",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+      "ext-bcmath": "*"
     },
     "require-dev": {
         "ext-xdebug": "*",

@@ -85,7 +85,7 @@
                                                                 <div>
                                                                     <span class="card-text small text-muted">#{{ $slot->filamentSpool->id }}</span> {{ $slot->filamentSpool->filament->name }} {{ $slot->filamentSpool->filament->type->name }}
                                                                     <br>
-                                                                    {{ $slot->filamentSpool->filament->vendor->name }} ({{ $slot->filamentSpool->weight_initial - $slot->filamentSpool->weight_used }}/{{ $slot->filamentSpool->packaging->weight }})
+                                                                    {{ $slot->filamentSpool->filament->vendor->name }} (<x-number :value="$slot->filamentSpool->weight_remaining" />/{{ $slot->filamentSpool->packaging->weight }})
                                                                 </div>
                                                             </div>
                                                         @else
@@ -251,10 +251,10 @@
                                                             <div class="small">
                                                                 <span class="card-text small text-muted">#{{ $spool->id }}</span>
                                                                 {{ $spool->filament->name }} {{ $spool->filament->type->name }}
-                                                                {{ $spool->filament->vendor->name }} ({{ $spool->weight_initial - $spool->weight_used }}/{{ $spool->packaging->weight }})
+                                                                {{ $spool->filament->vendor->name }} (<x-number :value="$spool->weight_remaining" />/{{ $spool->packaging->weight }})
                                                             </div>
-                                                            <div>
-                                                                {{ $spool->pivot->weight_used }}
+                                                            <div class="ms-5">
+                                                                <x-number :value="$spool->pivot->weight_used" />/<x-number :value="$spool->weight_remaining" />
                                                             </div>
                                                         </div>
                                                         <div class="btn-group">

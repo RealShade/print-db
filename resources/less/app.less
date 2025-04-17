@@ -4,7 +4,7 @@
 @secondary-color: #6C757D;
 @text-color: #F8F9FA;
 @lighter-bg: mix(@primary-bg, @text-color, 95%);
-@border-color: #004d9f;
+@border-color: #004D9F;
 
 @input-bg: mix(@primary-color, @primary-bg, 30%);
 @input-border: mix(@primary-color, @primary-bg, 50%);
@@ -377,9 +377,9 @@ a {
     border-radius: 3px;
     border: 1px solid #DDD;
     display: inline-block;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),
-                      linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background-image: linear-gradient(45deg, #CCC 25%, transparent 25%, transparent 75%, #CCC 75%, #CCC),
+    linear-gradient(45deg, #CCC 25%, transparent 25%, transparent 75%, #CCC 75%, #CCC);
     background-size: 10px 10px;
     background-position: 0 0, 5px 5px;
     position: relative;
@@ -395,10 +395,11 @@ a {
     background-color: inherit;
     z-index: 1;
 }
+
 .color-block {
     display: flex;
     align-items: center;
-    border: 1px solid #ddd;
+    border: 1px solid #DDD;
     border-radius: 4px;
     padding: 8px;
     margin: 3px;
@@ -472,5 +473,19 @@ a {
         width: 40px;
         height: 40px;
         margin-right: 1em;
+    }
+}
+
+.formatted-number {
+    display: inline-block;
+    white-space: nowrap;
+
+    .integer-part {
+        font-size: 1em;
+    }
+
+    .fraction-part {
+        font-size: 0.5em;
+        vertical-align: text-top;
     }
 }

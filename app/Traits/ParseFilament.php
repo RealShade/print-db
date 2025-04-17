@@ -25,6 +25,9 @@ trait ParseFilament
                 $result['success'] = false;
                 $result['errors'][ $slotName ] = __('printer.validation.slots.float', ['slot' => $slotName]);
                 continue;
+            } elseif ($weight <= 0) {
+                // если вес меньше 0, то не пропускаем
+                continue;
             }
 
             $slot = $printer->filamentSlots()

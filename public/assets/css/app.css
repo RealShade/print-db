@@ -11,7 +11,7 @@
   --bs-secondary-border-color: #6C757D;
   --bs-tertiary-bg: #001F3F;
   --bs-light-rgb: 12.4, 41.9, 72.35;
-  --bs-border-color: #004d9f;
+  --bs-border-color: #004D9F;
 }
 html,
 body {
@@ -294,7 +294,7 @@ a:hover {
   border: 1px solid #DDD;
   display: inline-block;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc);
+  background-image: linear-gradient(45deg, #CCC 25%, transparent 25%, transparent 75%, #CCC 75%, #CCC), linear-gradient(45deg, #CCC 25%, transparent 25%, transparent 75%, #CCC 75%, #CCC);
   background-size: 10px 10px;
   background-position: 0 0, 5px 5px;
   position: relative;
@@ -312,7 +312,7 @@ a:hover {
 .color-block {
   display: flex;
   align-items: center;
-  border: 1px solid #ddd;
+  border: 1px solid #DDD;
   border-radius: 4px;
   padding: 8px;
   margin: 3px;
@@ -376,5 +376,16 @@ a:hover {
   width: 40px;
   height: 40px;
   margin-right: 1em;
+}
+.formatted-number {
+  display: inline-block;
+  white-space: nowrap;
+}
+.formatted-number .integer-part {
+  font-size: 1em;
+}
+.formatted-number .fraction-part {
+  font-size: 0.5em;
+  vertical-align: text-top;
 }
 

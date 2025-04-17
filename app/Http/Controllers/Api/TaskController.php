@@ -58,8 +58,7 @@ class TaskController extends Controller
                 $syncData                 = [];
                 // Обновление значений count_printed в PartTask
                 foreach ($dataTasks['data']['old']['tasks'] ?? [] as $taskID => $taskData) {
-                    $task = Task::find($taskID);
-                    foreach ($taskData['parts'] ?? [] as $partID => $partData) {
+                    foreach ($taskData['parts'] ?? [] as $partData) {
                         if (!$partData['count_printing'] || !$partData['is_printing']) {
                             continue;
                         }
@@ -209,6 +208,7 @@ class TaskController extends Controller
                 'filamentSlots.filamentSpool.filament',
                 'filamentSlots.filamentSpool.filament.vendor',
                 'filamentSlots.filamentSpool.filament.type',
+                'printJobs',
             ])
             ->orderBy('name')
             ->get()
