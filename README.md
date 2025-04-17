@@ -1,4 +1,3 @@
-<a href="https://www.buymeacoffee.com/realshade" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a><br>
 <a href="https://send.monobank.ua/jar/uUd4ZGseJ" target="_blank">Банка</a>
 
 ## Print DB
@@ -29,7 +28,6 @@ https://print-db.realshade.me<br>
 <h3>Реалізація (та її ідеї):</h3>
 
 * Використовувати API для отримання даних про завдання та частини, які друкуються.
-* ??? Автоматично створювати завдання та частини, які потрібно надрукувати, на основі даних з API.
 * Зв'язок між даними з API та даними в системі здійснюватиметься через назви файлів, які будуть містити інформацію про завдання та частини, що друкуються
 * Зробити зручне ручне керування друком, завданнями та частинами через веб-інтерфейс, щоб можна було користуватися без API.
 * Зробіти облік філаменту, ручне та автоматичне керування його витратою
