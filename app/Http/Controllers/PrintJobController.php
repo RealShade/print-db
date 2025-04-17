@@ -67,4 +67,15 @@ class PrintJobController extends Controller
         return response()->json(['success' => $result['success']]);
     }
 
+    public function history()
+    {
+        $printJobs = PrintJob::query()
+            ->where('status', PrintJobStatus::COMPLETED)
+            ->orderBy('end_time', 'desc')
+            ->paginate(50);
+
+        return view('printers.history.index', compact('printJobs'));
+
+    }
+
 }

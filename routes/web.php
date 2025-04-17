@@ -155,6 +155,8 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     Route::post('tools/validate-filename', [ToolsController::class, 'validateFilename'])
         ->name('tools.validate-filename');
 
+    Route::get('history', [PrintJobController::class, 'history'])->name('history.index');
+
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');

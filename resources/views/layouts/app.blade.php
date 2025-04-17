@@ -29,19 +29,19 @@
             @if(auth()->check())
                 <li class="nav-item">
                     <a href="{{ route('printers.index') }}" class="nav-link {{ request()->is('printers') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/printers.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/menu/printer.svg') }}" alt="Printers">
                         {{ __('menu.printers') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.tasks.index') }}" class="nav-link {{ request()->is('print/tasks') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/tasks.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/menu/tasks.svg') }}" alt="Tasks">
                         {{ __('menu.tasks') }}
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/parts.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/menu/model.svg') }}" alt="Models">
                         {{ __('menu.parts') }}
                     </a>
                 </li>
@@ -53,13 +53,13 @@
                        aria-expanded="{{ request()->routeIs('filament.*') ? 'true' : 'false' }}"
                        aria-controls="filamentCollapse">
                         <span>
-                            <img src="{{ asset('images/filament.svg') }}" alt="Printers">
+                            <img src="{{ asset('images/menu/filament.svg') }}" alt="Filament">
                             {{ __('menu.filament.title') }}
                         </span>
                         <i class="bi bi-chevron-down"></i>
                     </a>
                     <div class="collapse {{ request()->routeIs('filament.*') ? 'show' : '' }}" id="filamentCollapse">
-                        <ul class="nav flex-column ms-3">
+                        <ul class="nav flex-column ms-4">
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('filament.spools.*') ? 'active' : 'text-white' }}" href="{{ route('filament.spools.index') }}">{{ __('menu.filament.reels') }}</a>
                             </li>
@@ -79,15 +79,21 @@
                     </div>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('history.index') }}" class="nav-link {{ request()->routeIs('history.*') ? 'active' : 'text-white' }}">
+                        <img src="{{ asset('images/menu/history.svg') }}" alt="History">
+                        {{ __('menu.history') }}
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('tools.index') }}" class="nav-link {{ request()->routeIs('tools.*') ? 'active' : 'text-white' }}">
-                        <img src="{{ asset('images/tools.svg') }}" alt="Printers">
+                        <img src="{{ asset('images/menu/tools.svg') }}" alt="Tools">
                         {{ __('tools.title') }}
                     </a>
                 </li>
                 @if(auth()->user()->hasRole(\App\Enums\UserRole::ADMIN))
                     <li>
                         <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->is('admin/users*') ? 'active' : 'text-white' }}">
-                            <i class="bi bi-people me-2"></i>
+                            <img src="{{ asset('images/menu/users.svg') }}" alt="Users">
                             {{ __('menu.users') }}
                         </a>
                     </li>
@@ -100,13 +106,13 @@
                        aria-expanded="{{ request()->routeIs('help.*') ? 'true' : 'false' }}"
                        aria-controls="helpCollapse">
                         <span>
-                            <img src="{{ asset('images/help.svg') }}" alt="Printers">
+                            <img src="{{ asset('images/menu/help.svg') }}" alt="Help">
                             {{ __('menu.help.title') }}
                         </span>
                         <i class="bi bi-chevron-down"></i>
                     </a>
                     <div class="collapse {{ request()->routeIs('help.*') ? 'show' : '' }}" id="helpCollapse">
-                        <ul class="nav flex-column ms-3">
+                        <ul class="nav flex-column ms-4">
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('help.api.*') ? 'active' : 'text-white' }}" href="{{ route('help.api.index') }}">{{ __('menu.help.api') }}</a>
                             </li>

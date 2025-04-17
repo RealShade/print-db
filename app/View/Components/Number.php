@@ -10,6 +10,7 @@ class Number extends Component
 {
     public $value;
     public $precision;
+    public $noEmpty = false;
 
     /**
      * Create a new component instance.
@@ -19,10 +20,11 @@ class Number extends Component
      *
      * @return void
      */
-    public function __construct(mixed $value, int $precision = 2)
+    public function __construct(mixed $value, int $precision = 2, bool $noEmpty = false)
     {
         $this->value = $value;
         $this->precision = $precision;
+        $this->noEmpty = $noEmpty;
     }
 
     /**
@@ -42,6 +44,11 @@ class Number extends Component
         $fraction = ltrim($fraction, '0.');
 
         return str_pad($fraction, $this->precision, '0', STR_PAD_RIGHT);
+    }
+
+    public function noEmpty() : bool
+    {
+        return $this->noEmpty;
     }
 
     /**

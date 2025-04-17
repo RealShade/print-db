@@ -9,9 +9,15 @@ enum PrintJobStatus: int
     case PRINTING = 0; // Друкується
     case COMPLETED = 1; // Завершено
     case CANCELLED = 2; // Скасовано
-    case UNKNOWN = 3; // Невідомо. Це трапляється, якщо починається новий друк, а старий ще не завершився.
-    // Тобто в базі даних є запис про старий друк, але вже  прийшла подія про новий друк.
-    // В такому випадку старий друк не скасовується, а стає UNKNOWN.
-    // Це потрібно для того, щоб не зберігати в базі даних статус старого друку для подальшого з'ясування
+    case UNKNOWN = 3; // Невідомо
 
+    public function label(): string
+    {
+        return match ($this) {
+            self::PRINTING => __('enum.print_job.status.printing'),
+            self::COMPLETED => __('enum.print_job.status.completed'),
+            self::CANCELLED => __('enum.print_job.status.cancelled'),
+            self::UNKNOWN => __('enum.print_job.status.unknown'),
+        };
+    }
 }
