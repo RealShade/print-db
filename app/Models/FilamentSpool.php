@@ -23,7 +23,6 @@ use Illuminate\Support\Carbon;
  * @property float                  $cost
  * @property int                    $user_id
  * @property Filament               $filament
- * @property FilamentUsedLog[]|null $filamentUsed
  * @property FilamentPackaging      $packaging
  * @property-read float             $weight_remaining
  */
@@ -54,11 +53,6 @@ class FilamentSpool extends Model
     public function filament() : BelongsTo
     {
         return $this->belongsTo(Filament::class);
-    }
-
-    public function filamentUsedLog() : HasMany
-    {
-        return $this->hasMany(FilamentUsedLog::class)->latest('id');
     }
 
     public function packaging() : BelongsTo

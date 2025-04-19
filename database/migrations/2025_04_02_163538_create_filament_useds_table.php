@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\FilamentUsedLog;
 use App\Models\PartTask;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -12,7 +11,7 @@ return new class extends Migration {
      */
     public function up() : void
     {
-        Schema::create(app(FilamentUsedLog::class)->getTable(), function(Blueprint $table) {
+        Schema::create('filament_used_logs', function(Blueprint $table) {
             $table->id();
             $table->foreignId('filament_spool_id')->constrained()->cascadeOnDelete();
             $table->foreignId('printer_id')->nullable()->constrained()->nullOnDelete();
@@ -27,6 +26,6 @@ return new class extends Migration {
      */
     public function down() : void
     {
-        Schema::dropIfExists(app(FilamentUsedLog::class)->getTable());
+        Schema::dropIfExists('filament_used_logs');
     }
 };

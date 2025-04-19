@@ -40,11 +40,6 @@ class Printer extends Model
         return $this->hasMany(PrinterFilamentSlot::class);
     }
 
-    public function filamentUsed() : HasMany
-    {
-        return $this->hasMany(FilamentUsedLog::class)->latest('id');
-    }
-
     public function printJobs() : HasMany
     {
         return $this->hasMany(PrintJob::class);
