@@ -119,6 +119,7 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         Route::get('spools/{spool}/edit', [FilamentSpoolController::class, 'edit'])->name('spools.edit');
         Route::put('spools/{spool}', [FilamentSpoolController::class, 'update'])->name('spools.update');
         Route::delete('spools/{spool}', [FilamentSpoolController::class, 'destroy'])->name('spools.destroy');
+        Route::post('spools/{spool}/archive', [FilamentSpoolController::class, 'archive'])->name('spools.archive');
     });
 
     Route::resource('printers', PrinterController::class)->except(['show']);

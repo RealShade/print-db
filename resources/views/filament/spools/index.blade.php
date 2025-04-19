@@ -25,13 +25,20 @@
                     <th>{{ __('filament.vendor.field') }}</th>
                     <th>{{ __('filament.spool.weight_used') }}</th>
                     <th>{{ __('filament.spool.remaining_weight') }}</th>
+                    <th>{{ __('printer.filament_slot.title') }}</th>
                     <th>{{ __('filament.spool.date_last_used') }}</th>
-                    <th></th>
+                    <th class="text-end">
+                        <a href="{{ request()->fullUrlWithQuery(['archived' => request()->has('archived') ? null : 'true']) }}"
+                           class="btn btn-sm {{ request()->has('archived') ? 'btn-success' : 'btn-outline-secondary' }}"
+                           title="{{ __('filament.spool.show_archived') }}">
+                            <i class="bi bi-archive{{ request()->has('archived') ? '-fill' : '' }}"></i>
+                        </a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($spools as $spool)
-                    <tr>
+                    <tr class="{{ $spool->archived ? 'opacity-50' : '' }}">
                         <td class="text-end table-id">{{ $spool->id }}</td>
                         <td>
                             <div class="d-flex flex-wrap gap-1">
@@ -45,10 +52,34 @@
                         <td>{{ $spool->filament->name }}</td>
                         <td>{{ $spool->filament->type->name }}</td>
                         <td>{{ $spool->filament->vendor->name }}</td>
-                        <td><x-number :value="$spool->weight_used" precision="4" /></td>
-                        <td><x-number :value="$spool->weight_remaining" precision="4" /></td>
+                        <td>
+                            <x-number :value="$spool->weight_used" precision="4" />
+                        </td>
+                        <td>
+                            <x-number :value="$spool->weight_remaining" precision="4" />
+                        </td>
+                        <td>
+                            {!! nl2br(e($spool->slots()->with('printer')->get()->map(function($slot) {
+                                return $slot->printer->first()->name . ': ' . $slot->name;
+                            })->implode("\n"))) !!}
+                        </td>
                         <td>{{ $spool->date_last_used ? $spool->date_last_used->format('Y-m-d H:m:s') : '' }}</td>
                         <td class="text-end">
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    data-transport="ajax"
+                                    data-action="{{ route('filament.spools.archive', $spool) }}"
+                                    data-method="POST"
+                                    data-confirm="true"
+                                    data-confirm-title="{{ __('filament.spool.action.archive.title') }}"
+                                    data-confirm-text="{{ $spool->archived ? __('filament.spool.action.archive.confirm_archived') : __('filament.spool.action.archive.confirm') }}"
+                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                @if($spool->archived)
+                                    <i class="bi bi-archive-fill"></i>
+                                @else
+                                    <i class="bi bi-archive"></i>
+                                @endif
+                            </button>
                             <button type="button" class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#spoolModal"
@@ -58,19 +89,17 @@
                                     data-id="{{ $spool->id }}">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <form action="{{ route('filament.spools.destroy', $spool) }}"
-                                  method="POST"
-                                  class="d-inline-block confirm-delete"
-                                  data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament.spool.action.delete.confirm') }}"
-                                  data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                  data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-sm btn-danger"
+                                    data-transport="ajax"
+                                    data-action="{{ route('filament.spools.destroy', $spool) }}"
+                                    data-method="DELETE"
+                                    data-confirm="true"
+                                    data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                    data-confirm-text="{{ __('filament.spool.action.delete.confirm') }}"
+                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 @endforeach

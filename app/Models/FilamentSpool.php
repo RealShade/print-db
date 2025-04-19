@@ -13,18 +13,19 @@ use Illuminate\Support\Carbon;
 /**
  * FilamentSpool
  *
- * @property int                    $id
- * @property int                    $filament_id
- * @property int                    $filament_packaging_id
- * @property float                  $weight_initial
- * @property float                  $weight_used
- * @property Carbon|null            $date_first_used
- * @property Carbon|null            $date_last_used
- * @property float                  $cost
- * @property int                    $user_id
- * @property Filament               $filament
- * @property FilamentPackaging      $packaging
- * @property-read float             $weight_remaining
+ * @property int               $id
+ * @property int               $filament_id
+ * @property int               $filament_packaging_id
+ * @property float             $weight_initial
+ * @property float             $weight_used
+ * @property Carbon|null       $date_first_used
+ * @property Carbon|null       $date_last_used
+ * @property float             $cost
+ * @property int               $user_id
+ * @property bool              $archived
+ * @property Filament          $filament
+ * @property FilamentPackaging $packaging
+ * @property-read float        $weight_remaining
  */
 class FilamentSpool extends Model
 {
@@ -38,6 +39,8 @@ class FilamentSpool extends Model
         'date_first_used',
         'date_last_used',
         'cost',
+        'archived',
+        'archived_at',
         'user_id',
     ];
 
@@ -46,8 +49,37 @@ class FilamentSpool extends Model
         'weight_used'     => 'decimal:4',
         'date_first_used' => 'datetime',
         'date_last_used'  => 'datetime',
+        'archived'        => 'boolean',
+        'archived_at'     => 'datetime',
         'cost'            => 'decimal:2',
     ];
+
+    /* **************************************** Static **************************************** */
+    public static function getForSelect() : array
+    {
+        $spools = self::where('user_id', auth()->id())
+            ->with(['filament.type', 'filament.vendor', 'packaging'])
+            ->where('archived', false)
+            ->orderByDesc('date_last_used')
+            ->orderBy('id')
+            ->get();
+
+        $result = [];
+        foreach ($spools as $spool) {
+            $vendorName = $spool->filament->vendor->name;
+
+            if (!isset($result[ $vendorName ])) {
+                $result[ $vendorName ] = [];
+            }
+
+            $result[ $vendorName ][ $spool->id ] = "#{$spool->id} {$spool->filament->name} {$spool->filament->type->name}, {$spool->packaging->name} ({$spool->weight_remaining})";
+        }
+
+        // Сортировка по имени производителя
+        ksort($result);
+
+        return $result;
+    }
 
     /* **************************************** Public **************************************** */
     public function filament() : BelongsTo
@@ -58,6 +90,11 @@ class FilamentSpool extends Model
     public function packaging() : BelongsTo
     {
         return $this->belongsTo(FilamentPackaging::class, 'filament_packaging_id');
+    }
+
+    public function slots() : HasMany|FilamentSpool
+    {
+        return $this->hasMany(PrinterFilamentSlot::class);
     }
 
     /* **************************************** Getters **************************************** */

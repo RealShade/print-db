@@ -1,14 +1,7 @@
 <form id="printJobSpool" method="POST" data-type="modal">
     <div class="mb-3">
         <label for="filament_spool_id" class="form-label">{{ __('filament.spool.title') }}</label>
-        <select class="form-select" id="filament_spool_id" name="filament_spool_id" required>
-            <option value="">{{ __('printer.filament_slot.select_filament_spool') }}</option>
-            @foreach($filamentSpools as $spool)
-                <option value="{{ $spool->id }}" {{ isset($filamentSlot) && $filamentSlot->filament_spool_id == $spool->id ? 'selected' : '' }}>
-                    #{{ $spool->id }} {{ $spool->filament->vendor->name }}, {{ $spool->filament->type->name }}, {{ $spool->filament->name }} ({{ $spool->packaging->name }}, {{ $spool->weight_initial - $spool->weight_used }})
-                </option>
-            @endforeach
-        </select>
+        <x-filament-spool-select :value="$filamentSpool?->filament_spool_id" name="filament_spool_id" required />
     </div>
     <div class="mb-3">
         <label for="weight_used" class="form-label">{{ __('filament.spool.weight_used') }}</label>

@@ -14,6 +14,23 @@ use Illuminate\View\View;
 class FilamentSpoolController extends Controller
 {
     /* **************************************** Public **************************************** */
+    public function archive(FilamentSpool $spool) : JsonResponse
+    {
+        if ($spool->archived) {
+            $spool->update([
+                'archived'    => false,
+                'archived_at' => null,
+            ]);
+        } else {
+            $spool->update([
+                'archived'    => true,
+                'archived_at' => now(),
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function create() : View
     {
         $spool     = null;
@@ -40,8 +57,12 @@ class FilamentSpoolController extends Controller
 
     public function index() : View
     {
-        $spools = FilamentSpool::where('user_id', auth()->id())
-            ->with(['filament', 'packaging'])
+        $query = FilamentSpool::where('user_id', auth()->id())
+            ->with(['filament', 'packaging']);
+        if (!request()->has('archived') || !request()->archived) {
+            $query->where('archived', false);
+        }
+        $spools = $query
             ->orderByDesc('date_last_used')
             ->orderBy('id')
             ->paginate();
@@ -60,9 +81,9 @@ class FilamentSpoolController extends Controller
 
         // Создаем указанное количество катушек
         for ($i = 0; $i < $quantity; $i++) {
-            $spool                 = new FilamentSpool($validatedData);
-            $spool->user_id        = auth()->id();
-            $spool->cost           = $validatedData['cost'] ?? null;
+            $spool          = new FilamentSpool($validatedData);
+            $spool->user_id = auth()->id();
+            $spool->cost    = $validatedData['cost'] ?? null;
             $spool->save();
         }
 
