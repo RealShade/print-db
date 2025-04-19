@@ -4,14 +4,15 @@ namespace App\View\Components;
 
 use App\Models\FilamentSpool;
 use Illuminate\View\Component;
+use Illuminate\View\View;
 
 class FilamentSpoolSelect extends Component
 {
-    public $value;
-    public $name;
-    public $id;
-    public $required;
-    public $spools;
+    public ?int $value;
+    public string $name;
+    public string $id;
+    public bool $required;
+    public array $spools;
 
     /**
      * Create a new component instance.
@@ -30,9 +31,9 @@ class FilamentSpoolSelect extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return View
      */
-    public function render()
+    public function render() : View
     {
         return view('components.filament-spool-select');
     }

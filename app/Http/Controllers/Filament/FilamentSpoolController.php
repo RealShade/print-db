@@ -34,17 +34,16 @@ class FilamentSpoolController extends Controller
     public function create() : View
     {
         $spool     = null;
-        $filaments = $this->getFilaments();
         $packaging = FilamentPackaging::where('user_id', auth()->id())->orderBy('name')->get();
 
-        return view('filament.spools.form', compact('spool', 'filaments', 'packaging'));
+        return view('filament.spools.form', compact('spool', 'packaging'));
     }
 
-    public function destroy(FilamentSpool $spool)
+    public function destroy(FilamentSpool $spool) : JsonResponse
     {
         $spool->delete();
 
-        return redirect(route('filament.spools.index'));
+        return response()->json(['success' => true]);
     }
 
     public function edit(FilamentSpool $spool) : View

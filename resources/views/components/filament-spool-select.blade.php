@@ -4,7 +4,7 @@
         <optgroup label="{{ $vendorName }}">
             @foreach ($vendorSpools as $spoolId => $spoolLabel)
                 <option value="{{ $spoolId }}" {{ $value == $spoolId ? 'selected' : '' }}>
-                    {!! $spoolLabel !!}
+                    {{ $spoolLabel }}
                 </option>
             @endforeach
         </optgroup>

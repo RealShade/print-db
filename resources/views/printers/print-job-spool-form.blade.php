@@ -1,11 +1,11 @@
 <form id="printJobSpool" method="POST" data-type="modal">
     <div class="mb-3">
         <label for="filament_spool_id" class="form-label">{{ __('filament.spool.title') }}</label>
-        <x-filament-spool-select :value="$filamentSpool?->filament_spool_id" name="filament_spool_id" required />
+        <x-filament-spool-select :value="$filamentSpool?->id" name="filament_spool_id" required />
     </div>
     <div class="mb-3">
         <label for="weight_used" class="form-label">{{ __('filament.spool.weight_used') }}</label>
-        <input type="number" class="form-control" id="weight_used" name="weight_used" min="0" required
+        <input type="text" class="form-control" id="weight_used" name="weight_used" required
                value="{{ old('count', $filamentSpool?->pivot->weight_used) ?: 0 }}">
     </div>
 

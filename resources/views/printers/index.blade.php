@@ -80,14 +80,7 @@
                                                     <div>
                                                         <strong>{{ $slot->name }}</strong>
                                                         @if($slot->filamentSpool)
-                                                            <div class="small d-flex">
-                                                                <div class="color-badge me-2" style="background-color: {{ $slot->filamentSpool->filament->colors[0] ?? '' }}; width: 18px; height: 100%; min-height: 36px; border-radius: 3px;"></div>
-                                                                <div>
-                                                                    <span class="card-text small text-muted">#{{ $slot->filamentSpool->id }}</span> {{ $slot->filamentSpool->filament->name }} {{ $slot->filamentSpool->filament->type->name }}
-                                                                    <br>
-                                                                    {{ $slot->filamentSpool->filament->vendor->name }} (<x-number :value="$slot->filamentSpool->weight_remaining" />/{{ $slot->filamentSpool->packaging->weight }})
-                                                                </div>
-                                                            </div>
+                                                            <x-filament-plate :filamentSpool="$slot->filamentSpool" />
                                                         @else
                                                             <div class="small text-muted">{{ __('printer.filament_slot.empty') }}</div>
                                                         @endif
@@ -248,12 +241,8 @@
                                                 <div class="mb-3">
                                                     <div class="d-flex justify-content-between align-items-center">
                                                         <div>
-                                                            <div class="small">
-                                                                <span class="card-text small text-muted">#{{ $spool->id }}</span>
-                                                                {{ $spool->filament->name }} {{ $spool->filament->type->name }}
-                                                                {{ $spool->filament->vendor->name }} (<x-number :value="$spool->weight_remaining" />/{{ $spool->packaging->weight }})
-                                                            </div>
-                                                            <div class="ms-5">
+                                                            <x-filament-plate :filamentSpool="$spool" />
+                                                            <div class="fw-bold">
                                                                 <x-number :value="$spool->pivot->weight_used" />/<x-number :value="$spool->weight_remaining" />
                                                             </div>
                                                         </div>

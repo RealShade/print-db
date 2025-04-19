@@ -8,23 +8,22 @@ use Illuminate\View\Component;
 
 class Number extends Component
 {
-    public $value;
-    public $precision;
-    public $noEmpty = false;
+    public mixed $value;
+    public int  $precision;
+    public bool $isNoEmpty = false;
 
     /**
      * Create a new component instance.
      *
      * @param mixed $value
      * @param int   $precision
-     *
-     * @return void
+     * @param bool  $noEmpty
      */
     public function __construct(mixed $value, int $precision = 2, bool $noEmpty = false)
     {
         $this->value = $value;
         $this->precision = $precision;
-        $this->noEmpty = $noEmpty;
+        $this->isNoEmpty = $noEmpty;
     }
 
     /**
@@ -48,7 +47,7 @@ class Number extends Component
 
     public function noEmpty() : bool
     {
-        return $this->noEmpty;
+        return $this->isNoEmpty;
     }
 
     /**

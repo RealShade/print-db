@@ -18,7 +18,7 @@ class PrintJobFilamentSpoolRequest extends FormRequest
         $filamentSpool = $this->route('filamentSpool');
 
         return $printJob->printer->user_id === auth()->id()
-            && ($filamentSpool === null || $printJob->filamentSpools->contains($filamentSpool));
+            && ($filamentSpool === null || $printJob->spools->contains($filamentSpool));
     }
 
     public function rules() : array
@@ -26,13 +26,7 @@ class PrintJobFilamentSpoolRequest extends FormRequest
         return [
             'filament_spool_id' => [
                 'required',
-                'exists:' . app(FilamentSpool::class)->getTable() . ',id',
-                function($attribute, $value, $fail) {
-                    $filamentSpool = FilamentSpool::find($value);
-                    if ($filamentSpool->user_id !== auth()->id()) {
-                        $fail(__('validation.exists', ['attribute' => __('task.title')]));
-                    }
-                },
+                'exists:App\Models\FilamentSpool,id,user_id,' . auth()->id(),
             ],
             'weight_used'       => 'required|decimal:0,4|min:0.0001',
         ];

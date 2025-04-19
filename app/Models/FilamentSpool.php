@@ -57,11 +57,13 @@ class FilamentSpool extends Model
     /* **************************************** Static **************************************** */
     public static function getForSelect() : array
     {
-        $spools = self::where('user_id', auth()->id())
+        $spools = self::where('filament_spools.user_id', auth()->id())
             ->with(['filament.type', 'filament.vendor', 'packaging'])
+            ->join('filaments', 'filament_spools.filament_id', '=', 'filaments.id')
             ->where('archived', false)
             ->orderByDesc('date_last_used')
-            ->orderBy('id')
+            ->orderBy('filaments.name')
+            ->select('filament_spools.*')
             ->get();
 
         $result = [];

@@ -20,7 +20,7 @@ class PrintJobFilamentSpoolController extends Controller
     {
         $this->resolveFilamentSpool($printJob);
 
-        $filamentSpool         = null;
+        $filamentSpool  = null;
         $filamentSpools = auth()->user()->filamentSpools()->with('filament')->get();
 
         return view('printers.print-job-spool-form', compact('filamentSpools', 'filamentSpool'));
@@ -39,9 +39,7 @@ class PrintJobFilamentSpoolController extends Controller
     {
         $filamentSpool = $this->resolveFilamentSpool($printJob, $filamentSpool);
 
-        $filamentSpools = auth()->user()->filamentSpools()->with('filament')->get();
-
-        return view('printers.print-job-spool-form', compact('filamentSpools', 'filamentSpool'));
+        return view('printers.print-job-spool-form', compact('filamentSpool'));
     }
 
     public function store(PrintJobFilamentSpoolRequest $request, PrintJob $printJob) : JsonResponse
@@ -67,30 +65,7 @@ class PrintJobFilamentSpoolController extends Controller
     }
 
     /* **************************************** Protected **************************************** */
-    protected function getFilamentSpools() : Collection
-    {
-        $table = app(PartTask::class)->getTable();
-
-        return DB::table($table)
-            ->join('tasks', 'tasks.id', '=', $table . '.task_id')
-            ->join('parts', 'parts.id', '=', $table . '.part_id')
-            ->where('tasks.user_id', auth()->id())
-            ->where('tasks.status', '!=', TaskStatus::PRINTED)
-            ->select([
-                $table . '.id',
-                'tasks.id as task_id',
-                'tasks.name as task_name',
-                'parts.id as part_id',
-                'parts.name as part_name',
-                $table . '.count_printed',
-                DB::raw("$table.count_per_set * tasks.count_set_planned as required_count"),
-            ])
-            ->orderByDesc('tasks.id')
-            ->orderBy('parts.name')
-            ->get();
-    }
-
-    protected function resolveFilamentSpool(PrintJob $printJob, ?FilamentSpool $filamentSpool = null) : ?PartTask
+    protected function resolveFilamentSpool(PrintJob $printJob, ?FilamentSpool $filamentSpool = null) : ?FilamentSpool
     {
         // Проверка владельца принтера
         abort_if($printJob->printer->user_id !== auth()->id(), 403);

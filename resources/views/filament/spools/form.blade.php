@@ -6,19 +6,7 @@
                    value="{{ $spool->filament->vendor->name ?? 'н/д' }}, {{ $spool->filament->type->name ?? 'н/д' }}, {{ $spool->filament->name }}"
                    disabled>
         @else
-            <select class="form-select" id="filament_id" name="filament_id" required>
-                <option value="">{{ __('common.select') }}</option>
-                @foreach($filaments as $filament)
-                    <option value="{{ $filament->id }}" {{ old('filament_id', $spool?->filament_id) == $filament->id ? 'selected' : '' }}>
-                        {{ $filament->vendor->name ?? 'н/д' }},
-                        {{ $filament->type->name ?? 'н/д' }},
-                        {{ $filament->name }}
-                        {{--                    @if(!empty($filament->colors))--}}
-                        {{--                        - {{ is_array($filament->colors) ? implode(', ', $filament->colors) : $filament->colors }}--}}
-                        {{--                    @endif--}}
-                    </option>
-                @endforeach
-            </select>
+            <x-filament-select name="filament_id" required />
         @endif
     </div>
     <div class="mb-3">
