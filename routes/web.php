@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HelpController;
+use App\Http\Controllers\Print\CatalogController;
 use App\Http\Controllers\PrinterFilamentSlotController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Filament\FilamentController;
@@ -50,7 +51,7 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     Route::prefix('print')->name('print.')->group(function() {
         // Маршруты для частей (parts)
         Route::get('parts', [PartController::class, 'index'])->name('parts.index');
-        Route::get('parts/create', [PartController::class, 'create'])->name('parts.create');
+        Route::get('parts/{catalog}/create', [PartController::class, 'create'])->name('parts.create');
         Route::post('parts', [PartController::class, 'store'])->name('parts.store');
         Route::get('parts/{part}/edit', [PartController::class, 'edit'])->name('parts.edit');
         Route::put('parts/{part}', [PartController::class, 'update'])->name('parts.update');
@@ -77,6 +78,18 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
             ->name('task-parts.destroy');
         Route::post('task-parts/{partTask}/add-printed', [PartTaskController::class, 'addPrinted'])
             ->name('task-parts.add-printed');
+
+        Route::get('catalogs', [CatalogController::class, 'index'])->name('catalogs.index');
+        Route::get('catalogs/create', [CatalogController::class, 'create'])->name('catalogs.create');
+        Route::get('catalogs/{catalog}/create', [CatalogController::class, 'create'])->name('catalogs.create.with.parent');
+        Route::post('catalogs', [CatalogController::class, 'store'])->name('catalogs.store');
+        Route::get('catalogs/{catalog}', [CatalogController::class, 'show'])->name('catalogs.show');
+        Route::get('catalogs/{catalog}/edit', [CatalogController::class, 'edit'])->name('catalogs.edit');
+        Route::put('catalogs/{catalog}', [CatalogController::class, 'update'])->name('catalogs.update');
+        Route::delete('catalogs/{catalog}', [CatalogController::class, 'destroy'])->name('catalogs.destroy');
+
+        Route::get('catalogs/{catalog}/parts', [CatalogController::class, 'parts'])->name('catalogs.parts');
+        Route::post('catalogs/{catalog}/parts', [PartController::class, 'store'])->name('catalogs.parts.store');
     });
 
     Route::prefix('filament')->name('filament.')->group(function() {

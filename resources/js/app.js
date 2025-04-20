@@ -7,6 +7,7 @@ import '@simonwep/pickr/dist/themes/classic.min.css';
 
 window.Swal = Swal;
 window.Pickr = Pickr;
+window.Cookies = Cookies;
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle
     const togglePassword = document.querySelector('.toggle-password');
@@ -309,9 +310,49 @@ function initToggleRows(options = {}) {
     });
 }
 
+function initCatalogTree() {
+    document.querySelectorAll('.toggle-catalog').forEach(button => {
+        const id = button.dataset.id;
+        const childrenContainer = document.querySelector(`.catalog-children[data-parent-id="${id}"]`);
+        const cookieName = `catalog_expanded_${id}`;
+        const isExpanded = Cookies.get(cookieName);
+
+        if (!childrenContainer) return;
+
+        if (isExpanded === '1') {
+            childrenContainer.classList.remove('d-none');
+            button.querySelector('.toggle-icon').classList.remove('bi-chevron-right');
+            button.querySelector('.toggle-icon').classList.add('bi-chevron-down');
+        }
+
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const icon = this.querySelector('.toggle-icon');
+            if (!icon) return;
+
+            childrenContainer.classList.toggle('d-none');
+            icon.classList.toggle('bi-chevron-right');
+            icon.classList.toggle('bi-chevron-down');
+
+            if (!childrenContainer.classList.contains('d-none')) {
+                Cookies.set(cookieName, '1', {expires: 30});
+            } else {
+                Cookies.remove(cookieName);
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initCatalogTree();
+});
+
 // Добавьте в блок обработки события modalContentLoaded
 document.addEventListener('modalContentLoaded', function() {
     initFilamentForm();
+    initCatalogTree();
 });
 
 // Инициализация при прямой загрузке формы
@@ -321,3 +362,4 @@ document.addEventListener('modalContentLoaded', function() {
 
 window.initToggleRows = initToggleRows;
 window.initFilamentForm = initFilamentForm;
+window.initCatalogTree = initCatalogTree;

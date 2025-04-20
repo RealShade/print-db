@@ -387,4 +387,30 @@ a:hover {
   font-size: 0.5em;
   vertical-align: text-top;
 }
+/* Стили для дерева каталогов */
+.catalog-tree .list-group-item {
+  border: none;
+  padding: 0.5rem 0;
+  background: transparent;
+}
+.catalog-tree .catalog-children {
+  margin-left: 1rem;
+  border-left: 1px solid #dee2e6;
+}
+/* Убираем margin у последнего вложенного списка */
+.catalog-tree .catalog-children:last-child {
+  margin-bottom: 0;
+}
+/* Стили для правой панели */
+.parts-panel {
+  padding: 0;
+}
+.parts-panel .card-body {
+  padding: 0;
+}
+/* Стиль для активного каталога */
+.catalog-item-link.active {
+  font-weight: bold;
+  color: #0d6efd;
+}
 

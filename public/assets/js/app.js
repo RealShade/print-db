@@ -5214,6 +5214,7 @@ __webpack_require__.r(__webpack_exports__);
 
 window.Swal = (sweetalert2__WEBPACK_IMPORTED_MODULE_0___default());
 window.Pickr = (_simonwep_pickr__WEBPACK_IMPORTED_MODULE_3___default());
+window.Cookies = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"];
 document.addEventListener('DOMContentLoaded', function () {
   // Password toggle
   var togglePassword = document.querySelector('.toggle-password');
@@ -5484,10 +5485,44 @@ function initToggleRows() {
     });
   });
 }
+function initCatalogTree() {
+  document.querySelectorAll('.toggle-catalog').forEach(function (button) {
+    var id = button.dataset.id;
+    var childrenContainer = document.querySelector(".catalog-children[data-parent-id=\"".concat(id, "\"]"));
+    var cookieName = "catalog_expanded_".concat(id);
+    var isExpanded = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(cookieName);
+    if (!childrenContainer) return;
+    if (isExpanded === '1') {
+      childrenContainer.classList.remove('d-none');
+      button.querySelector('.toggle-icon').classList.remove('bi-chevron-right');
+      button.querySelector('.toggle-icon').classList.add('bi-chevron-down');
+    }
+    button.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var icon = this.querySelector('.toggle-icon');
+      if (!icon) return;
+      childrenContainer.classList.toggle('d-none');
+      icon.classList.toggle('bi-chevron-right');
+      icon.classList.toggle('bi-chevron-down');
+      if (!childrenContainer.classList.contains('d-none')) {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].set(cookieName, '1', {
+          expires: 30
+        });
+      } else {
+        js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].remove(cookieName);
+      }
+    });
+  });
+}
+document.addEventListener('DOMContentLoaded', function () {
+  initCatalogTree();
+});
 
 // Добавьте в блок обработки события modalContentLoaded
 document.addEventListener('modalContentLoaded', function () {
   (0,_filament_form__WEBPACK_IMPORTED_MODULE_4__.initFilamentForm)();
+  initCatalogTree();
 });
 
 // Инициализация при прямой загрузке формы
@@ -5497,6 +5532,7 @@ document.addEventListener('modalContentLoaded', function () {
 
 window.initToggleRows = initToggleRows;
 window.initFilamentForm = _filament_form__WEBPACK_IMPORTED_MODULE_4__.initFilamentForm;
+window.initCatalogTree = initCatalogTree;
 
 /***/ }),
 

@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('print.parts.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
+                    <a href="{{ route('print.catalogs.index') }}" class="nav-link {{ request()->is('print/parts') ? 'active' : 'text-white' }}">
                         <img src="{{ asset('images/menu/model.svg') }}" alt="Models">
                         {{ __('menu.parts') }}
                     </a>

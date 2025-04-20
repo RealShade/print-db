@@ -4,6 +4,17 @@ namespace App\Http\Requests\Print;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/** * Class PartRequest
+ *
+ * @package App\Http\Requests\Print
+ *
+ * @property string $name
+ * @property string $version
+ * @property string $version_date
+ * @property int    $catalog_id
+ * @property int    $part
+ */
 class PartRequest extends FormRequest
 {
     /* **************************************** Public **************************************** */
@@ -37,6 +48,7 @@ class PartRequest extends FormRequest
             'version'      => 'nullable|string|max:50',
             'version_date' => 'nullable|date',
             'part'         => 'nullable|exists:parts,id,user_id,' . auth()->id(),
+            'catalog_id'   => 'required|exists:catalogs,id,user_id,' . auth()->id(),
         ];
     }
 

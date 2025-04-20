@@ -60,9 +60,19 @@ class User extends Authenticatable
         return $this->hasMany(ApiToken::class);
     }
 
-    public function filamentSpools() : User|HasMany
+    public function catalogs() : HasMany
+    {
+        return $this->hasMany(Catalog::class);
+    }
+
+    public function filamentSpools() : HasMany
     {
         return $this->hasMany(FilamentSpool::class);
+    }
+
+    public function parts() : HasMany
+    {
+        return $this->hasMany(Part::class);
     }
 
     public function printers() : HasMany
