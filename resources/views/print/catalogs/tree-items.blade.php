@@ -1,5 +1,5 @@
 @foreach($catalogs as $catalog)
-    <li class="list-group-item catalog-item border-0">
+    <li class="list-group-item catalog-item">
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 @if($catalog->children->count() > 0)
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <ul class="list-group catalog-children d-none border-0" data-parent-id="{{ $catalog->id }}">
+        <ul class="list-group catalog-children d-none" data-parent-id="{{ $catalog->id }}">
             @include('print.catalogs.tree-items', ['catalogs' => $catalog->children])
         </ul>
     </li>

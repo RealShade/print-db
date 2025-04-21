@@ -18,7 +18,7 @@
                         </button>
                     </div>
                     <div class="card-body pt-0">
-                        <ul class="list-group catalog-tree border-0">
+                        <ul class="list-group catalog-tree">
                             @include('print.catalogs.tree-items', ['catalogs' => $rootCatalogs])
                         </ul>
                     </div>

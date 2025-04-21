@@ -400,8 +400,9 @@ a:hover {
   background: transparent;
 }
 .catalog-tree .catalog-children {
-  margin-left: 0.7rem;
-  border-left: 1px solid #DEE2E6;
+  margin-left: 0.5rem;
+  border-left: 1px solid #007BFF;
+  border-top-left-radius: 0;
 }
 .catalog-tree .catalog-children:last-child {
   margin-bottom: 0;

@@ -50,6 +50,7 @@ class CatalogController extends Controller
         $rootCatalogs = Catalog::with(['children.parts', 'parts'])
             ->where('user_id', Auth::id())
             ->whereNull('parent_id')
+            ->orderBy('name')
             ->get();
 
         return view('print.catalogs.index', compact('rootCatalogs'));
