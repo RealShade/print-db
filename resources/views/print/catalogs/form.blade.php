@@ -16,16 +16,16 @@
                            || isset($parent) && $parent->id == $cat->id)
                             selected
                     @endif>
-                    {{ $cat->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
+              @if($cat->parent){{ $cat->getFullCatalogPath() }} /@endif {{ $cat->name }}
+</option>
+@endforeach
+</select>
+</div>
 
-    <div class="alert alert-danger d-none" id="formErrors"></div>
+<div class="alert alert-danger d-none" id="formErrors"></div>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">{{ __('common.buttons.save') }}</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
-    </div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary">{{ __('common.buttons.save') }}</button>
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
+</div>
 </form>

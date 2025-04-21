@@ -396,11 +396,11 @@ a:hover {
 /* Стили для дерева каталогов */
 .catalog-tree .list-group-item {
   border: none;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0 0;
   background: transparent;
 }
 .catalog-tree .catalog-children {
-  margin-left: 1rem;
+  margin-left: 0.7rem;
   border-left: 1px solid #DEE2E6;
 }
 .catalog-tree .catalog-children:last-child {
