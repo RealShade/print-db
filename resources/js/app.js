@@ -345,6 +345,42 @@ function initCatalogTree() {
     });
 }
 
+function initSelectPartDropdown() {
+    const dropdownInputs = document.querySelectorAll('.custom-select-dropdown .form-control');
+    dropdownInputs.forEach(dropdownInput => {
+        const hiddenInput = dropdownInput.closest('.custom-select-dropdown').querySelector('input[type="hidden"]');
+        const clearButton = dropdownInput.closest('.custom-select-dropdown').querySelector('.btn-clear-input');
+        const dropdownItems = dropdownInput.closest('.custom-select-dropdown').querySelectorAll('.dropdown-item');
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const selectedText = this.querySelector('strong').textContent;
+                const selectedId = this.dataset.id;
+
+                // Устанавливаем выбранное значение
+                dropdownInput.value = selectedText;
+                hiddenInput.value = selectedId;
+
+                // Закрываем выпадающий список
+                const dropdownMenu = this.closest('.dropdown-menu');
+                dropdownMenu.classList.remove('show');
+            });
+        });
+
+        // Очищаем значения при нажатии на кнопку очистки
+        clearButton.addEventListener('click', function() {
+            dropdownInput.value = '';
+            hiddenInput.value = '';
+        });
+
+        // Предотвращаем фокусировку текстового поля
+        dropdownInput.addEventListener('focus', function(event) {
+            event.target.blur();
+        });
+    });
+};
+
+
 document.addEventListener('DOMContentLoaded', function() {
     initCatalogTree();
 });
@@ -353,6 +389,9 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('modalContentLoaded', function() {
     initFilamentForm();
     initCatalogTree();
+
+    // Инициализируем dropdown для select-part
+    initSelectPartDropdown();
 });
 
 // Инициализация при прямой загрузке формы

@@ -108,7 +108,14 @@ main {
     }
 
     .table-count {
-        max-width: 8ch;
+        max-width: 6ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table-count_two {
+        max-width: 14ch;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -490,34 +497,91 @@ a {
 }
 
 /* Стили для дерева каталогов */
-.catalog-tree .list-group-item {
-    border: none;
-    padding: 0.5rem 0;
-    background: transparent;
-}
+.catalog-tree {
+    .list-group-item {
+        border: none;
+        padding: 0.5rem 0;
+        background: transparent;
+    }
 
-.catalog-tree .catalog-children {
-    margin-left: 1rem;
-    border-left: 1px solid #dee2e6;
-    //padding-left: 0.5rem;
-}
+    .catalog-children {
+        margin-left: 1rem;
+        border-left: 1px solid #DEE2E6;
+        //padding-left: 0.5rem;
 
-/* Убираем margin у последнего вложенного списка */
-.catalog-tree .catalog-children:last-child {
-    margin-bottom: 0;
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
 }
 
 /* Стили для правой панели */
 .parts-panel {
     padding: 0;
-}
 
-.parts-panel .card-body {
-    padding: 0;
+    .card-body {
+        padding: 0;
+    }
 }
 
 /* Стиль для активного каталога */
-.catalog-item-link.active {
-    font-weight: bold;
-    color: #0d6efd;
+.catalog-item-link {
+    color: @text-color;
+
+    &.active {
+        font-weight: bold;
+    }
+}
+
+.custom-select-dropdown {
+    .dropdown-group {
+        font-weight: bold;
+        padding: 10px 15px;
+        //background-color: @color-header;
+    }
+
+    .dropdown-menu {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .dropdown-item {
+        white-space: normal; // Позволяем перенос строк
+        line-height: 1.2;
+        padding: 10px 15px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+
+        &:hover {
+            background-color: lighten(@primary-bg, 10%);
+            color: lighten(@text-color, 10%);
+        }
+    }
+
+    .dropdown-item small {
+        //color: @placeholder-color; // Цвет для текста описания
+    }
+}
+
+.input-container {
+    position: relative;
+
+    .form-control {
+        padding-right: 40px; // Делает пространство для крестика
+    }
+
+    .btn-clear-input {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--bs-body-color); // Использовать подходящий цвет
+        cursor: pointer;
+        font-size: 1.2rem;
+
+        &:hover {
+            //color: @red-color; // Цвет при наведении
+        }
+    }
 }

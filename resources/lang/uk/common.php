@@ -10,13 +10,14 @@ return [
         'back'    => 'Назад',
         'delete'  => 'Видалити',
         'confirm' => 'Підтвердити',
+        'clear'   => 'Очистити',
     ],
     'status'            => 'Статус',
     'name'              => 'Назва',
     'quantity'          => 'Кількість',
     'validation_errors' => 'Помилки валідації',
-    'error'            => [
+    'error'             => [
         'something_went_wrong' => 'Виникла помилка при виконанні дії',
     ],
-    'select' => '- оберіть -',
+    'select'            => '- оберіть -',
 ];

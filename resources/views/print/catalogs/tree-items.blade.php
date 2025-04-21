@@ -13,18 +13,18 @@
                    data-catalog-id="{{ $catalog->id }}"
                    data-catalog-name="{{ $catalog->name }}">
                     {{ $catalog->name }}
-                    <span class="badge bg-secondary rounded-pill">{{ $catalog->parts->count() }}</span>
+                    <span class="badge bg-primary rounded-pill">{{ $catalog->parts->count() }}</span>
                 </a>
             </div>
             <div class="catalog-actions btn-group">
-                <button class="btn btn-sm btn-primary"
+                <button class="btn btn-sm btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#catalogModal"
                         data-action="{{ route('print.catalogs.store') }}"
                         data-create-route="{{ route('print.catalogs.create.with.parent', $catalog) }}">
                     <i class="bi bi-plus-lg"></i>
                 </button>
-                <button class="btn btn-sm btn-secondary"
+                <button class="btn btn-sm btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#catalogModal"
                         data-action="{{ route('print.catalogs.update', $catalog) }}"

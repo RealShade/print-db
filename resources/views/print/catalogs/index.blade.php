@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="container-fluid">
+        <h1>{{ __('part.catalog.titles') }}</h1>
         <div class="row">
             <!-- Дерево каталогов (левая часть) -->
             <div class="col-md-4">
@@ -30,7 +31,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 id="current-catalog-name">{{ __('part.catalog.select_catalog') }}</h5>
                         <div id="catalog-actions" class="d-none">
-                            <button class="btn btn-sm btn-primary"
+                            <button class="btn btn-sm btn-success"
                                     data-bs-toggle="modal"
                                     data-bs-target="#partModal"
                                     id="add-part-button"

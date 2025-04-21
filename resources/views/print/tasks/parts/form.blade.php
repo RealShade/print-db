@@ -8,15 +8,12 @@
     @endif
     <div class="mb-3">
         @if(empty($part))
-            <label class="form-label">{{ __('common.model') }}</label>
-            <select class="form-select" name="part_id" required>
-                <option value="">{{ __('task.model_select') }}</option>
-                @foreach($parts as $model)
-                    <option value="{{ $model->id }}">
-                        #{{ $model->id }} {{ $model->name }} ({{ $model->version }}{{ $model->version_date ? $model->version_date->format('d.m.Y') : ""}})
-                    </option>
-                @endforeach
-            </select>
+            <label class="form-label">{{ __('part.name_full') }}</label>
+            <x-select-part
+                name="part_id"
+                :parts="$parts"
+                required="true"
+            />
         @else
             <div class="mb-3">
                 <label class="form-label">{{ __('part.name_full') }}</label>

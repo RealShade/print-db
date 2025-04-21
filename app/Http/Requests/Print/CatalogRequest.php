@@ -2,29 +2,77 @@
 
 namespace App\Http\Requests\Print;
 
+use App\Models\Catalog;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
+/**
+ * @property mixed $parent_id
+ */
 class CatalogRequest extends FormRequest
 {
-    public function authorize(): bool
+    /* **************************************** Public **************************************** */
+    public function authorize() : bool
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules() : array
     {
         $rules = [
-            'name' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'integer', 'exists:catalogs,id'],
+            'name'      => ['required', 'string', 'max:255'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                'exists:catalogs,id,user_id,' . auth()->id(),
+                function($attribute, $value, $fail) {
+                    // Если это обновление существующего каталога
+                    if ($this->route('catalog')) {
+                        $catalogId = $this->route('catalog')->id;
+
+                        // Проверка, что parent_id не равен ID текущего каталога
+                        if ($value == $catalogId) {
+                            $fail('Каталог не может быть родительским для самого себя.');
+
+                            return;
+                        }
+
+                        // Проверка на дочерние каталоги
+                        if ($this->isChildCatalog($value, $catalogId)) {
+                            $fail('Нельзя выбрать дочерний каталог в качестве родительского.');
+                        }
+                    }
+                },
+            ],
         ];
 
-        // Проверяем, что родитель не является потомком текущего каталога
-        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
-            $catalogId = $this->route('catalog')->id;
-            $rules['parent_id'][] = "not_in:{$catalogId}";
+        return $rules;
+    }
+
+    /* **************************************** Protected **************************************** */
+    /**
+     * Проверяет, является ли каталог дочерним для указанного каталога
+     *
+     * @param int $potentialParentId ID проверяемого родительского каталога
+     * @param int $catalogId         ID текущего каталога
+     *
+     * @return bool
+     */
+    protected function isChildCatalog(int $potentialParentId, int $catalogId) : bool
+    {
+        // Получаем все дочерние каталоги текущего каталога
+        $childCatalogs = Catalog::where('parent_id', $catalogId)->pluck('id')->toArray();
+
+        if (in_array($potentialParentId, $childCatalogs)) {
+            return true;
         }
 
-        return $rules;
+        // Рекурсивно проверяем дочерние каталоги
+        foreach ($childCatalogs as $childId) {
+            if ($this->isChildCatalog($potentialParentId, $childId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

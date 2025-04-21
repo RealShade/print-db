@@ -39,4 +39,37 @@ class Part extends Model
             ->withTimestamps();
     }
 
+    /* **************************************** Getters **************************************** */
+    /**
+     * Получить полный путь к каталогу детали
+     *
+     * @param int|null $maxDepth Максимальная глубина (null = без ограничений)
+     *
+     * @return string
+     */
+    public function getFullCatalogPath($maxDepth = null)
+    {
+        if (!$this->catalog) {
+            return '';
+        }
+
+        $path           = [];
+        $currentCatalog = $this->catalog;
+        $depth          = 0;
+
+        // Собираем путь снизу вверх
+        while ($currentCatalog && ($maxDepth === null || $depth < $maxDepth)) {
+            array_unshift($path, $currentCatalog->name);
+            $currentCatalog = $currentCatalog->parent;
+            $depth++;
+        }
+
+        // Если путь был обрезан
+        if ($maxDepth !== null && $currentCatalog && $currentCatalog->parent) {
+            return '... / ' . implode(' / ', $path);
+        }
+
+        return implode(' / ', $path);
+    }
+
 }

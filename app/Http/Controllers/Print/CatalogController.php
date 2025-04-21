@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class CatalogController extends Controller
 {
 
-    public function authorize()
-    {
-        return Auth::check();
-    }
-
     /* **************************************** Public **************************************** */
     public function create(?Catalog $catalog)
     {
@@ -32,8 +27,6 @@ class CatalogController extends Controller
 
     public function destroy(Catalog $catalog)
     {
-        $this->authorize('delete', $catalog);
-
         $catalog->delete();
 
         return response()->json([
@@ -44,8 +37,6 @@ class CatalogController extends Controller
 
     public function edit(Catalog $catalog)
     {
-        $this->authorize('update', $catalog);
-
         $catalogs = Catalog::where('user_id', Auth::id())
             ->where('id', '!=', $catalog->id)
             ->whereNotIn('id', $this->getAllChildrenIds($catalog))
@@ -78,8 +69,6 @@ class CatalogController extends Controller
 
     public function update(CatalogRequest $request, Catalog $catalog)
     {
-        $this->authorize('update', $catalog);
-
         $catalog->update($request->validated());
 
         return response()->json([

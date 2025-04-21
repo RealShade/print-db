@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>{{ __('filament.spool.title') }}</h1>
             <button type="button"
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     data-bs-toggle="modal"
                     data-bs-target="#spoolModal"
                     data-action="{{ route('filament.spools.store') }}"

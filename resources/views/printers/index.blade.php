@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>{{ __('printer.title') }}</h1>
             <button type="button"
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     data-bs-toggle="modal"
                     data-bs-target="#printerModal"
                     data-action="{{ route('printers.store') }}"
@@ -62,7 +62,7 @@
                             <div class="mt-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
                                     <h6 class="mb-0">{{ __('printer.filament_slot.title') }}:</h6>
-                                    <button type="button" class="btn btn-sm btn-primary"
+                                    <button type="button" class="btn btn-sm btn-success"
                                             data-bs-toggle="modal"
                                             data-bs-target="#filamentSlotModal"
                                             data-action="{{ route('filament-slot.store', $printer) }}"
@@ -122,7 +122,7 @@
                             <div class="mt-3">
                                 @if($printer->activeJobs->isEmpty())
                                     <div>
-                                        <button type="button" class="btn btn-primary w-100"
+                                        <button type="button" class="btn btn-success w-100"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#printJobModal"
                                                 data-action="{{ route('print-job.store', $printer) }}"
@@ -149,7 +149,7 @@
                                                             data-cancel-button="{{ __('common.buttons.cancel') }}">
                                                         <i class="bi bi-check"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-sm btn-primary"
+                                                    <button type="button" class="btn btn-sm btn-success"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#printJobPartTaskModal"
                                                             data-action="{{ route('print-job.task.store', $printJob) }}"
@@ -228,7 +228,7 @@
                                             <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
                                                 <h6 class="mb-0">{{ __('printer.filament_slot.title') }}:</h6>
                                                 <div class="btn-group">
-                                                    <button type="button" class="btn btn-sm btn-primary"
+                                                    <button type="button" class="btn btn-sm btn-success"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#printJobSpoolModal"
                                                             data-action="{{ route('print-job.spool.store', $printJob) }}"

@@ -5,7 +5,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>{{ __('task.title') }}</h1>
             <button type="button"
-                    class="btn btn-primary"
+                    class="btn btn-success"
                     data-bs-toggle="modal"
                     data-bs-target="#taskModal"
                     data-action="{{ route('print.tasks.store') }}"
@@ -23,8 +23,8 @@
                     <th class="table-status">{{ __('common.status') }}</th>
                     <th class="table-date">{{ __('task.created_at') }}</th>
                     <th>{{ __('common.name') }}<br>{{ __('task.external_id') }}</th>
-                    <th class="text-end table-count">{{ __('task.count_set_planned') }}</th>
-                    <th class="text-end table-count">{{ __('task.parts_count') }}</th>
+                    <th class="text-end table-count_two">{{ __('task.count_set_planned') }}</th>
+                    <th class="text-end table-count_two">{{ __('task.parts_count') }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -85,12 +85,11 @@
                                     <th></th>
                                     <th class="text-end table-id">ID</th>
                                     <th>{{ __('common.name') }}</th>
-                                    <th>{{ __('part.version') }}</th>
                                     <th class="text-end table-count">{{ __('task.count_per_set') }}</th>
-                                    <th class="text-end table-count">{{ __('task.printing_count') }}</th>
-                                    <th class="text-end table-count">{{ __('task.count_printed') }}</th>
+                                    <th class="text-end table-count_two">{{ __('task.printing_count') }}</th>
+                                    <th class="text-end table-count_two">{{ __('task.count_printed') }}</th>
                                     <th class="text-end">
-                                        <button type="button" class="btn btn-sm btn-primary"
+                                        <button type="button" class="btn btn-sm btn-success"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#partTaskModal"
                                                 data-action="{{ route('print.task-parts.store', $task) }}"
@@ -105,20 +104,23 @@
                                     <tr>
                                         <td class="ps-4"></td>
                                         <td class="text-end table-id">{{ $part->id }}</td>
-                                        <td>{{ $part->name }}</td>
-                                        <td>{{ $part->version }}</td>
-                                        <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
-                                        <td class="text-end table-count">
+                                        <td>
                                             @if($part->pivot->count_printing > 0)
                                                 <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
                                                     <i class="bi bi-printer"></i>
                                                 </span>
                                             @endif
+                                            {{ $part->name }}
+                                            <span class="small text-muted">{{ $part->version }}@if($part->version_date), {{ $part->version_date->format('d.m.Y') }}@endif</span>
+                                            <div class="small text-muted">{{ $part->getFullCatalogPath() }}</div>
+                                        </td>
+                                        <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
+                                        <td class="text-end table-count_two">
                                             <span @if ($part->pivot->count_printed + $part->pivot->count_printing >= $part->pivot->count_planned) class="count-complete" @endif>
                                                 {{ $part->pivot->count_printing }}/{{ $part->pivot->count_remaining }}
                                             </span>
                                         </td>
-                                        <td class="text-end table-count">
+                                        <td class="text-end table-count_two">
                                             <span @if ($part->pivot->count_printed >= $part->pivot->count_planned) class="count-complete" @endif>
                                                 {{ $part->pivot->count_printed }}/{{ $part->pivot->count_planned }}
                                             </span>
