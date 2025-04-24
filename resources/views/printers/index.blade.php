@@ -133,7 +133,7 @@
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="d-flex justify-content-between align-items-center rounded">
-                                                {{ $printJob->filename }}
+                                                <span title="{{ $printJob->filename }}">{{ pathinfo(basename($printJob->filename), PATHINFO_FILENAME) }}</span>
                                                 <div class="btn-group" data-hover-target="card">
                                                     <button class="btn btn-sm btn-success"
                                                             data-transport="ajax"
