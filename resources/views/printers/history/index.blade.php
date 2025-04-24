@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h1>{{ __('printers.history.title') }}</h1>
+        <h1>{{ __('printer.history.title') }}</h1>
 
         {{ $printJobs->links() }}
         <div class="table-responsive">

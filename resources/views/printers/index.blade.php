@@ -20,9 +20,11 @@
                     <div class="card h-100" data-hover="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="badge badge-{{ strtolower($printer->status->value()) }} me-2">
-                                    {{ $printer->status->label() }}
-                                </span>
+                                <span class="card-text small text-muted">#{{ $printer->id }}</span>
+                                <strong>{{ $printer->name }}</strong>
+                                {{--                                <span class="badge badge-{{ strtolower($printer->status->value()) }} me-2">--}}
+                                {{--                                    {{ $printer->status->label() }}--}}
+                                {{--                                </span>--}}
                                 @if($printer->activeJobs->isNotEmpty())
                                     <span class="badge badge-printing" title="{{ __('printer.status.printing') }}">
                                         <i class="bi bi-printer"></i>
@@ -53,23 +55,19 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <h6 class="card-title"><span class="card-text small text-muted">#{{ $printer->id }}</span>
-                                <strong>{{ $printer->name }}</strong></h6>
-                            <!-- Загруженный филамент -->
-                            <div class="mt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
-                                    <h6 class="mb-0">{{ __('printer.filament_slot.title') }}:</h6>
+                            <div>
+                                @if($printer->filamentSlots->isEmpty())
                                     <div data-hover-target="card">
-                                        <button type="button" class="btn btn-sm btn-success"
+                                        <button type="button" class="btn btn-success w-100"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#filamentSlotModal"
                                                 data-action="{{ route('filament-slot.store', $printer) }}"
                                                 data-create-route="{{ route('filament-slot.create', $printer) }}"
                                                 data-printer-id="{{ $printer->id }}">
-                                            <i class="bi bi-plus-lg"></i>
+                                            <i class="bi bi-plus-lg"></i> {{ __('printer.add_slot') }}
                                         </button>
                                     </div>
-                                </div>
+                                @endif
 
                                 @if($printer->filamentSlots->isNotEmpty())
                                     <ul class="list-group list-group-flush mb-3">
@@ -110,8 +108,6 @@
                                             </li>
                                         @endforeach
                                     </ul>
-                                @else
-                                    <p class="text-muted small">{{ __('printer.filament_slot.none') }}</p>
                                 @endif
                             </div>
 

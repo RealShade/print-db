@@ -59,7 +59,7 @@ main {
   color: #F8F9FA;
 }
 .table thead th {
-  color: #ffffff;
+  color: #007BFF;
   vertical-align: middle;
 }
 .table tbody tr td {
@@ -462,5 +462,10 @@ a:hover {
 }
 .hover-show {
   opacity: 1 !important;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #007BFF;
 }
 

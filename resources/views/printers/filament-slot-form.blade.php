@@ -22,7 +22,7 @@
 
     <div class="mb-3">
         <label for="filament_spool_id" class="form-label">{{ __('printer.filament_slot.filament_spool') }}</label>
-        <x-filament-spool-select :value="$filamentSlot?->filament_spool_id" name="filament_spool_id" required />
+        <x-filament-spool-select :value="$filamentSlot?->filament_spool_id" name="filament_spool_id" />
         <div class="form-text">{{ __('printer.filament_slot.filament_spool_hint') }}</div>
     </div>
 

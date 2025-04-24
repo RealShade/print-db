@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>{{ __('filament.packaging_type.title') }}</h1>
+            <h1>{{ __('filament.packaging.title') }}</h1>
             <button type="button"
                     class="btn btn-success"
                     data-bs-toggle="modal"

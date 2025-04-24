@@ -21,8 +21,9 @@
                 <i class="bi bi-x-lg"></i>
             </button>
             <a href="/" class="d-flex align-items-center mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4">Print DB</span>
+                <span class="fs-4"><strong>Print DB</strong></span>
             </a>
+            <div class="text-muted small">by <a href="https://t.me/realshade" target=_blank>realshade</a></div>
         </div>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto menu">
