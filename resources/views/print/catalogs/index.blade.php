@@ -6,7 +6,7 @@
         <div class="row">
             <!-- Дерево каталогов (левая часть) -->
             <div class="col-md-4">
-                <div class="card">
+                <div class="card" data-hover="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5>{{ __('part.catalog.titles') }}</h5>
                         <button type="button" class="btn btn-sm btn-success"
@@ -233,6 +233,7 @@
 
                         // Показываем действия с каталогом
                         document.getElementById('catalog-actions').classList.remove('d-none');
+                        document.dispatchEvent(new Event('modalContentLoaded'));
                     });
             }
 

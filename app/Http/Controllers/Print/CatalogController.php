@@ -27,6 +27,13 @@ class CatalogController extends Controller
 
     public function destroy(Catalog $catalog)
     {
+        // Проверяем, есть ли у каталога дочерние каталоги или детали
+        if ($catalog->children()->exists() || $catalog->parts()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => __('part.catalog.cannot_delete'),
+            ], 412);
+        }
         $catalog->delete();
 
         return response()->json([

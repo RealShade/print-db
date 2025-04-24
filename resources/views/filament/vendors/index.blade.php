@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" data-hover="card">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -41,28 +41,28 @@
                         <td>{{ $vendor->comment }}</td>
                         <td class="text-center">{{ $vendor->filaments->count() }}</td>
                         <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#vendorModal"
-                                    data-action="{{ route('filament.vendors.update', $vendor) }}"
-                                    data-edit-route="{{ route('filament.vendors.edit', $vendor) }}"
-                                    data-method="PUT"
-                                    data-id="{{ $vendor->id }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <form action="{{ route('filament.vendors.destroy', $vendor) }}"
-                                  method="POST"
-                                  class="d-inline-block confirm-delete"
-                                  data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament.vendor.action.delete.confirm') }}"
-                                  data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                  data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">
+                            <div class="btn-group" data-hover-target="card">
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#vendorModal"
+                                        data-action="{{ route('filament.vendors.update', $vendor) }}"
+                                        data-edit-route="{{ route('filament.vendors.edit', $vendor) }}"
+                                        data-method="PUT"
+                                        data-id="{{ $vendor->id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-transport="ajax"
+                                        data-action="{{ route('filament.vendors.destroy', $vendor) }}"
+                                        data-method="DELETE"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                        data-confirm-text="{{ __('filament.vendor.action.delete.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
-                            </form>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

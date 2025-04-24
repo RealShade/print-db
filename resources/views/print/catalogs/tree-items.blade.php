@@ -16,7 +16,7 @@
                     <span class="badge bg-primary rounded-pill">{{ $catalog->parts->count() }}</span>
                 </a>
             </div>
-            <div class="catalog-actions btn-group">
+            <div class="catalog-actions btn-group" data-hover-target="card">
                 <button class="btn btn-sm btn-success"
                         data-bs-toggle="modal"
                         data-bs-target="#catalogModal"
@@ -32,6 +32,17 @@
                         data-method="PUT"
                         data-id="{{ $catalog->id }}">
                     <i class="bi bi-pencil"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-danger"
+                        data-transport="ajax"
+                        data-action="{{ route('print.catalogs.destroy', $catalog) }}"
+                        data-method="DELETE"
+                        data-confirm="true"
+                        data-confirm-title="{{ __('common.confirm.delete.title') }}"
+                        data-confirm-text="{{ __('common.confirm.delete.text') }}?"
+                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
         </div>

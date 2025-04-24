@@ -5471,7 +5471,9 @@ function initToggleRows() {
         return;
       }
       var icon = this.querySelector('i.toggle-icon');
-      if (!icon) return;
+      if (!icon) {
+        return;
+      }
       row.classList.toggle('d-none');
       icon.classList.toggle('bi-chevron-right');
       icon.classList.toggle('bi-chevron-down');
@@ -5491,7 +5493,9 @@ function initCatalogTree() {
     var childrenContainer = document.querySelector(".catalog-children[data-parent-id=\"".concat(id, "\"]"));
     var cookieName = "catalog_expanded_".concat(id);
     var isExpanded = js_cookie__WEBPACK_IMPORTED_MODULE_1__["default"].get(cookieName);
-    if (!childrenContainer) return;
+    if (!childrenContainer) {
+      return;
+    }
     if (isExpanded === '1') {
       childrenContainer.classList.remove('d-none');
       button.querySelector('.toggle-icon').classList.remove('bi-chevron-right');
@@ -5501,7 +5505,9 @@ function initCatalogTree() {
       e.preventDefault();
       e.stopPropagation();
       var icon = this.querySelector('.toggle-icon');
-      if (!icon) return;
+      if (!icon) {
+        return;
+      }
       childrenContainer.classList.toggle('d-none');
       icon.classList.toggle('bi-chevron-right');
       icon.classList.toggle('bi-chevron-down');
@@ -5548,15 +5554,34 @@ function initSelectPartDropdown() {
     });
   });
 }
-;
+function initHoverControls() {
+  // Обработчики событий для элементов с атрибутом data-hover
+  document.querySelectorAll('[data-hover]').forEach(function (parent) {
+    var hoverIdentifier = parent.dataset.hover;
+    parent.addEventListener('mouseenter', function () {
+      // Ищем только внутри текущего родительского элемента
+      parent.querySelectorAll("[data-hover-target=\"".concat(hoverIdentifier, "\"]")).forEach(function (control) {
+        control.classList.add('hover-show');
+      });
+    });
+    parent.addEventListener('mouseleave', function () {
+      // Ищем только внутри текущего родительского элемента
+      parent.querySelectorAll("[data-hover-target=\"".concat(hoverIdentifier, "\"]")).forEach(function (control) {
+        control.classList.remove('hover-show');
+      });
+    });
+  });
+}
 document.addEventListener('DOMContentLoaded', function () {
   initCatalogTree();
+  initHoverControls();
 });
 
 // Добавьте в блок обработки события modalContentLoaded
 document.addEventListener('modalContentLoaded', function () {
   (0,_filament_form__WEBPACK_IMPORTED_MODULE_4__.initFilamentForm)();
   initCatalogTree();
+  initHoverControls();
 
   // Инициализируем dropdown для select-part
   initSelectPartDropdown();
@@ -5570,6 +5595,7 @@ document.addEventListener('modalContentLoaded', function () {
 window.initToggleRows = initToggleRows;
 window.initFilamentForm = _filament_form__WEBPACK_IMPORTED_MODULE_4__.initFilamentForm;
 window.initCatalogTree = initCatalogTree;
+window.initHoverControls = initHoverControls;
 
 /***/ }),
 

@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 import trans from './translations';
 import Pickr from '@simonwep/pickr';
-import { initFilamentForm } from "./filament-form";
+import {initFilamentForm} from "./filament-form";
 import '@simonwep/pickr/dist/themes/classic.min.css';
 
 window.Swal = Swal;
@@ -273,8 +273,8 @@ function initToggleRows(options = {}) {
 
     document.querySelectorAll(toggleSelector).forEach(button => {
         const id = button.dataset[idAttribute];
-        const row = document.querySelector(`${rowSelector}[data-parent-id="${id}"]`);
-        const cookieName = `${cookiePrefix}_expanded_${id}`;
+        const row = document.querySelector(`${ rowSelector }[data-parent-id="${ id }"]`);
+        const cookieName = `${ cookiePrefix }_expanded_${ id }`;
         const isExpanded = Cookies.get(cookieName);
 
         if (!row) {
@@ -295,7 +295,9 @@ function initToggleRows(options = {}) {
             }
 
             const icon = this.querySelector('i.toggle-icon');
-            if (!icon) return;
+            if (!icon) {
+                return;
+            }
 
             row.classList.toggle('d-none');
             icon.classList.toggle('bi-chevron-right');
@@ -313,11 +315,13 @@ function initToggleRows(options = {}) {
 function initCatalogTree() {
     document.querySelectorAll('.toggle-catalog').forEach(button => {
         const id = button.dataset.id;
-        const childrenContainer = document.querySelector(`.catalog-children[data-parent-id="${id}"]`);
-        const cookieName = `catalog_expanded_${id}`;
+        const childrenContainer = document.querySelector(`.catalog-children[data-parent-id="${ id }"]`);
+        const cookieName = `catalog_expanded_${ id }`;
         const isExpanded = Cookies.get(cookieName);
 
-        if (!childrenContainer) return;
+        if (!childrenContainer) {
+            return;
+        }
 
         if (isExpanded === '1') {
             childrenContainer.classList.remove('d-none');
@@ -330,7 +334,9 @@ function initCatalogTree() {
             e.stopPropagation();
 
             const icon = this.querySelector('.toggle-icon');
-            if (!icon) return;
+            if (!icon) {
+                return;
+            }
 
             childrenContainer.classList.toggle('d-none');
             icon.classList.toggle('bi-chevron-right');
@@ -378,17 +384,39 @@ function initSelectPartDropdown() {
             event.target.blur();
         });
     });
-};
+}
 
+function initHoverControls() {
+    // Обработчики событий для элементов с атрибутом data-hover
+    document.querySelectorAll('[data-hover]').forEach(parent => {
+        const hoverIdentifier = parent.dataset.hover;
+
+        parent.addEventListener('mouseenter', () => {
+            // Ищем только внутри текущего родительского элемента
+            parent.querySelectorAll(`[data-hover-target="${hoverIdentifier}"]`).forEach(control => {
+                control.classList.add('hover-show');
+            });
+        });
+
+        parent.addEventListener('mouseleave', () => {
+            // Ищем только внутри текущего родительского элемента
+            parent.querySelectorAll(`[data-hover-target="${hoverIdentifier}"]`).forEach(control => {
+                control.classList.remove('hover-show');
+            });
+        });
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     initCatalogTree();
+    initHoverControls();
 });
 
 // Добавьте в блок обработки события modalContentLoaded
 document.addEventListener('modalContentLoaded', function() {
     initFilamentForm();
     initCatalogTree();
+    initHoverControls();
 
     // Инициализируем dropdown для select-part
     initSelectPartDropdown();
@@ -402,3 +430,4 @@ document.addEventListener('modalContentLoaded', function() {
 window.initToggleRows = initToggleRows;
 window.initFilamentForm = initFilamentForm;
 window.initCatalogTree = initCatalogTree;
+window.initHoverControls = initHoverControls;

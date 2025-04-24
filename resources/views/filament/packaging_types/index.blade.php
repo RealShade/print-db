@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" data-hover="card">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -33,28 +33,28 @@
                         <td class="text-center">{{ $packagingType->weight ? $packagingType->weight . ' г' : '' }}</td>
                         <td>{{ $packagingType->description }}</td>
                         <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#packagingTypeModal"
-                                    data-action="{{ route('filament.packaging.update', $packagingType) }}"
-                                    data-edit-route="{{ route('filament.packaging.edit', $packagingType) }}"
-                                    data-method="PUT"
-                                    data-id="{{ $packagingType->id }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <form action="{{ route('filament.packaging.destroy', $packagingType) }}"
-                                  method="POST"
-                                  class="d-inline-block confirm-delete"
-                                  data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('filament.packaging.action.delete.confirm') }}"
-                                  data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                  data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">
+                            <div class="btn-group" data-hover-target="card">
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#packagingTypeModal"
+                                        data-action="{{ route('filament.packaging.update', $packagingType) }}"
+                                        data-edit-route="{{ route('filament.packaging.edit', $packagingType) }}"
+                                        data-method="PUT"
+                                        data-id="{{ $packagingType->id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-transport="ajax"
+                                        data-action="{{ route('filament.packaging.destroy', $packagingType) }}"
+                                        data-method="DELETE"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                        data-confirm-text="{{ __('filament.packaging.action.delete.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
-                            </form>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

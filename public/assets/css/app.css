@@ -456,4 +456,11 @@ a:hover {
   cursor: pointer;
   font-size: 1.2rem;
 }
+[data-hover-target] {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hover-show {
+  opacity: 1 !important;
+}
 

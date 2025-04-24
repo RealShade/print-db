@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <div class="table-responsive">
+        <div class="table-responsive" data-hover="card">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -60,46 +60,48 @@
                         </td>
                         <td>
                             {!! nl2br(e($spool->slots()->with('printer')->get()->map(function($slot) {
-                                return $slot->printer->first()->name . ': ' . $slot->name;
+                                return $slot->printer->name . ': ' . $slot->name;
                             })->implode("\n"))) !!}
                         </td>
                         <td>{{ $spool->date_last_used ? $spool->date_last_used->format('Y-m-d H:m:s') : '' }}</td>
                         <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-secondary"
-                                    data-transport="ajax"
-                                    data-action="{{ route('filament.spools.archive', $spool) }}"
-                                    data-method="POST"
-                                    data-confirm="true"
-                                    data-confirm-title="{{ __('filament.spool.action.archive.title') }}"
-                                    data-confirm-text="{{ $spool->archived ? __('filament.spool.action.archive.confirm_archived') : __('filament.spool.action.archive.confirm') }}"
-                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                @if($spool->archived)
-                                    <i class="bi bi-archive-fill"></i>
-                                @else
-                                    <i class="bi bi-archive"></i>
-                                @endif
-                            </button>
-                            <button type="button" class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#spoolModal"
-                                    data-action="{{ route('filament.spools.update', $spool) }}"
-                                    data-edit-route="{{ route('filament.spools.edit', $spool) }}"
-                                    data-method="PUT"
-                                    data-id="{{ $spool->id }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-danger"
-                                    data-transport="ajax"
-                                    data-action="{{ route('filament.spools.destroy', $spool) }}"
-                                    data-method="DELETE"
-                                    data-confirm="true"
-                                    data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                    data-confirm-text="{{ __('filament.spool.action.delete.confirm') }}"
-                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <div class="btn-group" data-hover-target="card">
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                        data-transport="ajax"
+                                        data-action="{{ route('filament.spools.archive', $spool) }}"
+                                        data-method="POST"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('filament.spool.action.archive.title') }}"
+                                        data-confirm-text="{{ $spool->archived ? __('filament.spool.action.archive.confirm_archived') : __('filament.spool.action.archive.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                    @if($spool->archived)
+                                        <i class="bi bi-archive-fill"></i>
+                                    @else
+                                        <i class="bi bi-archive"></i>
+                                    @endif
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#spoolModal"
+                                        data-action="{{ route('filament.spools.update', $spool) }}"
+                                        data-edit-route="{{ route('filament.spools.edit', $spool) }}"
+                                        data-method="PUT"
+                                        data-id="{{ $spool->id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-transport="ajax"
+                                        data-action="{{ route('filament.spools.destroy', $spool) }}"
+                                        data-method="DELETE"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                        data-confirm-text="{{ __('filament.spool.action.delete.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

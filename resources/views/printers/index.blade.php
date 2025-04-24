@@ -17,7 +17,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             @foreach($printers as $printer)
                 <div class="col">
-                    <div class="card h-100">
+                    <div class="card h-100" data-hover="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge badge-{{ strtolower($printer->status->value()) }} me-2">
@@ -29,7 +29,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="btn-group">
+                            <div class="btn-group" data-hover-target="card">
                                 <button class="btn btn-sm btn-primary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#printerModal"
@@ -39,20 +39,17 @@
                                         data-id="{{ $printer->id }}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-
-                                <form action="{{ route('printers.destroy', $printer) }}"
-                                      method="POST"
-                                      class="d-inline-block confirm-delete"
-                                      data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                      data-confirm-text="{{ __('printer.confirm_delete') }}"
-                                      data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                      data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-transport="ajax"
+                                        data-action="{{ route('printers.destroy', $printer) }}"
+                                        data-method="DELETE"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                        data-confirm-text="{{ __('printer.confirm_delete') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -62,14 +59,16 @@
                             <div class="mt-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
                                     <h6 class="mb-0">{{ __('printer.filament_slot.title') }}:</h6>
-                                    <button type="button" class="btn btn-sm btn-success"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#filamentSlotModal"
-                                            data-action="{{ route('filament-slot.store', $printer) }}"
-                                            data-create-route="{{ route('filament-slot.create', $printer) }}"
-                                            data-printer-id="{{ $printer->id }}">
-                                        <i class="bi bi-plus-lg"></i>
-                                    </button>
+                                    <div data-hover-target="card">
+                                        <button type="button" class="btn btn-sm btn-success"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#filamentSlotModal"
+                                                data-action="{{ route('filament-slot.store', $printer) }}"
+                                                data-create-route="{{ route('filament-slot.create', $printer) }}"
+                                                data-printer-id="{{ $printer->id }}">
+                                            <i class="bi bi-plus-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 @if($printer->filamentSlots->isNotEmpty())
@@ -85,7 +84,7 @@
                                                             <div class="small text-muted">{{ __('printer.filament_slot.empty') }}</div>
                                                         @endif
                                                     </div>
-                                                    <div class="btn-group">
+                                                    <div class="btn-group" data-hover-target="card">
                                                         <button type="button" class="btn btn-sm btn-primary"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#filamentSlotModal"
@@ -95,19 +94,17 @@
                                                                 data-id="{{ $slot->id }}">
                                                             <i class="bi bi-pencil"></i>
                                                         </button>
-                                                        <form action="{{ route('filament-slot.destroy', [$printer, $slot]) }}"
-                                                              method="POST"
-                                                              class="confirm-delete"
-                                                              data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                                              data-confirm-text="{{ __('printer.filament_slot.confirm_delete') }}"
-                                                              data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                                              data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger rounded-start-0">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <button type="button" class="btn btn-sm btn-danger"
+                                                                data-transport="ajax"
+                                                                data-action="{{ route('filament-slot.destroy', [$printer, $slot]) }}"
+                                                                data-method="DELETE"
+                                                                data-confirm="true"
+                                                                data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                                                data-confirm-text="{{ __('printer.filament_slot.confirm_delete') }}"
+                                                                data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                                                data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </li>
@@ -121,7 +118,7 @@
                             <!-- Задачи печати -->
                             <div class="mt-3">
                                 @if($printer->activeJobs->isEmpty())
-                                    <div>
+                                    <div data-hover-target="card">
                                         <button type="button" class="btn btn-success w-100"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#printJobModal"
@@ -137,7 +134,7 @@
                                         <div class="card-header">
                                             <div class="d-flex justify-content-between align-items-center rounded">
                                                 {{ $printJob->filename }}
-                                                <div class="btn-group">
+                                                <div class="btn-group" data-hover-target="card">
                                                     <button class="btn btn-sm btn-success"
                                                             data-transport="ajax"
                                                             data-action="{{ route('print-job.complete', [$printer, $printJob]) }}"
@@ -198,7 +195,7 @@
                                                                                 </span>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="btn-group">
+                                                                    <div class="btn-group" data-hover-target="card">
                                                                         <button type="button" class="btn btn-sm btn-primary"
                                                                                 data-bs-toggle="modal"
                                                                                 data-bs-target="#printJobPartTaskModal"
@@ -227,7 +224,7 @@
                                             @endforeach
                                             <div class="d-flex justify-content-between align-items-center mb-2 bg-light p-2 rounded">
                                                 <h6 class="mb-0">{{ __('printer.filament_slot.title') }}:</h6>
-                                                <div class="btn-group">
+                                                <div class="btn-group" data-hover-target="card">
                                                     <button type="button" class="btn btn-sm btn-success"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#printJobSpoolModal"
@@ -243,10 +240,12 @@
                                                         <div>
                                                             <x-filament-plate :filamentSpool="$spool" />
                                                             <div class="fw-bold">
-                                                                <x-number :value="$spool->pivot->weight_used" />/<x-number :value="$spool->weight_remaining" />
+                                                                <x-number :value="$spool->pivot->weight_used" />
+                                                                /
+                                                                <x-number :value="$spool->weight_remaining" />
                                                             </div>
                                                         </div>
-                                                        <div class="btn-group">
+                                                        <div class="btn-group" data-hover-target="card">
                                                             <button type="button" class="btn btn-sm btn-primary"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#printJobSpoolModal"

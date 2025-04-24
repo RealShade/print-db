@@ -44,17 +44,17 @@
                     </form>
                 @endif
             </div>
-            <form action="{{ route('admin.users.destroy', $user) }}"
-                  method="POST"
-                  class="d-inline confirm-delete"
-                  data-confirm-title="{{ __('common.buttons.delete') }}?"
-                  data-confirm-text="{{ __('admin.user.confirm_delete') }}"
-                  data-confirm-button="{{ __('common.buttons.confirm') }}"
-                  data-cancel-button="{{ __('common.buttons.cancel') }}">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger">{{ __('common.buttons.delete') }}</button>
-            </form>
+            <button type="button" class="btn btn-sm btn-danger"
+                    data-transport="ajax"
+                    data-action="{{ route('admin.users.destroy', $user) }}"
+                    data-method="DELETE"
+                    data-confirm="true"
+                    data-confirm-title="{{ __('common.buttons.delete') }}?"
+                    data-confirm-text="{{ __('admin.user.confirm_delete') }}"
+                    data-confirm-button="{{ __('common.buttons.confirm') }}"
+                    data-cancel-button="{{ __('common.buttons.cancel') }}">
+                <i class="bi bi-trash"></i>
+            </button>
         </div>
     </div>
 </div>

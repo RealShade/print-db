@@ -1,5 +1,5 @@
 @if($parts->count() > 0)
-    <div class="table-responsive">
+    <div class="table-responsive" data-hover="card">
         <table class="table table-hover">
             <thead>
             <tr>
@@ -16,7 +16,7 @@
                     <td>{{ $part->version }}</td>
                     <td>{{ $part->version_date?->format('d.m.Y') }}</td>
                     <td class="text-end">
-                        <div class="btn-group">
+                        <div class="btn-group" data-hover-target="card">
                             <button class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#partModal"

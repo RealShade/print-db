@@ -8,7 +8,7 @@
     <div class="mb-3">
         <label for="filament_vendor_id" class="form-label">{{ __('filament.vendor.field') }}*</label>
         <select class="form-select" id="filament_vendor_id" name="filament_vendor_id" required>
-            <option value="">{{ __('common.select.placeholder') }}</option>
+            <option value="">{{ __('common.select') }}</option>
             @foreach($vendors as $vendor)
                 <option value="{{ $vendor->id }}" {{ old('filament_vendor_id', $filament?->filament_vendor_id) == $vendor->id ? 'selected' : '' }}>
                     {{ $vendor->name }}
@@ -20,7 +20,7 @@
     <div class="mb-3">
         <label for="filament_type_id" class="form-label">{{ __('filament.type.field') }}*</label>
         <select class="form-select" id="filament_type_id" name="filament_type_id" required>
-            <option value="">{{ __('common.select.placeholder') }}</option>
+            <option value="">{{ __('common.select') }}</option>
             @foreach($types as $type)
                 <option value="{{ $type->id }}" {{ old('filament_type_id', $filament?->filament_type_id) == $type->id ? 'selected' : '' }}>
                     {{ $type->name }}

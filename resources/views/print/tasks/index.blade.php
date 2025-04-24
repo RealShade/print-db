@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                 @foreach($tasks as $task)
-                    <tr data-task-id="{{ $task->id }}">
+                    <tr data-task-id="{{ $task->id }}" data-hover="row">
                         <td class="table-chevron">
                             <i class="bi bi-chevron-right toggle-icon"></i>
                         </td>
@@ -48,36 +48,40 @@
                             @endif
                         </td>
                         <td>{{ $task->created_at->format('d.m.Y') }}</td>
-                        <td>{{ $task->name }}@if ($task->external_id)<br>{{ $task->external_id }}@endif</td>
-                        <td class="text-end"><span @if ($task->count_set_printed >= $task->count_set_planned) class="count-complete" @endif>{{ $task->count_set_printed }}/{{ $task->count_set_planned }}</span></td>
+                        <td>{{ $task->name }}@if ($task->external_id)
+                                <br>{{ $task->external_id }}
+                            @endif</td>
+                        <td class="text-end">
+                            <span @if ($task->count_set_printed >= $task->count_set_planned) class="count-complete" @endif>{{ $task->count_set_printed }}/{{ $task->count_set_planned }}</span>
+                        </td>
                         <td class="text-end">{{ $task->parts->count() }}</td>
                         <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-primary"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#taskModal"
-                                    data-action="{{ route('print.tasks.update', $task) }}"
-                                    data-edit-route="{{ route('print.tasks.edit', $task) }}"
-                                    data-delete-route="{{ route('print.tasks.destroy', $task) }}"
-                                    data-method="PUT"
-                                    data-id="{{ $task->id }}">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <form action="{{ route('print.tasks.destroy', $task) }}"
-                                  method="POST"
-                                  class="d-inline-block confirm-delete"
-                                  data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                  data-confirm-text="{{ __('task.action.delete.confirm') }}"
-                                  data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                  data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">
+                            <div class="btn-group" data-hover-target="row">
+                                <button type="button" class="btn btn-sm btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#taskModal"
+                                        data-action="{{ route('print.tasks.update', $task) }}"
+                                        data-edit-route="{{ route('print.tasks.edit', $task) }}"
+                                        data-delete-route="{{ route('print.tasks.destroy', $task) }}"
+                                        data-method="PUT"
+                                        data-id="{{ $task->id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger"
+                                        data-transport="ajax"
+                                        data-action="{{ route('print.tasks.destroy', $task) }}"
+                                        data-method="DELETE"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                        data-confirm-text="{{ __('task.action.delete.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
                                     <i class="bi bi-trash"></i>
                                 </button>
-                            </form>
+                            </div>
                         </td>
                     </tr>
-                    <tr class="detail-row d-none" data-parent-id="{{ $task->id }}">
+                    <tr class="detail-row d-none" data-parent-id="{{ $task->id }}" data-hover="row">
                         <td colspan="9" class="p-0">
                             <table class="table mb-0">
                                 <thead>
@@ -89,13 +93,15 @@
                                     <th class="text-end table-count_two">{{ __('task.printing_count') }}</th>
                                     <th class="text-end table-count_two">{{ __('task.count_printed') }}</th>
                                     <th class="text-end">
-                                        <button type="button" class="btn btn-sm btn-success"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#partTaskModal"
-                                                data-action="{{ route('print.task-parts.store', $task) }}"
-                                                data-create-route="{{ route('print.task-parts.create', $task) }}">
-                                            <i class="bi bi-plus-lg"></i>
-                                        </button>
+                                        <div data-hover-target="row">
+                                            <button type="button" class="btn btn-sm btn-success"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#partTaskModal"
+                                                    data-action="{{ route('print.task-parts.store', $task) }}"
+                                                    data-create-route="{{ route('print.task-parts.create', $task) }}">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </div>
                                     </th>
                                 </tr>
                                 </thead>
@@ -111,7 +117,9 @@
                                                 </span>
                                             @endif
                                             {{ $part->name }}
-                                            <span class="small text-muted">{{ $part->version }}@if($part->version_date), {{ $part->version_date->format('d.m.Y') }}@endif</span>
+                                            <span class="small text-muted">{{ $part->version }}@if($part->version_date)
+                                                    , {{ $part->version_date->format('d.m.Y') }}
+                                                @endif</span>
                                             <div class="small text-muted">{{ $part->getFullCatalogPath() }}</div>
                                         </td>
                                         <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
@@ -124,35 +132,36 @@
                                             <span @if ($part->pivot->count_printed >= $part->pivot->count_planned) class="count-complete" @endif>
                                                 {{ $part->pivot->count_printed }}/{{ $part->pivot->count_planned }}
                                             </span>
-                                            <!-- Добавлена кнопка для ручного добавления -->
-                                            <button type="button"
-                                                    class="btn btn-sm btn-primary update-printed-btn"
-                                                    data-part-task-id="{{ $part->pivot->id }}">
-                                                <i class="bi bi-plus-circle-fill"></i>
-                                            </button>
                                         </td>
                                         <td class="text-end">
-                                            <button type="button"
-                                                    class="btn btn-sm btn-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#partTaskModal"
-                                                    data-action="{{ route('print.task-parts.update', $part->pivot) }}"
-                                                    data-edit-route="{{ route('print.task-parts.edit', $part->pivot) }}"
-                                                    data-method="PUT"
-                                                    data-id="{{ $part->id }}">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger"
-                                                    data-transport="ajax"
-                                                    data-action="{{ route('print.task-parts.destroy', $part->pivot) }}"
-                                                    data-method="DELETE"
-                                                    data-confirm="true"
-                                                    data-confirm-title="{{ __('common.buttons.delete') }}?"
-                                                    data-confirm-text="{{ __('task.action.delete_part.confirm') }}"
-                                                    data-confirm-button="{{ __('common.buttons.confirm') }}"
-                                                    data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <div class="btn-group" data-hover-target="row">
+                                                <button type="button"
+                                                        class="btn btn-sm btn-success update-printed-btn"
+                                                        data-part-task-id="{{ $part->pivot->id }}">
+                                                    <i class="bi bi-plus-circle-fill"></i>
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#partTaskModal"
+                                                        data-action="{{ route('print.task-parts.update', $part->pivot) }}"
+                                                        data-edit-route="{{ route('print.task-parts.edit', $part->pivot) }}"
+                                                        data-method="PUT"
+                                                        data-id="{{ $part->id }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                        data-transport="ajax"
+                                                        data-action="{{ route('print.task-parts.destroy', $part->pivot) }}"
+                                                        data-method="DELETE"
+                                                        data-confirm="true"
+                                                        data-confirm-title="{{ __('common.buttons.delete') }}?"
+                                                        data-confirm-text="{{ __('task.action.delete_part.confirm') }}"
+                                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -211,7 +220,7 @@
             }
             const partTaskId = btn.dataset.partTaskId;
             Swal.fire({
-                title: 'Введіть кількість додаваних копій',
+                title: '{{ __('task.part.add_printed_count') }}',
                 input: 'number',
                 // inputAttributes: { min: 1 },
                 showCancelButton : true,

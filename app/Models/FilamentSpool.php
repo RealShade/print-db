@@ -74,7 +74,11 @@ class FilamentSpool extends Model
                 $result[ $vendorName ] = [];
             }
 
-            $result[ $vendorName ][ $spool->id ] = "#{$spool->id} {$spool->filament->name} {$spool->filament->type->name}, {$spool->packaging->name} ({$spool->weight_remaining})";
+            $result[ $vendorName ][ $spool->id ] = "
+                #{$spool->id} {$spool->filament->name} {$spool->filament->type->name},
+                {$spool->packaging->name},
+                ({$spool->weight_remaining})
+                " . ($spool->slots->isNotEmpty() ? "[" . $spool->slots[0]->printer->name . ": " . $spool->slots[0]->name . "]" : "") . "";
         }
 
         // Сортировка по имени производителя

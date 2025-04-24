@@ -43,20 +43,17 @@
                                     <td>{{ $token->created_at->format('d.m.Y H:i') }}</td>
                                     <td>{{ $token->last_used_at?->format('d.m.Y H:i') ?? '-' }}</td>
                                     <td>
-                                        <form action="{{ route('settings.api-tokens.destroy', $token) }}"
-                                              method="POST"
-                                              class="d-inline delete-token-form"
-                                              data-token-id="{{ $token->id }}"
-                                              data-confirm-title="{{ __('settings.api_tokens.delete_confirm_title') }}"
-                                              data-confirm-text="{{ __('settings.api_tokens.delete_confirm_text') }}"
-                                              data-confirm-button="{{ __('common.buttons.delete') }}"
-                                              data-cancel-button="{{ __('common.buttons.cancel') }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                                data-transport="ajax"
+                                                data-action="{{ route('settings.api-tokens.destroy', $token) }}"
+                                                data-method="DELETE"
+                                                data-confirm="true"
+                                                data-confirm-title="{{ __('settings.api_tokens.delete_confirm_title') }}"
+                                                data-confirm-text="{{ __('settings.api_tokens.delete_confirm_text') }}"
+                                                data-confirm-button="{{ __('common.buttons.delete') }}"
+                                                data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
