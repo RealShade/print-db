@@ -13,12 +13,36 @@ use Illuminate\View\View;
 class TaskController extends Controller
 {
     /* **************************************** Public **************************************** */
+    public function archive(Task $task) : JsonResponse
+    {
+        if ($task->archived) {
+            $task->update([
+                'archived'    => false,
+                'archived_at' => null,
+            ]);
+        } else {
+            $task->update([
+                'archived'    => true,
+                'archived_at' => now(),
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     public function create() : View
     {
         $task  = null;
         $parts = Part::where('user_id', auth()->id())->get();
 
         return view('print.tasks.form', compact('parts', 'task'));
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+
+        return redirect(route('print.tasks.index'));
     }
 
     public function edit(Task $task) : View
@@ -28,9 +52,13 @@ class TaskController extends Controller
 
     public function index() : View
     {
-        $tasks = Task::where('user_id', auth()->id())
-            ->orderBy('id', 'desc')
-            ->paginate();
+        $query = Task::where('user_id', auth()->id());
+
+        if (!request()->has('archived') || !request()->archived) {
+            $query->where('archived', false);
+        }
+
+        $tasks = $query->orderBy('id', 'desc')->paginate();
 
         return view('print.tasks.index', compact('tasks'));
     }
@@ -49,13 +77,6 @@ class TaskController extends Controller
         $task->update($request->validated());
 
         return response()->json(['success' => true]);
-    }
-
-    public function destroy(Task $task)
-    {
-        $task->delete();
-
-        return redirect(route('print.tasks.index'));
     }
 
 }

@@ -25,12 +25,18 @@
                     <th>{{ __('common.name') }}<br>{{ __('task.external_id') }}</th>
                     <th class="text-end table-count_two">{{ __('task.count_set_planned') }}</th>
                     <th class="text-end table-count_two">{{ __('task.parts_count') }}</th>
-                    <th></th>
+                    <th>
+                        <a href="{{ request()->fullUrlWithQuery(['archived' => request()->has('archived') ? null : 'true']) }}"
+                           class="btn btn-sm {{ request()->has('archived') ? 'btn-success' : 'btn-outline-secondary' }}"
+                           title="{{ __('filament.spool.show_archived') }}">
+                            <i class="bi bi-archive{{ request()->has('archived') ? '-fill' : '' }}"></i>
+                        </a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach($tasks as $task)
-                    <tr data-task-id="{{ $task->id }}" data-hover="row">
+                    <tr data-task-id="{{ $task->id }}" data-hover="row" class="{{ $task->archived ? 'opacity-50' : '' }}">
                         <td class="table-chevron">
                             <i class="bi bi-chevron-right toggle-icon"></i>
                         </td>
@@ -57,6 +63,21 @@
                         <td class="text-end">{{ $task->parts->count() }}</td>
                         <td class="text-end">
                             <div class="btn-group" data-hover-target="row">
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                        data-transport="ajax"
+                                        data-action="{{ route('print.tasks.archive', $task) }}"
+                                        data-method="POST"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('task.action.archive.title') }}"
+                                        data-confirm-text="{{ $task->archived ? __('task.action.archive.confirm_archived') : __('task.action.archive.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                    @if($task->archived)
+                                        <i class="bi bi-archive-fill"></i>
+                                    @else
+                                        <i class="bi bi-archive"></i>
+                                    @endif
+                                </button>
                                 <button type="button" class="btn btn-sm btn-primary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#taskModal"
@@ -81,7 +102,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr class="detail-row d-none" data-parent-id="{{ $task->id }}" data-hover="row">
+                    <tr class="detail-row d-none {{ $task->archived ? 'opacity-50' : '' }}" data-parent-id="{{ $task->id }}" data-hover="row">
                         <td colspan="9" class="p-0">
                             <table class="table mb-0">
                                 <thead>

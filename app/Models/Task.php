@@ -20,6 +20,8 @@ use Illuminate\Support\Carbon;
  * @property string      $name
  * @property int         $count_set_planned
  * @property TaskStatus  $status
+ * @property bool        $archived
+ * @property Carbon|null $archived_at
  * @property Carbon|null $completed_at
  * @property Carbon      $created_at
  * @property Carbon      $updated_at
@@ -36,6 +38,8 @@ class Task extends Model
         'name',
         'count_set_planned',
         'status',
+        'archived',
+        'archived_at',
         'completed_at',
         'user_id',
     ];
@@ -43,6 +47,8 @@ class Task extends Model
     protected $casts = [
         'status'       => TaskStatus::class,
         'completed_at' => 'datetime',
+        'archived'     => 'boolean',
+        'archived_at'  => 'datetime',
     ];
 
     /* **************************************** Public **************************************** */
