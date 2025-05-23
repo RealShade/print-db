@@ -63,6 +63,7 @@ class FilamentSpool extends Model
             ->where('archived', false)
             ->orderByDesc('date_last_used')
             ->orderBy('filaments.name')
+            ->orderBy('filament_spools.id')
             ->select('filament_spools.*')
             ->get();
 
