@@ -2,7 +2,11 @@
 
 namespace App\Traits;
 
+use App\Enums\TaskStatus;
+use App\Models\PartTask;
 use App\Models\Task;
+use App\Services\FilenamePatternParser;
+use InvalidArgumentException;
 
 trait ParseFilename
 {
@@ -17,32 +21,44 @@ trait ParseFilename
                 ],
             ];
         }
-        $pattern = '/\((pid_(\d+)(\(x(\d+)\))?_(\d+))\)|\((tid_(\d+)(\(x(\d+)\))?)\)/';
-        preg_match_all($pattern, $filename, $matches, PREG_SET_ORDER);
 
-        if (empty($matches)) {
-            return [
-                'success' => false,
-                'errors'  => [
-                    'filename' => [__('api.validation.pattern_not_found')],
-                ],
-            ];
-        }
+        try {
+            $parser = new FilenamePatternParser($filename);
 
-        $parsedData = [];
-        foreach ($matches as $match) {
-            if ($match[2] && $match[5]) {
-                $parsedData[] = [
-                    'part_id' => (int)$match[2],
-                    'task_id' => (int)$match[5],
-                    'count'   => isset($match[4]) ? (int)$match[4] : 1,
-                ];
-            } elseif ($match[7]) {
-                $parsedData[] = [
-                    'task_id' => (int)$match[7],
-                    'count'   => isset($match[9]) ? (int)$match[9] : 1,
-                ];
-            } else {
+            $parsedData = [];
+            foreach ($parser->getParsedData() as $parsed) {
+                if ($parsed->getPartId() && $parsed->getTaskId()) {
+                    $parsedData[] = [
+                        'part_id' => $parsed->getPartId(),
+                        'task_id' => $parsed->getTaskId(),
+                        'count'   => $parsed->getQuantity(),
+                    ];
+                } elseif ($parsed->getTaskId()) {
+                    $parsedData[] = [
+                        'task_id' => $parsed->getTaskId(),
+                        'count'   => $parsed->getQuantity(),
+                    ];
+                } elseif ($parsed->getPartId()) {
+                    // Новый случай: только ID модели без ID задачи
+                    $partId   = $parsed->getPartId();
+                    $quantity = $parsed->getQuantity();
+
+                    // Найти подходящую задачу
+                    $task = $this->findSuitableTaskForPart($partId, $quantity);
+
+                    if (!$task) {
+                        continue;
+                    }
+
+                    // Дальше обработка как в случае с part_id и task_id
+                    $parsedData[] = [
+                        'part_id' => $partId,
+                        'task_id' => $task->id,
+                        'count'   => $quantity,
+                    ];
+                }
+            }
+            if (!$parsedData) {
                 return [
                     'success' => false,
                     'errors'  => [
@@ -50,12 +66,49 @@ trait ParseFilename
                     ],
                 ];
             }
-        }
 
-        return $this->validateParsedData($parsedData);
+            return $this->validateParsedData($parsedData);
+        } catch (InvalidArgumentException $e) {
+            return [
+                'success' => false,
+                'errors'  => [
+                    'filename' => [$e->getMessage()],
+                ],
+            ];
+        }
     }
 
     /* **************************************** Private **************************************** */
+    /**
+     * Поиск подходящей задачи для модели
+     */
+    private function findSuitableTaskForPart(int $partId, int $quantity) : ?Task
+    {
+        // Находим незавершенные задачи, содержащие нужную модель
+        $tasks = Task::whereIn('status', [
+            TaskStatus::NEW,
+            TaskStatus::IN_PROGRESS,
+        ])
+            ->whereHas('parts', function($query) use ($partId) {
+                $query->where('parts.id', $partId);
+            })
+            ->orderBy('id')
+            ->get();
+
+        // Проверяем задачи на доступное количество
+        foreach ($tasks as $task) {
+            /** @var PartTask $partTask */
+            $partTask = $task->parts()->where('parts.id', $partId)->first()->pivot;
+
+            // Проверяем, хватает ли места для требуемого количества
+            if ($partTask->count_remaining > $partTask->count_printing) {
+                return $task;
+            }
+        }
+
+        return null;
+    }
+
     private function validateParsedData(array $parsedData) : array
     {
         $result = [
@@ -79,7 +132,7 @@ trait ParseFilename
                     ->first();
 
                 if (!$task) {
-                    $result['errors']['tasks'][$item['task_id']] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
+                    $result['errors']['tasks'][ $item['task_id'] ] = __('api.validation.task_not_found', ['task_id' => $item['task_id']]);
                     continue;
                 }
 
@@ -117,7 +170,7 @@ trait ParseFilename
             if (!empty($item['part_id'])) {
                 // якщо частина вказана, то перевіряємо, чи вона є в даних завдання
                 if (empty($taskData[ $item['task_id'] ]['parts']) || !array_key_exists($item['part_id'], $taskData[ $item['task_id'] ]['parts'])) {
-                    $result['errors']['parts'][$item['part_id']] = __('api.validation.parts_not_linked', ['part_id' => $item['part_id']]);
+                    $result['errors']['parts'][ $item['part_id'] ] = __('api.validation.parts_not_linked', ['part_id' => $item['part_id']]);
                     continue;
                 }
                 // якщо частина є, то додаємо до неї дані
@@ -152,7 +205,7 @@ trait ParseFilename
         }
         unset($item);
 
-        $result['success']       = true;
+        $result['success']              = true;
         $result['data']['old']['tasks'] = $taskData;
 
         return $result;

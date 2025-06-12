@@ -10,17 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * @property int            $id
- * @property int            $part_id
- * @property int            $task_id
- * @property int            $count_per_set
- * @property int            $count_printed
- * @property Part           $part
- * @property Task           $task
- * @property PrintJob[]     $printJobs
- * @property int            $count_printing
- * @property int            $count_planned
- * @property int            $count_remaining
+ * @property int        $id
+ * @property int        $part_id
+ * @property int        $task_id
+ * @property int        $count_per_set
+ * @property int        $count_printed
+ * @property Part       $part
+ * @property Task       $task
+ * @property PrintJob[] $printJobs
+ *
+ * @property-read int   $count_planned
+ * @property-read int   $count_printing
+ * @property-read int   $count_remaining
  */
 class PartTask extends Pivot
 {
