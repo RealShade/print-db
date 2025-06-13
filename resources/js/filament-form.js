@@ -18,57 +18,14 @@ export function initFilamentForm() {
                     </button>
                 `;
                 colorBlocks.appendChild(div);
-                initColorPicker(div.querySelector('.color-picker'));
+                // Не инициализируем Spectrum здесь!
+                // window.initFilamentColorPickers() должен вызываться после вставки формы
                 initRemoveColorButtons();
             }
         });
     }
 
-    initColorPickers();
     initRemoveColorButtons();
-}
-
-function initColorPickers() {
-    document.querySelectorAll('.color-picker:not(.pickr-initialized)').forEach(element => {
-        initColorPicker(element);
-    });
-}
-
-function initColorPicker(element) {
-    element.classList.add('pickr-initialized');
-
-    const defaultColor = element.dataset.defaultColor || 'rgba(127, 127, 127, 0.5)';
-    const inputElement = element.closest('.color-block').querySelector('.color-value');
-
-    const pickr = Pickr.create({
-        el        : element,
-        theme     : 'classic',
-        default   : defaultColor,
-        components: {
-            preview    : true,
-            opacity    : true,
-            hue        : true,
-            interaction: {
-                hex  : true,
-                rgba : true,
-                hsla : false,
-                hsva : false,
-                cmyk : false,
-                input: true,
-                clear: false,
-                save : true
-            }
-        }
-    });
-
-    pickr.on('save', (color) => {
-        inputElement.value = color.toRGBA().toString(0);
-        pickr.hide();
-    });
-
-    if (defaultColor) {
-        inputElement.value = defaultColor;
-    }
 }
 
 function initRemoveColorButtons() {

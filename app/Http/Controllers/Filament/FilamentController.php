@@ -19,7 +19,7 @@ class FilamentController extends Controller
         $vendors  = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
         $types    = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
 
-        return view('filament.form', compact('filament', 'vendors', 'types'));
+        return view('filament.form', compact('filament', 'vendors', 'types', 'palette'));
     }
 
     public function destroy(Filament $filament)
@@ -33,8 +33,9 @@ class FilamentController extends Controller
     {
         $vendors = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
         $types   = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
+        $palette = Filament::getAllUniqueColors();
 
-        return view('filament.form', compact('filament', 'vendors', 'types'));
+        return view('filament.form', compact('filament', 'vendors', 'types', 'palette'));
     }
 
     public function index() : View
@@ -43,8 +44,9 @@ class FilamentController extends Controller
             ->with(['vendor', 'type'])
             ->orderBy('name')
             ->paginate();
+        $palette  = Filament::getAllUniqueColors();
 
-        return view('filament.index', compact('filaments'));
+        return view('filament.index', compact('filaments', 'palette'));
     }
 
     public function store(FilamentRequest $request) : JsonResponse

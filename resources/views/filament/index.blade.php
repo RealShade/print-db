@@ -88,4 +88,10 @@
             </div>
         </div>
     </div>
+
+    @if(isset($palette))
+        <script>
+            window.filamentColorsPalette = @json(array_values($palette));
+        </script>
+    @endif
 @endsection

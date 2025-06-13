@@ -35,7 +35,7 @@
             @if(old('colors', $filament?->colors))
                 @foreach(old('colors', $filament->colors) as $index => $color)
                     <div class="color-block">
-                        <div class="color-picker" data-default-color="{{ $color }}"></div>
+                        <div class="filament-color-preview color-picker" data-default-color="{{ $color }}"></div>
                         <input type="hidden" name="colors[]" value="{{ $color }}" class="color-value">
                         <button type="button" class="btn btn-sm btn-danger remove-color-block">
                             <i class="bi bi-x"></i>
@@ -65,3 +65,9 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
     </div>
 </form>
+
+@if(isset($palette))
+    <script>
+        window.filamentColorsPalette = @json(array_values($palette));
+    </script>
+@endif

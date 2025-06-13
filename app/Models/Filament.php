@@ -65,6 +65,26 @@ class Filament extends Model
         return $result;
     }
 
+    /**
+     * Получить все уникальные цвета филамента из базы
+     * @return array
+     */
+    public static function getAllUniqueColors(): array
+    {
+        $allColors = self::query()->pluck('colors')->all();
+        $flat = [];
+        foreach ($allColors as $colorArr) {
+            if (is_array($colorArr)) {
+                foreach ($colorArr as $color) {
+                    if ($color && !in_array($color, $flat, true)) {
+                        $flat[] = $color;
+                    }
+                }
+            }
+        }
+        return $flat;
+    }
+
     public function spools() : HasMany
     {
         return $this->hasMany(FilamentSpool::class);

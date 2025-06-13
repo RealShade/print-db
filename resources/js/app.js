@@ -1,12 +1,12 @@
 import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 import trans from './translations';
-import Pickr from '@simonwep/pickr';
+import 'spectrum-colorpicker/spectrum.css';
+import $ from 'jquery';
+import 'spectrum-colorpicker';
 import {initFilamentForm} from "./filament-form";
-import '@simonwep/pickr/dist/themes/classic.min.css';
 
 window.Swal = Swal;
-window.Pickr = Pickr;
 window.Cookies = Cookies;
 document.addEventListener('DOMContentLoaded', function() {
     // Password toggle
@@ -420,6 +420,44 @@ document.addEventListener('modalContentLoaded', function() {
 
     // Инициализируем dropdown для select-part
     initSelectPartDropdown();
+});
+
+// Глобальная функция для инициализации Spectrum Colorpicker с палитрой
+window.initFilamentColorPickers = function() {
+    document.querySelectorAll('.color-picker:not(.pickr-initialized)').forEach(element => {
+        element.classList.add('pickr-initialized');
+        const defaultColor = element.dataset.defaultColor || 'rgba(127, 127, 127, 0.5)';
+        const inputElement = element.closest('.color-block').querySelector('.color-value');
+        const previewElement = element.closest('.color-block').querySelector('.filament-color-preview') || element;
+        previewElement.style.backgroundColor = defaultColor;
+        $(element).spectrum({
+            color: defaultColor,
+            showAlpha: true,
+            showInput: true,
+            preferredFormat: "rgba",
+            showPalette: true,
+            palette: window.filamentColorsPalette || [],
+            change: function(color) {
+                const rgba = color ? color.toRgbString() : '';
+                inputElement.value = rgba;
+                previewElement.style.backgroundColor = rgba;
+            },
+            move: function(color) {
+                const rgba = color ? color.toRgbString() : '';
+                inputElement.value = rgba;
+                previewElement.style.backgroundColor = rgba;
+            }
+        });
+        if (defaultColor) {
+            inputElement.value = defaultColor;
+        }
+    });
+};
+
+document.addEventListener('modalContentLoaded', function() {
+    if (window.initFilamentColorPickers) {
+        window.initFilamentColorPickers();
+    }
 });
 
 // Инициализация при прямой загрузке формы
