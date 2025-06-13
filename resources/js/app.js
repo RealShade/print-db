@@ -426,14 +426,25 @@ document.addEventListener('modalContentLoaded', function() {
 window.initFilamentColorPickers = function() {
     document.querySelectorAll('.color-picker:not(.pickr-initialized)').forEach(element => {
         element.classList.add('pickr-initialized');
+        const colorBlock = element.closest('.color-block');
         const defaultColor = element.dataset.defaultColor || 'rgba(127, 127, 127, 0.5)';
-        const inputElement = element.closest('.color-block').querySelector('.color-value');
-        const previewElement = element.closest('.color-block').querySelector('.filament-color-preview') || element;
+        const inputElement = colorBlock.querySelector('.color-value');
+        const previewElement = colorBlock.querySelector('.filament-color-preview') || element;
+        let manualInput = colorBlock.querySelector('.manual-color-input');
+        if (!manualInput) {
+            manualInput = document.createElement('input');
+            manualInput.type = 'text';
+            manualInput.className = 'form-control form-control-sm manual-color-input mt-1';
+            manualInput.placeholder = 'rgba или hex';
+            manualInput.value = defaultColor;
+            element.parentNode.insertBefore(manualInput, element.nextSibling);
+        }
         previewElement.style.backgroundColor = defaultColor;
         $(element).spectrum({
             color: defaultColor,
             showAlpha: true,
             showInput: true,
+            allowEmpty: true,
             preferredFormat: "rgba",
             showPalette: true,
             palette: window.filamentColorsPalette || [],
@@ -441,16 +452,25 @@ window.initFilamentColorPickers = function() {
                 const rgba = color ? color.toRgbString() : '';
                 inputElement.value = rgba;
                 previewElement.style.backgroundColor = rgba;
+                manualInput.value = rgba;
             },
             move: function(color) {
                 const rgba = color ? color.toRgbString() : '';
                 inputElement.value = rgba;
                 previewElement.style.backgroundColor = rgba;
+                manualInput.value = rgba;
             }
         });
         if (defaultColor) {
             inputElement.value = defaultColor;
         }
+        // Обработка ручного ввода
+        manualInput.addEventListener('change', function() {
+            const val = manualInput.value.trim();
+            inputElement.value = val;
+            previewElement.style.backgroundColor = val;
+            $(element).spectrum('set', val);
+        });
     });
 };
 
