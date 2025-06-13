@@ -33,17 +33,17 @@ class FilenamePatternParser
 
 
         foreach ($matches as $match) {
-            if (($match[2] ?? '') && ($match[5] ?? '')) {
+            if (($match[2] ?? '') && ($match[6] ?? '')) {
                 // Вариант с part_id и task_id: (pid_123(x2)_456)
                 $this->parsedData[] = (new FilenameParsedEntity())
                     ->setPartId((int)$match[2])
-                    ->setTaskId((int)$match[5])
+                    ->setTaskId((int)$match[6])
                     ->setQuantity(!empty($match[4]) ? (int)$match[4] : 1);
-            } elseif (($match[7] ?? '')) {
+            } elseif (($match[8] ?? '')) {
                 // Вариант только с task_id: (tid_789(x3))
                 $this->parsedData[] = (new FilenameParsedEntity())
-                    ->setTaskId((int)$match[7])
-                    ->setQuantity(!empty($match[9]) ? (int)$match[9] : 1);
+                    ->setTaskId((int)$match[8])
+                    ->setQuantity(!empty($match[10]) ? (int)$match[10] : 1);
             } elseif (($match[2] ?? '')) {
                 // Вариант только с part_id: (pid_123(x2))
                 $this->parsedData[] = (new FilenameParsedEntity())
