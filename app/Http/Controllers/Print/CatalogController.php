@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Print;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Print\CatalogRequest;
 use App\Models\Catalog;
+use App\Services\PartFileService;
 use Illuminate\Support\Facades\Auth;
 
 class CatalogController extends Controller
@@ -19,10 +20,10 @@ class CatalogController extends Controller
         return view('print.catalogs.form', compact('catalogs', 'parent'));
     }
 
-    public function parts(Catalog $catalog)
+    public function parts(Catalog $catalog, PartFileService $fileService)
     {
         $parts = $catalog->parts;
-        return view('print.catalogs.parts-list', compact('parts'));
+        return view('print.catalogs.parts-list', compact('parts', 'catalog', 'fileService'));
     }
 
     public function destroy(Catalog $catalog)

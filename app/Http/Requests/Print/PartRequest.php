@@ -7,13 +7,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /** * Class PartRequest
  *
- * @package App\Http\Requests\Print
- *
  * @property string $name
  * @property string $version
  * @property string $version_date
  * @property int    $catalog_id
  * @property int    $part
+ * @package App\Http\Requests\Print
+ *
  */
 class PartRequest extends FormRequest
 {
@@ -48,6 +48,16 @@ class PartRequest extends FormRequest
             'version'      => 'nullable|string|max:50',
             'version_date' => 'nullable|date',
             'part'         => 'nullable|exists:parts,id,user_id,' . auth()->id(),
+            'stl_file'     => [
+                'nullable',
+                'file',
+                'max:' . (20 * 1024 * 1024), // до 20 МБ
+                function ($attribute, $value, $fail) {
+                    if ($value && strtolower($value->getClientOriginalExtension()) !== 'stl') {
+                        $fail('Файл должен иметь расширение .stl');
+                    }
+                },
+            ],
             'catalog_id'   => 'required|exists:catalogs,id,user_id,' . auth()->id(),
         ];
     }

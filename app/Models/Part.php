@@ -18,6 +18,8 @@ class Part extends Model
         'version_date',
         'user_id',
         'catalog_id',
+        'stl_filename', // добавлено поле для имени STL-файла
+        'stl_original_name', // добавлено поле для оригинального имени STL-файла
     ];
 
     protected $casts = [

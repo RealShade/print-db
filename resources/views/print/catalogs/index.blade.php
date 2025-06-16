@@ -157,7 +157,7 @@
                         // Раскрываем родительские элементы, если они свёрнуты
                         expandParentCatalogs(catalogLink);
 
-                        // Имитируем клик по ссылке каталога, но без изменения URL
+                        // Имитируем клик по ссылке каталог��, но без изменения URL
                         const catalogId = catalogLink.dataset.catalogId;
                         const catalogName = catalogLink.dataset.catalogName;
 
@@ -245,6 +245,31 @@
                         catalogLink.click();
                     }
                 }
+            });
+
+            document.addEventListener('modalContentLoaded', function() {
+                const btn = document.getElementById('delete-stl-btn');
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        const block = document.getElementById('current-stl-block');
+                        console.log(block);
+                        if (block) block.remove();
+                        const input = document.getElementById('delete_stl');
+                        if (input) input.value = '1';
+                    });
+                }
+
+                // Инициализация popover для превью STL
+                const popoverElements = document.querySelectorAll('[data-bs-toggle="popover"]');
+                popoverElements.forEach(function (el) {
+                    if (!el._popoverInstance) {
+                        el._popoverInstance = new bootstrap.Popover(el, {
+                            container: 'body',
+                            trigger: 'hover focus',
+                            html: true
+                        });
+                    }
+                });
             });
         });
     </script>
