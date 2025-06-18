@@ -18,6 +18,7 @@ class FilamentController extends Controller
         $filament = null;
         $vendors  = FilamentVendor::where('user_id', auth()->id())->orderBy('name')->get();
         $types    = FilamentType::where('user_id', auth()->id())->orderBy('name')->get();
+        $palette = Filament::getAllUniqueColors();
 
         return view('filament.form', compact('filament', 'vendors', 'types', 'palette'));
     }
