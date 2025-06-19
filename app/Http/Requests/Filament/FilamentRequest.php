@@ -41,7 +41,7 @@ class FilamentRequest extends FormRequest
             'filament_vendor_id' => 'required|exists:filament_vendors,id,user_id,' . auth()->id(),
             'filament_type_id'   => 'required|exists:filament_types,id,user_id,' . auth()->id(),
             'colors'             => 'array|max:8',
-            'colors.*'           => 'string|regex:/^rgba?\(\d{1,3},\s?\d{1,3},\s?\d{1,3}(,\s?\d(\.\d{1,2})?)?\)$/',
+            'colors.*'           => 'string|regex:/^rgba?\(\d{1,3},\s?\d{1,3},\s?\d{1,3}(,\s?\d(\.\d{1,3})?)?\)$/',
             'density'            => 'nullable|numeric|min:0|max:10',
         ];
     }
