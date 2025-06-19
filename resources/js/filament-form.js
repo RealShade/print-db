@@ -11,15 +11,17 @@ export function initFilamentForm() {
                 const div = document.createElement('div');
                 div.className = 'color-block';
                 div.innerHTML = `
-                    <div class="color-picker"></div>
+                    <div class="filament-color-preview color-picker"></div>
                     <input type="hidden" name="colors[]" class="color-value">
                     <button type="button" class="btn btn-sm btn-danger remove-color-block">
                         <i class="bi bi-x"></i>
                     </button>
                 `;
                 colorBlocks.appendChild(div);
-                // Не инициализируем Spectrum здесь!
-                // window.initFilamentColorPickers() должен вызываться после вставки формы
+                // Инициализируем Spectrum сразу после добавления блока
+                if (typeof window.initFilamentColorPickers === 'function') {
+                    window.initFilamentColorPickers();
+                }
                 initRemoveColorButtons();
             }
         });

@@ -18768,10 +18768,12 @@ function initFilamentForm() {
       if (colorBlocks.children.length < 8) {
         var div = document.createElement('div');
         div.className = 'color-block';
-        div.innerHTML = "\n                    <div class=\"color-picker\"></div>\n                    <input type=\"hidden\" name=\"colors[]\" class=\"color-value\">\n                    <button type=\"button\" class=\"btn btn-sm btn-danger remove-color-block\">\n                        <i class=\"bi bi-x\"></i>\n                    </button>\n                ";
+        div.innerHTML = "\n                    <div class=\"filament-color-preview color-picker\"></div>\n                    <input type=\"hidden\" name=\"colors[]\" class=\"color-value\">\n                    <button type=\"button\" class=\"btn btn-sm btn-danger remove-color-block\">\n                        <i class=\"bi bi-x\"></i>\n                    </button>\n                ";
         colorBlocks.appendChild(div);
-        // Не инициализируем Spectrum здесь!
-        // window.initFilamentColorPickers() должен вызываться после вставки формы
+        // Инициализируем Spectrum сразу после добавления блока
+        if (typeof window.initFilamentColorPickers === 'function') {
+          window.initFilamentColorPickers();
+        }
         initRemoveColorButtons();
       }
     });
