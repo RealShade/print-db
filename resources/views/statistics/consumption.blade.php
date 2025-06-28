@@ -43,25 +43,40 @@
                         </thead>
                         <tbody>
                             @forelse($consumptionData as $date => $dayData)
-                                <tr class="table-group-divider">
-                                    <td class="align-middle"><strong>{{ $date }}</strong></td>
+                                <tr data-date-id="{{ \Illuminate\Support\Str::slug($date) }}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-chevron-right me-2 toggle-icon"></i>
+                                            <strong>{{ $date }}</strong>
+                                        </div>
+                                    </td>
                                     <td></td>
-                                    <td class="text-end align-middle"><strong>{{ number_format($dayData['total_day_weight'], 1) }} г</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($dayData['total_day_weight'], 1) }} г</strong></td>
                                 </tr>
-                                @foreach($dayData['jobs'] as $job)
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            #{{ $job->print_job_id }} -
-                                            @if($job->job_name)
-                                                {{ $job->job_name }}
-                                            @else
-                                                {{ $job->file_name ?? 'Без назви' }}
-                                            @endif
-                                        </td>
-                                        <td class="text-end">{{ number_format($job->weight_used, 1) }} г</td>
-                                    </tr>
-                                @endforeach
+                                <tr class="detail-row d-none" data-parent-id="{{ \Illuminate\Support\Str::slug($date) }}">
+                                    <td colspan="3" class="p-0">
+                                        <div class="p-2 bg-light">
+                                            <table class="table table-sm mb-0">
+                                                <tbody>
+                                                    @foreach($dayData['jobs'] as $job)
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>
+                                                                #{{ $job->print_job_id }} -
+                                                                @if($job->job_name)
+                                                                    {{ $job->job_name }}
+                                                                @else
+                                                                    {{ $job->filename ?? 'Без назви' }}
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-end">{{ number_format($job->weight_used, 1) }} г</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
                             @empty
                                 <tr>
                                     <td colspan="3" class="text-center">Немає даних за вказаний період</td>
@@ -74,3 +89,16 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initToggleRows({
+            toggleSelector: '[data-date-id]',
+            rowSelector: 'tr.detail-row',
+            cookiePrefix: 'consumption',
+            idAttribute: 'dateId'
+        });
+    });
+</script>
+@endpush

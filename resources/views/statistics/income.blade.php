@@ -47,22 +47,37 @@
                         </thead>
                         <tbody>
                             @forelse($incomeData as $date => $dayData)
-                                <tr class="table-group-divider">
-                                    <td class="align-middle"><strong>{{ $date }}</strong></td>
+                                <tr data-income-id="{{ \Illuminate\Support\Str::slug($date) }}">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-chevron-right me-2 toggle-icon"></i>
+                                            <strong>{{ $date }}</strong>
+                                        </div>
+                                    </td>
                                     <td></td>
-                                    <td class="text-end align-middle"><strong>{{ number_format($dayData['total_day_weight'], 1) }} г</strong></td>
-                                    <td class="text-end align-middle"><strong>{{ number_format($dayData['total_day_cost'], 2) }} грн</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($dayData['total_day_weight'], 1) }} г</strong></td>
+                                    <td class="text-end"><strong>{{ number_format($dayData['total_day_cost'], 2) }} грн</strong></td>
                                 </tr>
-                                @foreach($dayData['spools'] as $spool)
-                                    <tr>
-                                        <td></td>
-                                        <td>
-                                            {{ $spool->filament->vendor->name }}, {{ $spool->filament->color }}, {{ $spool->packaging->name }}
-                                        </td>
-                                        <td class="text-end">{{ number_format($spool->weight_initial, 1) }}</td>
-                                        <td class="text-end">{{ number_format($spool->cost, 2) }}</td>
-                                    </tr>
-                                @endforeach
+                                <tr class="detail-row d-none" data-parent-id="{{ \Illuminate\Support\Str::slug($date) }}">
+                                    <td colspan="4" class="p-0">
+                                        <div class="p-2 bg-light">
+                                            <table class="table table-sm mb-0">
+                                                <tbody>
+                                                    @foreach($dayData['spools'] as $spool)
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>
+                                                                {{ $spool->filament->vendor->name }}, {{ $spool->filament->color }}, {{ $spool->packaging->name }}
+                                                            </td>
+                                                            <td class="text-end">{{ number_format($spool->weight_initial, 1) }}</td>
+                                                            <td class="text-end">{{ number_format($spool->cost, 2) }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
                             @empty
                                 <tr>
                                     <td colspan="4" class="text-center">Немає даних за вказаний період</td>
@@ -75,3 +90,16 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initToggleRows({
+            toggleSelector: '[data-income-id]',
+            rowSelector: 'tr.detail-row',
+            cookiePrefix: 'income',
+            idAttribute: 'incomeId'
+        });
+    });
+</script>
+@endpush
