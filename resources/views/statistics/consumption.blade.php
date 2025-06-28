@@ -69,9 +69,15 @@
                                                                                 $groupedTasks = $printJob->partTasks->groupBy(function($task) {
                                                                                     return $task->task->name;
                                                                                 });
+
+                                                                                // Генерируем цвет бейджа на основе ID принтера
+                                                                                $printerColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
+                                                                                $colorIndex = $printJob->printer->id % count($printerColors);
+                                                                                $badgeColor = $printerColors[$colorIndex];
                                                                             @endphp
 
-                                                                            <small class="text-muted">[#{{ $printJob->id }}] [{{ $printJob->printer->name }}]</small>
+                                                                            <small class="text-muted">[#{{ $printJob->id }}]</small>
+                                                                            <span class="badge bg-{{ $badgeColor }}">{{ $printJob->printer->name }}</span>
                                                                             @foreach($groupedTasks as $taskName => $tasks)
                                                                                 <div>
                                                                                     <small class="text-muted">#{{ $tasks->first()->task->id }}</small>
@@ -89,7 +95,15 @@
                                                                             @endforeach
                                                                         </div>
                                                                     @else
-                                                                        <small class="text-muted">[#{{ $printJob->id }}] [{{ $printJob->printer->name }}]</small> <span>{{ $printJob->filename }}</span>
+                                                                        @php
+                                                                            // Генерируем цвет бейджа на основе ID принтера
+                                                                            $printerColors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark'];
+                                                                            $colorIndex = $printJob->printer->id % count($printerColors);
+                                                                            $badgeColor = $printerColors[$colorIndex];
+                                                                        @endphp
+                                                                        <small class="text-muted">[#{{ $printJob->id }}]</small>
+                                                                        <span class="badge bg-{{ $badgeColor }}">{{ $printJob->printer->name }}</span>
+                                                                        <span>{{ $printJob->filename }}</span>
                                                                     @endif
                                                                 </div>
                                                             </td>
