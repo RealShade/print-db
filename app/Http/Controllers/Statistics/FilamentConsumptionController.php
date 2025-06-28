@@ -54,6 +54,7 @@ class FilamentConsumptionController extends Controller
             $printJobs = PrintJob::with(['partTasks.part', 'partTasks.task'])
                 ->whereIn('id', $printJobIds)
                 ->whereNotNull('end_time')
+                ->orderBy('end_time', 'desc')
                 ->get();
 
             // Группируем задания по дате завершения
