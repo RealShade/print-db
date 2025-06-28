@@ -67,7 +67,10 @@
                                                         <tr>
                                                             <td></td>
                                                             <td>
-                                                                {{ $spool->filament->vendor->name }}, {{ $spool->filament->color }}, {{ $spool->packaging->name }}
+                                                                @foreach($spool->filament->colors as $color)
+                                                                    <span class="filament-color-preview" style="background-color: {{ $color }}; width: 20px; height: 20px; display: inline-block;"></span>
+                                                                @endforeach
+                                                                {{ $spool->filament->vendor->name }}, {{ $spool->filament->type->name }}, {{ $spool->packaging->name }}
                                                             </td>
                                                             <td class="text-end">{{ number_format($spool->weight_initial, 1) }}</td>
                                                             <td class="text-end">{{ number_format($spool->cost, 2) }}</td>

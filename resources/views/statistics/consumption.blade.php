@@ -58,18 +58,42 @@
                                         <div class="p-2 bg-light">
                                             <table class="table table-sm mb-0">
                                                 <tbody>
-                                                    @foreach($dayData['jobs'] as $job)
-                                                        <tr>
+                                                    @foreach($dayData['jobs'] as $printJob)
+                                                        <tr class="{{ $printJob->partTasks->count() > 0 ? 'table-light' : '' }}">
                                                             <td></td>
                                                             <td>
-                                                                #{{ $job->print_job_id }} -
-                                                                @if($job->job_name)
-                                                                    {{ $job->job_name }}
-                                                                @else
-                                                                    {{ $job->filename ?? 'Без назви' }}
-                                                                @endif
+                                                                <div class="px-2 py-1 {{ $printJob->partTasks->count() > 0 ? 'border-start border-4 border-success' : '' }}">
+                                                                    @if($printJob->partTasks->count() > 0)
+                                                                        <div>
+                                                                            @php
+                                                                                $groupedTasks = $printJob->partTasks->groupBy(function($task) {
+                                                                                    return $task->task->name;
+                                                                                });
+                                                                            @endphp
+
+                                                                            @foreach($groupedTasks as $taskName => $tasks)
+                                                                                <div class="mb-1 fw-bold">
+                                                                                    <small class="text-muted">[#{{ $printJob->id }}]</small>
+                                                                                    <small class="text-muted">#{{ $tasks->first()->task->id }}</small>
+                                                                                    {{ $taskName }}
+                                                                                </div>
+                                                                                <ul class="list-unstyled ms-3 mb-2">
+                                                                                    @foreach($tasks as $partTask)
+                                                                                        <li>
+                                                                                            <b>x{{ $partTask->pivot->count_printed }}</b>
+                                                                                            <small class="text-muted">#{{ $partTask->part->id }}</small>
+                                                                                            {{ $partTask->part->name }}
+                                                                                        </li>
+                                                                                    @endforeach
+                                                                                </ul>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    @else
+                                                                        <small class="text-muted">[#{{ $printJob->id }}]</small> <span>{{ $printJob->filename }}</span>
+                                                                    @endif
+                                                                </div>
                                                             </td>
-                                                            <td class="text-end">{{ number_format($job->weight_used, 1) }} г</td>
+                                                            <td class="text-end">{{ number_format($printJob->total_weight_used, 1) }} г</td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

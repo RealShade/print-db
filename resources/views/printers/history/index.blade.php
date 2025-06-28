@@ -51,7 +51,7 @@
                                     <div class="mb-1">
                                         <b><x-number :value="$filamentSpool->pivot->weight_used" precision="4" noEmpty /></b>
                                         @foreach($filamentSpool->filament->colors as $color)
-                                            <span style="background-color: {{ $color }}; width: 20px; height: 20px; display: inline-block;"></span>
+                                            <span class="filament-color-preview" style="background-color: {{ $color }}; width: 20px; height: 20px; display: inline-block;"></span>
                                         @endforeach
                                         <span class="small text-muted">#{{ $filamentSpool->id }}</span>
                                         {{ $filamentSpool->filament->name }} {{ $filamentSpool->filament->type->name }}, {{ $filamentSpool->filament->vendor->name }}, {{ $filamentSpool->packaging->name }}
