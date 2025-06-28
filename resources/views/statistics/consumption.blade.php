@@ -72,7 +72,7 @@
                                                                             @endphp
 
                                                                             @foreach($groupedTasks as $taskName => $tasks)
-                                                                                <div class="fw-bold">
+                                                                                <div>
                                                                                     <small class="text-muted">[#{{ $printJob->id }}]</small>
                                                                                     <small class="text-muted">#{{ $tasks->first()->task->id }}</small>
                                                                                     {{ $taskName }}
