@@ -62,7 +62,7 @@
                                                         <tr class="{{ $printJob->partTasks->count() > 0 ? 'table-light' : '' }}">
                                                             <td></td>
                                                             <td>
-                                                                <div class="px-2 py-1 {{ $printJob->partTasks->count() > 0 ? 'border-start border-4 border-success' : '' }}">
+                                                                <div class="px-2 {{ $printJob->partTasks->count() > 0 ? 'border-start border-4 border-success' : '' }}">
                                                                     @if($printJob->partTasks->count() > 0)
                                                                         <div>
                                                                             @php
@@ -72,12 +72,12 @@
                                                                             @endphp
 
                                                                             @foreach($groupedTasks as $taskName => $tasks)
-                                                                                <div class="mb-1 fw-bold">
+                                                                                <div class="fw-bold">
                                                                                     <small class="text-muted">[#{{ $printJob->id }}]</small>
                                                                                     <small class="text-muted">#{{ $tasks->first()->task->id }}</small>
                                                                                     {{ $taskName }}
                                                                                 </div>
-                                                                                <ul class="list-unstyled ms-3 mb-2">
+                                                                                <ul class="list-unstyled ms-3 mb-0">
                                                                                     @foreach($tasks as $partTask)
                                                                                         <li>
                                                                                             <b>x{{ $partTask->pivot->count_printed }}</b>
