@@ -23,11 +23,18 @@
             @foreach ($parts as $part)
                 <li>
                     <button
-                        class="dropdown-item d-flex flex-column text-start"
+                        class="dropdown-item d-flex align-items-center text-start"
                         type="button"
                         data-id="{{ $part->id }}">
-                        <strong>#{{ $part->id }} {{ $part->name }}</strong>
-                        <small class="text-muted">{{ $part->getFullCatalogPath() }}</small>
+                        @if($part->fileService()->getPreviewUrl())
+                            <div class="me-2" style="height: 40px; min-width: 40px; overflow: hidden;">
+                                <img src="{{ $part->fileService()->getPreviewUrl() }}" alt="{{ $part->name }}" class="img-fluid" style="object-fit: contain; width: 100%; height: 100%;">
+                            </div>
+                        @endif
+                        <div class="d-flex flex-column">
+                            <strong>#{{ $part->id }} {{ $part->name }}</strong>
+                            <small class="text-muted">{{ $part->getFullCatalogPath() }}</small>
+                        </div>
                     </button>
                 </li>
                 @if($value && $part->id == $value)

@@ -35,7 +35,7 @@ class PartController extends Controller
         return view('print.parts.form', compact('part'));
     }
 
-    public function store(PartRequest $request, PartFileService $fileService) : JsonResponse
+    public function store(PartRequest $request) : JsonResponse
     {
         $part             = new Part($request->validated());
         $part->user_id    = auth()->id();
@@ -45,7 +45,7 @@ class PartController extends Controller
         // Загрузка STL-файла
         if ($request->hasFile('stl_file')) {
             $file = $request->file('stl_file');
-            $filename = $fileService->saveStlFile($part, $file);
+            $filename = $part->fileService()->saveStlFile($file);
             $part->stl_filename = $filename;
             $part->stl_original_name = $file->getClientOriginalName();
             $part->save();
@@ -54,13 +54,13 @@ class PartController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function update(PartRequest $request, Part $part, PartFileService $fileService) : JsonResponse
+    public function update(PartRequest $request, Part $part) : JsonResponse
     {
         $part->update($request->validated());
 
         // Удаление STL-файла по запросу пользователя
         if ($request->input('delete_stl') === '1' && $part->stl_filename) {
-            $fileService->deleteStlFile($part->stl_filename);
+            $part->fileService()->deleteStlFile();
             $part->stl_filename = null;
             $part->stl_original_name = null;
             $part->save();
@@ -71,9 +71,9 @@ class PartController extends Controller
             $file = $request->file('stl_file');
             // Удалить старый файл, если был
             if ($part->stl_filename) {
-                $fileService->deleteStlFile($part->stl_filename);
+                $part->fileService()->deleteStlFile();
             }
-            $filename = $fileService->saveStlFile($part, $file);
+            $filename = $part->fileService()->saveStlFile($file);
             $part->stl_filename = $filename;
             $part->stl_original_name = $file->getClientOriginalName();
             $part->save();

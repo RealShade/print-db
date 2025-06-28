@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasUser;
+use App\Services\PartFileService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,11 @@ class Part extends Model
         'catalog_id'   => 'integer',
     ];
 
+    /**
+     * Экземпляр сервиса для работы с файлами
+     */
+    protected ?PartFileService $fileServiceInstance = null;
+
     /* **************************************** Public **************************************** */
     public function catalog() : BelongsTo
     {
@@ -39,6 +45,17 @@ class Part extends Model
             ->using(PartTask::class)
             ->withPivot(['count_per_set', 'count_printed'])
             ->withTimestamps();
+    }
+
+    /**
+     * Получить экземпляр сервиса для работы с файлами
+     */
+    public function fileService(): PartFileService
+    {
+        if (!$this->fileServiceInstance) {
+            $this->fileServiceInstance = new PartFileService($this);
+        }
+        return $this->fileServiceInstance;
     }
 
     /* **************************************** Getters **************************************** */

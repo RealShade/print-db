@@ -14,13 +14,9 @@
             @foreach($parts as $part)
                 <tr>
                     <td>
-                        @php
-                            $preview = $part->stl_filename ? asset('storage/parts/' . preg_replace('/\.stl$/i', '.png', $part->stl_filename)) : null;
-//                            dd($fileService->getPreviewUrl($part->stl_filename));
-                        @endphp
-                        @if(isset($fileService) && $fileService->hasPreview($part->stl_filename))
-                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $fileService->getPreviewUrl($part->stl_filename) }}' style='max-width:400px;max-height:400px;'>">
-                                <img src="{{ $fileService->getPreviewUrl($part->stl_filename) }}" alt="preview" width="60" height="60" style="object-fit:contain; border:1px solid #ccc;">
+                        @if($part->stl_filename && $part->fileService()->hasPreview())
+                            <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $part->fileService()->getPreviewUrl() }}' style='max-width:400px;max-height:400px;'>">
+                                <img src="{{ $part->fileService()->getPreviewUrl() }}" alt="preview" width="60" height="60" style="object-fit:contain; border:1px solid #ccc;">
                             </span>
                         @endif
                         {{ $part->name }}
