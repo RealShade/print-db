@@ -71,9 +71,9 @@
                                                                                 });
                                                                             @endphp
 
+                                                                            <small class="text-muted">[#{{ $printJob->id }}] [{{ $printJob->printer->name }}]</small>
                                                                             @foreach($groupedTasks as $taskName => $tasks)
                                                                                 <div>
-                                                                                    <small class="text-muted">[#{{ $printJob->id }}]</small>
                                                                                     <small class="text-muted">#{{ $tasks->first()->task->id }}</small>
                                                                                     {{ $taskName }}
                                                                                 </div>
@@ -89,7 +89,7 @@
                                                                             @endforeach
                                                                         </div>
                                                                     @else
-                                                                        <small class="text-muted">[#{{ $printJob->id }}]</small> <span>{{ $printJob->filename }}</span>
+                                                                        <small class="text-muted">[#{{ $printJob->id }}] [{{ $printJob->printer->name }}]</small> <span>{{ $printJob->filename }}</span>
                                                                     @endif
                                                                 </div>
                                                             </td>
