@@ -50,7 +50,7 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
 
     Route::prefix('print')->name('print.')->group(function() {
         // Маршруты для частей (parts)
-        Route::get('parts', [PartController::class, 'index'])->name('parts.index');
+//        Route::get('parts', [PartController::class, 'index'])->name('parts.index');
         Route::get('parts/{catalog}/create', [PartController::class, 'create'])->name('parts.create');
         Route::post('parts', [PartController::class, 'store'])->name('parts.store');
         Route::get('parts/{part}/edit', [PartController::class, 'edit'])->name('parts.edit');
@@ -171,6 +171,17 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         ->name('tools.validate-filename');
 
     Route::get('history', [PrintJobController::class, 'history'])->name('history.index');
+
+    // Маршруты для статистики
+    Route::prefix('statistics')->name('statistics.')->group(function() {
+        // Статистика расхода филамента
+        Route::get('consumption', [App\Http\Controllers\Statistics\FilamentConsumptionController::class, 'index'])
+            ->name('consumption.index');
+
+        // Статистика прихода филамента
+        Route::get('income', [App\Http\Controllers\Statistics\FilamentIncomeController::class, 'index'])
+            ->name('income.index');
+    });
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function() {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

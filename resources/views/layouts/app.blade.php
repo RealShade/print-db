@@ -91,6 +91,30 @@
                         {{ __('tools.title') }}
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white d-flex align-items-center justify-content-between"
+                       data-bs-toggle="collapse"
+                       href="#statisticsCollapse"
+                       role="button"
+                       aria-expanded="{{ request()->routeIs('statistics.*') ? 'true' : 'false' }}"
+                       aria-controls="statisticsCollapse">
+                        <span>
+                            <img src="{{ asset('images/menu/chart.svg') }}" alt="Statistics">
+                            {{ __('menu.statistics.title') }}
+                        </span>
+                        <i class="bi bi-chevron-down"></i>
+                    </a>
+                    <div class="collapse {{ request()->routeIs('statistics.*') ? 'show' : '' }}" id="statisticsCollapse">
+                        <ul class="nav flex-column ms-4">
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('statistics.consumption.*') ? 'active' : 'text-white' }}" href="{{ route('statistics.consumption.index') }}">{{ __('menu.statistics.filament_consumption') }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('statistics.income.*') ? 'active' : 'text-white' }}" href="{{ route('statistics.income.index') }}">{{ __('menu.statistics.filament_income') }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 @if(auth()->user()->hasRole(\App\Enums\UserRole::ADMIN))
                     <li>
                         <a href="{{ route('admin.users.index') }}" class="nav-link {{ request()->is('admin/users*') ? 'active' : 'text-white' }}">

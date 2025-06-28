@@ -22,4 +22,9 @@ return [
         'types' => 'Типи',
         'packaging' => 'Упаковки',
     ],
+    'statistics' => [
+        'title' => 'Статистика',
+        'filament_consumption' => 'Витрата філаменту',
+        'filament_income' => 'Надходження філаменту',
+    ],
 ];
