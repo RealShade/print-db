@@ -176,7 +176,12 @@
                                                         @foreach($taskPartTasks as $partTask)
                                                             @php($printJobPartTask = $partTask->pivot)
                                                             <li class="list-group-item px-0">
-                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                <div class="d-flex justify-content-start align-items-center">
+                                                                    @if($partTask->part->stl_filename && $partTask->part->fileService()->hasPreview())
+                                                                        <div class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $partTask->part->fileService()->getPreviewUrl() }}' style='max-width:400px;max-height:400px;'>">
+                                                                            <img src="{{ $partTask->part->fileService()->getPreviewUrl() }}" alt="preview" width="60" height="60" style="object-fit:contain;">
+                                                                        </div>
+                                                                    @endif
                                                                     <div>
                                                                         <div class="small">
                                                                             <span class="card-text small text-muted">#{{ $partTask->part->id }}</span> {{ $partTask->part->name }}

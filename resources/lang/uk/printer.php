@@ -17,6 +17,7 @@ return [
     'printing_tasks_purged'    => 'Завдання на друк видалено',
     'printing_tasks_completed' => 'Завдання на друк завершено',
     'no_tasks'                 => 'Нічого не друкується',
+    'filename'                 => 'Назва файлу',
     'confirm'                  => [
         'complete_print' => [
             'title' => 'Відмітити як надруковане?',
