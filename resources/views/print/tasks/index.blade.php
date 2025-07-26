@@ -132,16 +132,23 @@
                                         <td class="ps-4"></td>
                                         <td class="text-end table-id">{{ $part->id }}</td>
                                         <td>
-                                            @if($part->pivot->count_printing > 0)
-                                                <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
+                                            @if($part->stl_filename && $part->fileService()->hasPreview())
+                                                <div class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $part->fileService()->getPreviewUrl() }}' style='max-width:400px;max-height:400px;'>">
+                                                    <img src="{{ $part->fileService()->getPreviewUrl() }}" alt="preview" width="60" height="60" style="object-fit:contain; border:1px solid #ccc;">
+                                                </div>
+                                            @endif
+                                            <div class="d-inline-block">
+                                                @if($part->pivot->count_printing > 0)
+                                                    <span class="badge badge-printing me-1" title="{{ __('printer.status.printing') }}">
                                                     <i class="bi bi-printer"></i>
                                                 </span>
-                                            @endif
-                                            {{ $part->name }}
-                                            <span class="small text-muted">{{ $part->version }}@if($part->version_date)
-                                                    , {{ $part->version_date->format('d.m.Y') }}
-                                                @endif</span>
-                                            <div class="small text-muted">{{ $part->getFullCatalogPath() }}</div>
+                                                @endif
+                                                {{ $part->name }}
+                                                <span class="small text-muted">{{ $part->version }}@if($part->version_date)
+                                                        , {{ $part->version_date->format('d.m.Y') }}
+                                                    @endif</span>
+                                                <div class="small text-muted">{{ $part->getFullCatalogPath() }}</div>
+                                            </div>
                                         </td>
                                         <td class="text-end table-count">{{ $part->pivot->count_per_set }}</td>
                                         <td class="text-end table-count_two">
