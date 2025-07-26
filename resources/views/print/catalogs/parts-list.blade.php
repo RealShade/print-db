@@ -16,7 +16,7 @@
                     <td>
                         @if($part->stl_filename && $part->fileService()->hasPreview())
                             <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $part->fileService()->getPreviewUrl() }}' style='max-width:400px;max-height:400px;'>">
-                                <img src="{{ $part->fileService()->getPreviewUrl() }}" alt="preview" width="60" height="60" style="object-fit:contain; border:1px solid #ccc;">
+                                <img src="{{ $part->fileService()->getPreviewUrl() }}" alt="preview" width="60" height="60" style="object-fit:contain;">
                             </span>
                         @endif
                         {{ $part->name }}
