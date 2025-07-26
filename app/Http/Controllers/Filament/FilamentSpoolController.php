@@ -56,14 +56,19 @@ class FilamentSpoolController extends Controller
 
     public function index() : View
     {
-        $query = FilamentSpool::where('user_id', auth()->id())
-            ->with(['filament', 'packaging']);
+        $query = FilamentSpool::where('filament_spools.user_id', auth()->id())
+            ->with(['filament', 'packaging', 'slots.printer'])
+            ->leftJoin('printer_filament_slots', 'filament_spools.id', '=', 'printer_filament_slots.filament_spool_id');
+
         if (!request()->has('archived') || !request()->archived) {
-            $query->where('archived', false);
+            $query->where('filament_spools.archived', false);
         }
+
         $spools = $query
-            ->orderByDesc('date_last_used')
-            ->orderBy('id')
+            ->select('filament_spools.*')
+            ->orderByRaw('CASE WHEN printer_filament_slots.filament_spool_id IS NOT NULL THEN 0 ELSE 1 END')
+            ->orderByDesc('filament_spools.date_last_used')
+            ->orderBy('filament_spools.id')
             ->paginate();
 
         return view('filament.spools.index', compact('spools'));
