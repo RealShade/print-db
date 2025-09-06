@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Print/TaskController.php
 
 namespace App\Http\Controllers\Print;
 
@@ -7,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Print\TaskRequest;
 use App\Models\Task;
 use App\Models\Part;
+use App\Enums\TaskStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
@@ -79,4 +79,31 @@ class TaskController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function duplicate(Task $task) : JsonResponse
+    {
+        // Создаем копию задачи
+        $newTask = $task->replicate([
+            'archived',
+            'archived_at',
+            'completed_at'
+        ]);
+        $newTask->status = TaskStatus::NEW;
+        $newTask->archived = false;
+        $newTask->archived_at = null;
+        $newTask->completed_at = null;
+        $newTask->user_id = auth()->id();
+        $newTask->save();
+
+        // Копируем связанные части с тем же количеством в комплекте, но сбрасываем count_printed
+        foreach ($task->parts as $part) {
+            $newTask->parts()->attach($part->id, [
+                'count_per_set' => $part->pivot->count_per_set,
+                'count_printed' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

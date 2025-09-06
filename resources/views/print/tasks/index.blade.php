@@ -78,6 +78,17 @@
                                         <i class="bi bi-archive"></i>
                                     @endif
                                 </button>
+                                <button type="button" class="btn btn-sm btn-info"
+                                        data-transport="ajax"
+                                        data-action="{{ route('print.tasks.duplicate', $task) }}"
+                                        data-method="POST"
+                                        data-confirm="true"
+                                        data-confirm-title="{{ __('task.action.duplicate.title') }}"
+                                        data-confirm-text="{{ __('task.action.duplicate.confirm') }}"
+                                        data-confirm-button="{{ __('common.buttons.confirm') }}"
+                                        data-cancel-button="{{ __('common.buttons.cancel') }}">
+                                    <i class="bi bi-copy"></i>
+                                </button>
                                 <button type="button" class="btn btn-sm btn-primary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#taskModal"

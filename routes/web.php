@@ -65,6 +65,7 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
         Route::put('tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
         Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
         Route::post('tasks/{task}/archive', [TaskController::class, 'archive'])->name('tasks.archive');
+        Route::post('tasks/{task}/duplicate', [TaskController::class, 'duplicate'])->name('tasks.duplicate');
 
         // Маршруты для частей задач (task-parts)
         Route::get('task-parts/{task}/create', [PartTaskController::class, 'create'])
