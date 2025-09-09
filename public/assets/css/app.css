@@ -1,3 +1,80 @@
+/* Стили для Dropzone */
+.dropzone {
+  border: 2px dashed #bbb;
+  border-radius: 5px;
+  min-height: 150px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border 0.3s ease-in-out;
+}
+.dropzone:hover {
+  border-color: #007bff;
+}
+.dropzone .dz-message {
+  font-size: 1.2em;
+  color: #6c757d;
+  text-align: center;
+}
+.dropzone .dz-preview {
+  margin: 10px;
+}
+.dropzone .dz-preview .dz-image {
+  border-radius: 4px;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: block;
+  z-index: 10;
+}
+.dropzone .dz-preview .dz-progress {
+  display: block;
+  height: 15px;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+.dropzone .dz-preview .dz-progress .dz-upload {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #007bff;
+  transition: width 0.3s ease-in-out;
+}
+.dropzone .dz-preview .dz-error-message {
+  color: #dc3545;
+  display: none;
+}
+.dropzone .dz-preview .dz-error:hover .dz-error-message {
+  display: block;
+}
+.dropzone .dz-preview .dz-details {
+  position: relative;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #495057;
+  text-align: center;
+}
+.dropzone .dz-preview .dz-remove {
+  font-size: 14px;
+  text-align: center;
+  display: block;
+  cursor: pointer;
+  color: #dc3545;
+  text-decoration: none;
+  margin-top: 5px;
+}
+.dropzone .dz-preview .dz-remove:hover {
+  text-decoration: underline;
+}
+.dropzone .dz-success-mark,
+.dropzone .dz-error-mark {
+  display: none;
+}
 :root {
   --bs-body-bg: #001F3F;
   --bs-body-color: #F8F9FA;

@@ -477,10 +477,6 @@ function initializeDropzoneUploader() {
             return;
         }
 
-        // Находим контейнер для прогресс-бара
-        const progressContainer = document.getElementById('upload-progress-container');
-        const progressBar = document.getElementById('upload-progress');
-
         // Настройка Dropzone
         Dropzone.autoDiscover = false;
 
@@ -514,35 +510,27 @@ function initializeDropzoneUploader() {
         myDropzone.on('addedfile', function(file) {
             console.log('Файл добавлен:', file.name);
 
+            const submitButton = partForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+
             // Очищаем предыдущие данные о загруженном файле
             chunkFilePathInput.value = '';
             chunkOriginalNameInput.value = '';
-
-            // Если прогресс-бар существует, показываем его
-            if (progressContainer && progressBar) {
-                progressContainer.classList.remove('d-none');
-                progressBar.style.width = '0%';
-                progressBar.textContent = '0%';
-                progressBar.classList.remove('bg-success');
-                progressBar.classList.add('bg-primary');
-            }
         });
 
         myDropzone.on('uploadprogress', function(file, progress) {
             console.log('Прогресс загрузки:', progress.toFixed(0) + '%');
-
-            // Если прогресс-бар существует, обновляем его
-            if (progressBar) {
-                const percentage = Math.round(progress);
-                progressBar.style.width = percentage + '%';
-                progressBar.setAttribute('aria-valuenow', percentage);
-                progressBar.textContent = percentage + '%';
-            }
         });
 
         myDropzone.on('success', function(file, response) {
             console.log('Файл успешно загружен:', response);
 
+            const submitButton = partForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
             // Сохраняем информацию о загруженном файле
             if (response.success) {
                 // Если это последний чанк или обычная загрузка файла
@@ -553,14 +541,6 @@ function initializeDropzoneUploader() {
                     console.log('Установлены значения:');
                     console.log('chunk_file_path:', chunkFilePathInput.value);
                     console.log('chunk_original_name:', chunkOriginalNameInput.value);
-
-                    // Если прогресс-бар существует, обновляем его
-                    if (progressBar) {
-                        progressBar.style.width = '100%';
-                        progressBar.textContent = 'Загружено';
-                        progressBar.classList.remove('bg-primary');
-                        progressBar.classList.add('bg-success');
-                    }
                 } else {
                     console.log('Чанк успешно загружен, ожидание завершения загрузки');
                 }
@@ -568,6 +548,12 @@ function initializeDropzoneUploader() {
         });
 
         myDropzone.on('error', function(file, errorMessage, xhr) {
+
+                    // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+                    const submitButton = partForm.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
             console.error('Ошибка загрузки файла:', errorMessage);
 
             // Удаляем файл из очереди
@@ -583,14 +569,35 @@ function initializeDropzoneUploader() {
             } else {
                 alert('Ошибка загрузки файла: ' + file.name);
             }
-
-            // Скрываем прогресс-бар
-            if (progressContainer) {
-                progressContainer.classList.add('d-none');
-            }
         });
 
         // Модификация обработчика отправки формы
+        // Обработка отмены загрузки
+        myDropzone.on('canceled', function(file) {
+            console.log('Загрузка отменена:', file.name);
+
+            // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+            const submitButton = partForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
+        });
+
+        // Обработка удаления файла
+        myDropzone.on('removedfile', function(file) {
+            console.log('Файл удален из очереди:', file.name);
+
+            // Очищаем данные о загруженном файле
+            chunkFilePathInput.value = '';
+            chunkOriginalNameInput.value = '';
+
+            // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+            const submitButton = partForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
+        });
+
         if (partForm) {
             console.log('Добавляем обработчик для формы:', partForm);
 

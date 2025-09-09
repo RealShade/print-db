@@ -70,22 +70,4 @@
         <button type="submit" class="btn btn-primary">{{ __('common.buttons.save') }}</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
     </div>
-
-    <!-- Добавляем ссылки на стили DropzoneJS -->
-    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
-    <style>
-        .dropzone {
-            border: 2px dashed #0087F7;
-            border-radius: 5px;
-            min-height: 150px;
-            padding: 20px;
-            text-align: center;
-        }
-        .dropzone .dz-message {
-            font-weight: 400;
-        }
-        .dropzone .dz-preview .dz-image {
-            border-radius: 5px;
-        }
-    </style>
 </form>

@@ -1,9 +1,9 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css":
+/***/ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css":
 /*!******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css ***!
+  !*** ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css ***!
   \******************************************************************************************************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
@@ -10990,7 +10990,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
 /* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _css_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../css-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[1]!../postcss-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[2]!./spectrum.css */ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[6].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css");
+/* harmony import */ var _css_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../css-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[1]!../postcss-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[2]!./spectrum.css */ "./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[7].oneOf[1].use[2]!./node_modules/spectrum-colorpicker/spectrum.css");
 
             
 
@@ -10999,11 +10999,11 @@ var options = {};
 options.insert = "head";
 options.singleton = false;
 
-var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_css_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_css_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__["default"], options);
 
 
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_css_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_6_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_css_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_1_postcss_loader_dist_cjs_js_ruleSet_1_rules_7_oneOf_1_use_2_spectrum_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -18729,10 +18729,6 @@ function initializeDropzoneUploader() {
       return;
     }
 
-    // Находим контейнер для прогресс-бара
-    var progressContainer = document.getElementById('upload-progress-container');
-    var progressBar = document.getElementById('upload-progress');
-
     // Настройка Dropzone
     Dropzone.autoDiscover = false;
 
@@ -18771,34 +18767,24 @@ function initializeDropzoneUploader() {
     // Обработчики событий Dropzone
     myDropzone.on('addedfile', function (file) {
       console.log('Файл добавлен:', file.name);
+      var submitButton = partForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
 
       // Очищаем предыдущие данные о загруженном файле
       chunkFilePathInput.value = '';
       chunkOriginalNameInput.value = '';
-
-      // Если прогресс-бар существует, показываем его
-      if (progressContainer && progressBar) {
-        progressContainer.classList.remove('d-none');
-        progressBar.style.width = '0%';
-        progressBar.textContent = '0%';
-        progressBar.classList.remove('bg-success');
-        progressBar.classList.add('bg-primary');
-      }
     });
     myDropzone.on('uploadprogress', function (file, progress) {
       console.log('Прогресс загрузки:', progress.toFixed(0) + '%');
-
-      // Если прогресс-бар существует, обновляем его
-      if (progressBar) {
-        var percentage = Math.round(progress);
-        progressBar.style.width = percentage + '%';
-        progressBar.setAttribute('aria-valuenow', percentage);
-        progressBar.textContent = percentage + '%';
-      }
     });
     myDropzone.on('success', function (file, response) {
       console.log('Файл успешно загружен:', response);
-
+      var submitButton = partForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
       // Сохраняем информацию о загруженном файле
       if (response.success) {
         // Если это последний чанк или обычная загрузка файла
@@ -18808,20 +18794,17 @@ function initializeDropzoneUploader() {
           console.log('Установлены значения:');
           console.log('chunk_file_path:', chunkFilePathInput.value);
           console.log('chunk_original_name:', chunkOriginalNameInput.value);
-
-          // Если прогресс-бар существует, обновляем его
-          if (progressBar) {
-            progressBar.style.width = '100%';
-            progressBar.textContent = 'Загружено';
-            progressBar.classList.remove('bg-primary');
-            progressBar.classList.add('bg-success');
-          }
         } else {
           console.log('Чанк успешно загружен, ожидание завершения загрузки');
         }
       }
     });
     myDropzone.on('error', function (file, errorMessage, xhr) {
+      // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+      var submitButton = partForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
       console.error('Ошибка загрузки файла:', errorMessage);
 
       // Удаляем файл из очереди
@@ -18835,14 +18818,34 @@ function initializeDropzoneUploader() {
       } else {
         alert('Ошибка загрузки файла: ' + file.name);
       }
-
-      // Скрываем прогресс-бар
-      if (progressContainer) {
-        progressContainer.classList.add('d-none');
-      }
     });
 
     // Модификация обработчика отправки формы
+    // Обработка отмены загрузки
+    myDropzone.on('canceled', function (file) {
+      console.log('Загрузка отменена:', file.name);
+
+      // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+      var submitButton = partForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    });
+
+    // Обработка удаления файла
+    myDropzone.on('removedfile', function (file) {
+      console.log('Файл удален из очереди:', file.name);
+
+      // Очищаем данные о загруженном файле
+      chunkFilePathInput.value = '';
+      chunkOriginalNameInput.value = '';
+
+      // Разблокируем кнопку сохранения и возвращаем оригинальный текст
+      var submitButton = partForm.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    });
     if (partForm) {
       console.log('Добавляем обработчик для формы:', partForm);
 
@@ -19154,6 +19157,19 @@ __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
 
+/***/ }),
+
+/***/ "./resources/less/dropzone.less":
+/*!**************************************!*\
+  !*** ./resources/less/dropzone.less ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
 /***/ })
 
 /******/ 	});
@@ -19267,6 +19283,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
 /******/ 			"/assets/js/app": 0,
+/******/ 			"assets/css/dropzone": 0,
 /******/ 			"assets/css/app": 0
 /******/ 		};
 /******/ 		
@@ -19322,8 +19339,9 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	__webpack_require__.O(undefined, ["assets/css/app"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["assets/css/app"], () => (__webpack_require__("./resources/less/app.less")))
+/******/ 	__webpack_require__.O(undefined, ["assets/css/dropzone","assets/css/app"], () => (__webpack_require__("./resources/js/app.js")))
+/******/ 	__webpack_require__.O(undefined, ["assets/css/dropzone","assets/css/app"], () => (__webpack_require__("./resources/less/app.less")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["assets/css/dropzone","assets/css/app"], () => (__webpack_require__("./resources/less/dropzone.less")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

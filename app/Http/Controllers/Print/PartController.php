@@ -101,7 +101,7 @@ class PartController extends Controller
                         'success' => true,
                         'done' => 99, // Почти завершено, но ещё не объединено
                         'status' => true,
-                        'message' => 'Ожидание загрузки всех частей файла...'
+                        'message' => __('part.waiting_for_all_chunks')
                     ]);
                 }
 
@@ -140,14 +140,14 @@ class PartController extends Controller
             }
         } catch (\Exception $e) {
             // Логируем ошибку для отладки
-            \Log::error('Ошибка загрузки файла: ' . $e->getMessage(), [
+            \Log::error(__('part.upload_error') . $e->getMessage(), [
                 'exception' => $e,
                 'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Ошибка загрузки файла: ' . $e->getMessage()
+                'message' => __('part.upload_error') . $e->getMessage()
             ], 400);
         }
     }
@@ -180,7 +180,7 @@ class PartController extends Controller
 
                     return response()->json([
                         'success' => false,
-                        'message' => "Часть файла {$i} не найдена. Попробуйте загрузить файл заново."
+                        'message' => __('part.chunk_missing', ['i' => $i])
                     ], 400);
                 }
 
@@ -218,7 +218,7 @@ class PartController extends Controller
 
                 return response()->json([
                     'success' => false,
-                    'message' => 'Размер полученного файла не соответствует ожидаемому. Попробуйте загрузить файл заново.'
+                    'message' => __('part.file_size_mismatch')
                 ], 400);
             }
 
@@ -232,7 +232,7 @@ class PartController extends Controller
                 'original_name' => $originalName
             ]);
         } catch (\Exception $e) {
-            \Log::error("Ошибка при объединении чанков: " . $e->getMessage(), [
+            \Log::error(__('part.merge_error') . $e->getMessage(), [
                 'exception' => $e,
                 'trace' => $e->getTraceAsString()
             ]);
@@ -248,7 +248,7 @@ class PartController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Ошибка при объединении файла: ' . $e->getMessage()
+                'message' => __('part.merge_error') . $e->getMessage()
             ], 500);
         }
     }
