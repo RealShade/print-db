@@ -37,19 +37,31 @@
     </div>
 
     <div class="mb-3">
-        <label for="stl_file" class="form-label">STL-файл</label>
-        <input type="file" class="form-control" id="stl_file" name="stl_file" accept=".stl">
-        @if(isset($part) && $part->stl_original_name)
-            <div class="form-text d-flex align-items-center" id="current-stl-block">
-                <a href="{{ $part->stl_filename ? asset('storage/parts/' . $part->stl_filename) : '#' }}" target="_blank" download class="me-2 text-decoration-underline text-primary" style="cursor:pointer;">
-                    {{ $part->stl_original_name }}
-                </a>
-                <button type="button" class="btn btn-link p-0 m-0 align-baseline text-danger" id="delete-stl-btn" title="{{ __('Удалить файл') }}">
-                    <i class="bi bi-x-circle" style="font-size:1.2rem;"></i>
-                </button>
+        <label class="form-label">STL-файл</label>
+        <div class="dropzone-container">
+            <div id="stl-dropzone" class="dropzone">
+                <div class="dz-message" data-dz-message>
+                    <span>Перетащите STL-файл сюда или нажмите для выбора</span>
+                </div>
             </div>
-            <input type="hidden" name="delete_stl" id="delete_stl" value="0">
-        @endif
+
+            <!-- Скрытые поля для хранения информации о загруженном файле -->
+            <input type="hidden" name="chunk_file_path" id="chunk_file_path">
+            <input type="hidden" name="chunk_original_name" id="chunk_original_name">
+
+            @if(isset($part) && $part->stl_original_name)
+                <div class="current-file mt-2" id="current-stl-block">
+                    <span class="text-muted">Текущий файл: </span>
+                    <a href="{{ $part->stl_filename ? asset('storage/parts/' . $part->stl_filename) : '#' }}" target="_blank" download class="me-2 text-decoration-underline text-primary" style="cursor:pointer;">
+                        {{ $part->stl_original_name }}
+                    </a>
+                    <button type="button" class="btn btn-link p-0 m-0 align-baseline text-danger" id="delete-stl-btn" title="{{ __('Удалить файл') }}">
+                        <i class="bi bi-x-circle" style="font-size:1.2rem;"></i>
+                    </button>
+                </div>
+                <input type="hidden" name="delete_stl" id="delete_stl" value="0">
+            @endif
+        </div>
     </div>
 
     <div class="alert alert-danger d-none" id="formErrors"></div>
@@ -58,4 +70,22 @@
         <button type="submit" class="btn btn-primary">{{ __('common.buttons.save') }}</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('common.buttons.cancel') }}</button>
     </div>
+
+    <!-- Добавляем ссылки на стили DropzoneJS -->
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    <style>
+        .dropzone {
+            border: 2px dashed #0087F7;
+            border-radius: 5px;
+            min-height: 150px;
+            padding: 20px;
+            text-align: center;
+        }
+        .dropzone .dz-message {
+            font-weight: 400;
+        }
+        .dropzone .dz-preview .dz-image {
+            border-radius: 5px;
+        }
+    </style>
 </form>

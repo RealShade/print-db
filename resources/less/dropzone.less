@@ -1,0 +1,85 @@
+/* Стили для Dropzone */
+.custom-dropzone {
+    border: 2px dashed #bbb;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    min-height: 150px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border .3s ease-in-out;
+
+    &:hover {
+        border-color: #007bff;
+    }
+
+    .dz-message {
+        font-size: 1.2em;
+        color: #6c757d;
+        text-align: center;
+    }
+
+    .dz-preview {
+        margin: 10px;
+
+        .dz-image {
+            border-radius: 4px;
+            overflow: hidden;
+            width: 120px;
+            height: 120px;
+            position: relative;
+            display: block;
+            z-index: 10;
+        }
+
+        .dz-progress {
+            display: block;
+            height: 15px;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #f0f0f0;
+
+            .dz-upload {
+                display: block;
+                height: 100%;
+                width: 0;
+                background: #007bff;
+                transition: width 0.3s ease-in-out;
+            }
+        }
+
+        .dz-error-message {
+            color: #dc3545;
+            display: none;
+        }
+
+        .dz-error:hover .dz-error-message {
+            display: block;
+        }
+
+        .dz-details {
+            position: relative;
+            margin-top: 5px;
+            font-size: 13px;
+            color: #495057;
+            text-align: center;
+        }
+
+        .dz-remove {
+            font-size: 14px;
+            text-align: center;
+            display: block;
+            cursor: pointer;
+            color: #dc3545;
+            text-decoration: none;
+            margin-top: 5px;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}

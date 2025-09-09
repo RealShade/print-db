@@ -30,7 +30,8 @@
                         data-action="{{ route('print.catalogs.update', $catalog) }}"
                         data-edit-route="{{ route('print.catalogs.edit', $catalog) }}"
                         data-method="PUT"
-                        data-id="{{ $catalog->id }}">
+                        data-id="{{ $catalog->id }}"
+                        data-upload-url="{{ route('print.parts.upload-chunk') }}">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button type="button" class="btn btn-sm btn-danger"

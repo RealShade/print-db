@@ -49,6 +49,9 @@ Route::middleware(['auth', 'check.user.status', 'check.owner'])->group(function(
     });
 
     Route::prefix('print')->name('print.')->group(function() {
+        // Маршрут для загрузки чанков
+        Route::post('parts/upload-chunk', [PartController::class, 'uploadChunk'])->name('parts.upload-chunk');
+
         // Маршруты для частей (parts)
 //        Route::get('parts', [PartController::class, 'index'])->name('parts.index');
         Route::get('parts/{catalog}/create', [PartController::class, 'create'])->name('parts.create');

@@ -412,7 +412,280 @@ document.addEventListener('DOMContentLoaded', function() {
     initHoverControls();
 });
 
-// Добавьте в блок обработки события modalContentLoaded
+// Функция инициализации загрузки файлов через Dropzone
+function initializeDropzoneUploader() {
+    // Проверяем существование формы для деталей на странице
+    const partForm = document.getElementById('partForm');
+    if (!partForm) return;
+
+    console.log('Инициализация загрузчика файлов через Dropzone');
+
+    // Проверяем, загружена ли библиотека Dropzone
+    if (typeof Dropzone !== 'undefined') {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+        // Определяем URL для загрузки чанков
+        // Сначала ищем его в data-атрибуте кнопки, которая открыла модальное окно
+        let uploadUrl = '';
+
+        // Проверяем, открыто ли модальное окно
+        const modal = partForm.closest('.modal');
+        if (modal) {
+            // Получаем ID кнопки, которая открыла модальное окно
+            const modalButton = document.querySelector(`[data-bs-target="#${modal.id}"][data-upload-url]`);
+            if (modalButton && modalButton.dataset.uploadUrl) {
+                uploadUrl = modalButton.dataset.uploadUrl;
+                console.log('Получен URL загрузки из data-upload-url:', uploadUrl);
+            }
+        }
+
+        // Если URL не найден, используем стандартный путь
+        if (!uploadUrl) {
+            uploadUrl = '/print/parts/upload-chunk';
+            console.log('Используется стандартный URL загрузки:', uploadUrl);
+        }
+
+        console.log('URL для загрузки файлов:', uploadUrl);
+
+        // Находим или создаем контейнер для Dropzone
+        let dropzoneContainer = document.getElementById('stl-dropzone');
+
+        // Если контейнер не существует, создаем его на основе существующего поля input
+        if (!dropzoneContainer) {
+            const fileInput = document.getElementById('stl_file');
+            if (!fileInput) {
+                console.error('Элемент #stl_file не найден!');
+                return;
+            }
+
+            // Создаем контейнер для Dropzone
+            dropzoneContainer = document.createElement('div');
+            dropzoneContainer.id = 'stl-dropzone';
+            dropzoneContainer.className = 'dropzone mb-3 custom-dropzone';
+
+            // Заменяем input на контейнер Dropzone
+            fileInput.parentNode.insertBefore(dropzoneContainer, fileInput);
+            fileInput.style.display = 'none'; // Скрываем исходный input
+        }
+
+        // Находим скрытые поля для хранения информации о загруженном файле
+        const chunkFilePathInput = document.getElementById('chunk_file_path');
+        const chunkOriginalNameInput = document.getElementById('chunk_original_name');
+
+        if (!chunkFilePathInput || !chunkOriginalNameInput) {
+            console.error('Не найдены скрытые поля для хранения информации о файле');
+            return;
+        }
+
+        // Находим контейнер для прогресс-бара
+        const progressContainer = document.getElementById('upload-progress-container');
+        const progressBar = document.getElementById('upload-progress');
+
+        // Настройка Dropzone
+        Dropzone.autoDiscover = false;
+
+        // Создаем экземпляр Dropzone
+        const myDropzone = new Dropzone('#stl-dropzone', {
+            url: uploadUrl,
+            chunking: true,
+            forceChunking: true,
+            chunkSize: 1024 * 1024, // 1 MB
+            parallelChunkUploads: false, // Отключаем параллельную загрузку чанков
+            maxFiles: 1,
+            maxFilesize: 100, // MB
+            acceptedFiles: '.stl',
+            addRemoveLinks: true,
+            retryChunks: true, // Повторять загрузку чанков при ошибке
+            retryChunksLimit: 3, // Максимальное количество повторных попыток
+            timeout: 120000, // Увеличиваем таймаут до 2 минут
+            dictDefaultMessage: "Перетащите STL-файл сюда или нажмите для выбора",
+            dictRemoveFile: "Удалить файл",
+            dictCancelUpload: "Отменить загрузку",
+            dictFileTooBig: "Файл слишком большой ({{filesize}}MB). Максимальный размер: {{maxFilesize}}MB.",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            // Параметры для совместимости с бэкендом
+            paramName: 'stl_file',
+        });
+
+        // Обработчики событий Dropzone
+        myDropzone.on('addedfile', function(file) {
+            console.log('Файл добавлен:', file.name);
+
+            // Очищаем предыдущие данные о загруженном файле
+            chunkFilePathInput.value = '';
+            chunkOriginalNameInput.value = '';
+
+            // Если прогресс-бар существует, показываем его
+            if (progressContainer && progressBar) {
+                progressContainer.classList.remove('d-none');
+                progressBar.style.width = '0%';
+                progressBar.textContent = '0%';
+                progressBar.classList.remove('bg-success');
+                progressBar.classList.add('bg-primary');
+            }
+        });
+
+        myDropzone.on('uploadprogress', function(file, progress) {
+            console.log('Прогресс загрузки:', progress.toFixed(0) + '%');
+
+            // Если прогресс-бар существует, обновляем его
+            if (progressBar) {
+                const percentage = Math.round(progress);
+                progressBar.style.width = percentage + '%';
+                progressBar.setAttribute('aria-valuenow', percentage);
+                progressBar.textContent = percentage + '%';
+            }
+        });
+
+        myDropzone.on('success', function(file, response) {
+            console.log('Файл успешно загружен:', response);
+
+            // Сохраняем информацию о загруженном файле
+            if (response.success) {
+                // Если это последний чанк или обычная загрузка файла
+                if (response.path && response.original_name) {
+                    chunkFilePathInput.value = response.path;
+                    chunkOriginalNameInput.value = response.original_name;
+
+                    console.log('Установлены значения:');
+                    console.log('chunk_file_path:', chunkFilePathInput.value);
+                    console.log('chunk_original_name:', chunkOriginalNameInput.value);
+
+                    // Если прогресс-бар существует, обновляем его
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                        progressBar.textContent = 'Загружено';
+                        progressBar.classList.remove('bg-primary');
+                        progressBar.classList.add('bg-success');
+                    }
+                } else {
+                    console.log('Чанк успешно загружен, ожидание завершения загрузки');
+                }
+            }
+        });
+
+        myDropzone.on('error', function(file, errorMessage, xhr) {
+            console.error('Ошибка загрузки файла:', errorMessage);
+
+            // Удаляем файл из очереди
+            myDropzone.removeFile(file);
+
+            // Показываем сообщение об ошибке
+            const errors = partForm.querySelector('#formErrors');
+            if (errors) {
+                errors.classList.remove('d-none');
+                errors.innerHTML = typeof errorMessage === 'string'
+                    ? errorMessage
+                    : 'Произошла ошибка при загрузке файла';
+            } else {
+                alert('Ошибка загрузки файла: ' + file.name);
+            }
+
+            // Скрываем прогресс-бар
+            if (progressContainer) {
+                progressContainer.classList.add('d-none');
+            }
+        });
+
+        // Модификация обработчика отправки формы
+        if (partForm) {
+            console.log('Добавляем обработчик для формы:', partForm);
+
+            // Отменяем стандартный обработчик и заменяем своим
+            partForm.onsubmit = function(e) {
+                e.preventDefault();
+
+                console.log('Отправка формы с данными о загруженном файле');
+                console.log('chunk_file_path:', chunkFilePathInput.value);
+                console.log('chunk_original_name:', chunkOriginalNameInput.value);
+
+                // Создаем новый объект FormData из формы
+                const formData = new FormData(this);
+
+                // Добавляем данные о загруженном файле в FormData, если они есть
+                if (chunkFilePathInput.value && chunkOriginalNameInput.value) {
+                    console.log('Добавляем данные о загруженном файле в FormData');
+                    formData.set('chunk_file_path', chunkFilePathInput.value);
+                    formData.set('chunk_original_name', chunkOriginalNameInput.value);
+                }
+
+                // Получаем URL для отправки формы
+                const url = this.action;
+                console.log('URL для отправки формы:', url);
+
+                // Получаем метод отправки
+                let method = this.method.toUpperCase();
+                // Если есть скрытое поле _method, используем его значение
+                const methodField = this.querySelector('input[name="_method"]');
+                if (methodField) {
+                    method = methodField.value.toUpperCase();
+                }
+                console.log('Метод отправки формы:', method);
+
+                // Отправляем форму через fetch
+                fetch(url, {
+                    method: 'POST', // Всегда используем POST, метод указываем в заголовке X-HTTP-Method-Override
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-HTTP-Method-Override': method
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Закрываем модальное окно, если это необходимо
+                        const modal = partForm.closest('.modal');
+                        if (modal) {
+                            const closeButton = modal.querySelector('.btn-close');
+                            if (closeButton) {
+                                closeButton.click();
+                            }
+                        }
+
+                        // Перезагружаем страницу для отображения изменений
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    const errors = partForm.querySelector('#formErrors');
+                    if (errors) {
+                        errors.classList.remove('d-none');
+                        error.json().then(data => {
+                            if (data.message) {
+                                errors.innerHTML = data.message;
+                            } else if (data.errors) {
+                                errors.innerHTML = Object.values(data.errors)
+                                                        .flat()
+                                                        .map(error => `<div>${error}</div>`)
+                                                        .join('');
+                            } else {
+                                errors.innerHTML = error.status + ' ' + error.statusText;
+                            }
+                        }).catch(e => {
+                            errors.innerHTML = 'Unknown error';
+                        });
+                    } else {
+                        console.error('Ошибка при отправке формы:', error);
+                    }
+                });
+            };
+        }
+    } else {
+        console.error('Библиотека Dropzone не загружена');
+    }
+}
+
+// Обработчик события modalContentLoaded
 document.addEventListener('modalContentLoaded', function() {
     initFilamentForm();
     initCatalogTree();
@@ -420,6 +693,19 @@ document.addEventListener('modalContentLoaded', function() {
 
     // Инициализируем dropdown для select-part
     initSelectPartDropdown();
+
+    // Инициализируем загрузку файлов через Dropzone
+    if (typeof Dropzone !== 'undefined') {
+        initializeDropzoneUploader();
+    } else {
+        // Если библиотека еще не загружена, загрузим ее и инициализируем
+        const script = document.createElement('script');
+        script.src = '/assets/js/libs/dropzone.min.js';
+        script.onload = function() {
+            initializeDropzoneUploader();
+        };
+        document.head.appendChild(script);
+    }
 });
 
 // Глобальная функция для инициализации Spectrum Colorpicker с палитрой
@@ -489,3 +775,4 @@ window.initToggleRows = initToggleRows;
 window.initFilamentForm = initFilamentForm;
 window.initCatalogTree = initCatalogTree;
 window.initHoverControls = initHoverControls;
+

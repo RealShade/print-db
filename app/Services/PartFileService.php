@@ -82,6 +82,32 @@ class PartFileService
         return $filename;
     }
 
+    /**
+     * Сохранить STL-файл, загруженный по частям
+     *
+     * @param string $filePath Путь к временному файлу
+     * @param string $originalName Оригинальное имя файла
+     * @return string Имя сохраненного файла
+     */
+    public function saveChunkedStlFile(string $filePath, string $originalName) : string
+    {
+        if (!$this->part) {
+            throw new \InvalidArgumentException('Part model is not set');
+        }
+
+        $random = bin2hex(random_bytes(32));
+        $filename = 'parts_' . $this->part->id . '_' . $random . '.stl';
+
+        // Копируем файл в целевую директорию
+        $targetPath = Storage::disk(self::DISK)->path(self::DIR . '/' . $filename);
+        copy($filePath, $targetPath);
+
+        // Генерируем превью после сохранения
+        $this->generatePreview($filename);
+
+        return $filename;
+    }
+
     /* **************************************** Getters **************************************** */
     /**
      * Получить публичный URL превью STL-файла (PNG)
