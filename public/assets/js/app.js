@@ -18746,7 +18746,7 @@ function initializeDropzoneUploader() {
       parallelChunkUploads: false,
       // Отключаем параллельную загрузку чанков
       maxFiles: 1,
-      maxFilesize: 100,
+      maxFilesize: 250,
       // MB
       acceptedFiles: '.stl',
       addRemoveLinks: true,
