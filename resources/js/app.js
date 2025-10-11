@@ -783,4 +783,3 @@ window.initToggleRows = initToggleRows;
 window.initFilamentForm = initFilamentForm;
 window.initCatalogTree = initCatalogTree;
 window.initHoverControls = initHoverControls;
-
