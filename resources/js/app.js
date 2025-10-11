@@ -174,50 +174,51 @@ document.addEventListener('DOMContentLoaded', function() {
                         form.appendChild(methodField);
                     }
 
-                    // Submit form handler
-                    form.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                        const formData = new FormData(this);
+                    if (form.id !== 'partForm') {
+                        form.addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            const formData = new FormData(this);
 
-                        fetch(this.action, {
-                            method : 'POST',
-                            body   : formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN'    : document.querySelector('meta[name="csrf-token"]').content
-                            }
-                        })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw response;
-                                }
-                                return response.json();
-                            })
-                            .then(data => {
-                                if (data.success) {
-                                    modal.querySelector('.btn-close').click();
-                                    window.location.reload();
+                            fetch(this.action, {
+                                method: 'POST',
+                                body: formData,
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                                 }
                             })
-                            .catch(error => {
-                                const errors = modal.querySelector('#formErrors');
-                                errors.classList.remove('d-none');
-                                error.json().then(data => {
-                                    if (data.message) {
-                                        errors.innerHTML = data.message;
-                                    } else if (data.errors) {
-                                        errors.innerHTML = Object.values(data.errors)
-                                                                 .flat()
-                                                                 .map(error => `<div>${ error }</div>`)
-                                                                 .join('');
-                                    } else {
-                                        errors.innerHTML = error.status + ' ' + error.statusText;
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw response;
                                     }
-                                }).catch(e => {
-                                    errors.innerHTML = 'Unknown error';
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    if (data.success) {
+                                        modal.querySelector('.btn-close').click();
+                                        window.location.reload();
+                                    }
+                                })
+                                .catch(error => {
+                                    const errors = modal.querySelector('#formErrors');
+                                    errors.classList.remove('d-none');
+                                    error.json().then(data => {
+                                        if (data.message) {
+                                            errors.innerHTML = data.message;
+                                        } else if (data.errors) {
+                                            errors.innerHTML = Object.values(data.errors)
+                                                .flat()
+                                                .map(error => `<div>${error}</div>`)
+                                                .join('');
+                                        } else {
+                                            errors.innerHTML = error.status + ' ' + error.statusText;
+                                        }
+                                    }).catch(e => {
+                                        errors.innerHTML = 'Unknown error';
+                                    });
                                 });
-                            });
-                    });
+                        });
+                    }
 
                     // Повторная инициализация всех динамических элементов
                     // modalBody.querySelectorAll('script').forEach(oldScript => {

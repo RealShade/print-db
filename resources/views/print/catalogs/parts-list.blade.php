@@ -3,6 +3,7 @@
         <table class="table table-hover">
             <thead>
             <tr>
+                <th>{{ __('part.id') }}</th>
                 <th>{{ __('part.name') }}</th>
                 <th>{{ __('part.version') }}</th>
                 <th>{{ __('part.version_date') }}</th>
@@ -13,6 +14,7 @@
             <tbody>
             @foreach($parts as $part)
                 <tr>
+                    <td class="text-end">{{ $part->id }}</td>
                     <td>
                         @if($part->stl_filename && $part->fileService()->hasPreview())
                             <span class="d-inline-block" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" data-bs-content="<img src='{{ $part->fileService()->getPreviewUrl() }}' style='max-width:400px;max-height:400px;'>">

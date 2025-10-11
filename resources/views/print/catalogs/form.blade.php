@@ -13,7 +13,7 @@
                 <option value="{{ $cat->id }}"
                         @if((isset($catalog) && $catalog->parent_id == $cat->id)
                            || (request()->has('parent_id') && request('parent_id') == $cat->id)
-                           || isset($parent) && $parent->id == $cat->id)
+                           || (isset($parent) && $parent->id == $cat->id))
                             selected
                     @endif>
               @if($cat->parent){{ $cat->getFullCatalogPath() }} /@endif {{ $cat->name }}

@@ -18451,46 +18451,46 @@ document.addEventListener('DOMContentLoaded', function () {
           methodField.value = 'PUT';
           form.appendChild(methodField);
         }
-
-        // Submit form handler
-        form.addEventListener('submit', function (e) {
-          e.preventDefault();
-          var formData = new FormData(this);
-          fetch(this.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-          }).then(function (response) {
-            if (!response.ok) {
-              throw response;
-            }
-            return response.json();
-          }).then(function (data) {
-            if (data.success) {
-              modal.querySelector('.btn-close').click();
-              window.location.reload();
-            }
-          })["catch"](function (error) {
-            var errors = modal.querySelector('#formErrors');
-            errors.classList.remove('d-none');
-            error.json().then(function (data) {
-              if (data.message) {
-                errors.innerHTML = data.message;
-              } else if (data.errors) {
-                errors.innerHTML = Object.values(data.errors).flat().map(function (error) {
-                  return "<div>".concat(error, "</div>");
-                }).join('');
-              } else {
-                errors.innerHTML = error.status + ' ' + error.statusText;
+        if (form.id !== 'partForm') {
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            fetch(this.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
               }
-            })["catch"](function (e) {
-              errors.innerHTML = 'Unknown error';
+            }).then(function (response) {
+              if (!response.ok) {
+                throw response;
+              }
+              return response.json();
+            }).then(function (data) {
+              if (data.success) {
+                modal.querySelector('.btn-close').click();
+                window.location.reload();
+              }
+            })["catch"](function (error) {
+              var errors = modal.querySelector('#formErrors');
+              errors.classList.remove('d-none');
+              error.json().then(function (data) {
+                if (data.message) {
+                  errors.innerHTML = data.message;
+                } else if (data.errors) {
+                  errors.innerHTML = Object.values(data.errors).flat().map(function (error) {
+                    return "<div>".concat(error, "</div>");
+                  }).join('');
+                } else {
+                  errors.innerHTML = error.status + ' ' + error.statusText;
+                }
+              })["catch"](function (e) {
+                errors.innerHTML = 'Unknown error';
+              });
             });
           });
-        });
+        }
 
         // Повторная инициализация всех динамических элементов
         // modalBody.querySelectorAll('script').forEach(oldScript => {
